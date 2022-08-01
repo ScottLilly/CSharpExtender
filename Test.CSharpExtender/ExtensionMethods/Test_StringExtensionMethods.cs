@@ -21,4 +21,11 @@ public class Test_StringExtensionMethods
         Assert.True("".DoesNotMatch("a"));
         Assert.True("a".DoesNotMatch(""));
     }
+
+    [Fact]
+    public void Test_ToTitleCase()
+    {
+        Assert.Equal("A Tale of Two Cities", "a tale of two cities".ToTitleCase());
+        Assert.Equal("A Tale of Two Cities", "A Tale of Two Cities".ToTitleCase());
+    }
 }

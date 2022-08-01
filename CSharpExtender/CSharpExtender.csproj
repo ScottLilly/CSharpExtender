@@ -4,6 +4,15 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>ScottLilly.$(AssemblyName)</PackageId>
+    <Authors>Scott Lilly</Authors>
+    <Product>ScottLilly.$(AssemblyName)</Product>
+    <Description>Common code I use across solutions</Description>
+    <Copyright>2022</Copyright>
+    <RepositoryUrl>https://github.com/ScottLilly/CSharpExtender</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
 </Project>
