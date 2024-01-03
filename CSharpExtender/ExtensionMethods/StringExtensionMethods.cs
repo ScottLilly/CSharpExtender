@@ -111,6 +111,66 @@ public static class StringExtensionMethods
         return string.Join(' ', properCasedWords);
     }
 
+    public static bool HasText(this string? value) =>
+        value != null && !string.IsNullOrWhiteSpace(value);
+
+    public static bool DoesNotHaveText(this string? value) =>
+        value == null || string.IsNullOrWhiteSpace(value);
+
+    public static string? NullIfEmpty(this string? value) =>
+    string.IsNullOrWhiteSpace(value) ? null : value;
+
+    public static string? ToDigitsOnly(this string? value) =>
+        string.IsNullOrWhiteSpace(value)
+        ? null
+        : new string(value.Where(char.IsDigit).ToArray());
+
+    public static bool IsDigitsOnly(this string s) =>
+        double.TryParse(s, out double i);
+
+    public static string ToStringWithLineFeeds(this IEnumerable<string> lines)
+    {
+        return string.Join("\r\n", lines);
+    }
+
+    public static string Repeated(this string text, int times)
+    {
+        return string.Concat(Enumerable.Repeat(text, times));
+    }
+
+    public static bool IsNotNullEmptyOrWhitespace(this string? value) =>
+    !string.IsNullOrWhiteSpace(value);
+
+    public static bool IsNullEmptyOrWhitespace(this string? value) =>
+        value == null || string.IsNullOrWhiteSpace(value);
+
+    public static IEnumerable<string> SplitPath(this string path)
+    {
+        return path.Split('/', '\\');
+    }
+
+    public static bool IncludesTheWords(this string text, params string[] words)
+    {
+        if (string.IsNullOrWhiteSpace(text) ||
+           words.Length == 0 ||
+           words.All(string.IsNullOrWhiteSpace))
+        {
+            return false;
+        }
+
+        return words.All(word => text.Contains(word, StringComparison.CurrentCultureIgnoreCase));
+    }
+
+    public static string RemoveText(this string text, string textToRemove)
+    {
+        while (text.Contains(textToRemove, StringComparison.CurrentCultureIgnoreCase))
+        {
+            text = text.Replace(textToRemove, "", StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        return text;
+    }
+
     #region Private methods
 
     private static string UpperCaseFirstChar(this string s)
