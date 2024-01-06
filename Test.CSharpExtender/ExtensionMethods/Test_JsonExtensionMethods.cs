@@ -53,7 +53,7 @@ public class Test_JsonExtensionMethods
 
         string result = json.PrettyPrintJson();
 
-        string expected = "{\r\n  \"name\": \"John\",\r\n  \"age\": 30\r\n}";
+        string expected = $"{{{Environment.NewLine}  \"name\": \"John\",{Environment.NewLine}  \"age\": 30{Environment.NewLine}}}";
 
         Assert.Equal(expected, result);
     }
@@ -65,7 +65,7 @@ public class Test_JsonExtensionMethods
 
         string result = obj.PrettyPrintJson();
 
-        string expected = "{\r\n  \"name\": \"John\",\r\n  \"age\": 30\r\n}";
+        string expected = $"{{{Environment.NewLine}  \"name\": \"John\",{Environment.NewLine}  \"age\": 30{Environment.NewLine}}}";
 
         Assert.Equal(expected, result);
     }
