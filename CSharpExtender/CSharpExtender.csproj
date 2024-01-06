@@ -8,17 +8,26 @@
     <PackageId>ScottLilly.$(AssemblyName)</PackageId>
     <Authors>Scott Lilly</Authors>
     <Product>ScottLilly.$(AssemblyName)</Product>
-    <Description>Common code I use across solutions</Description>
+    <Description>Methods I often use in C# projects</Description>
     <Copyright>2022</Copyright>
     <RepositoryUrl>https://github.com/ScottLilly/CSharpExtender</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ScottLilly/CSharpExtender</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>Icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

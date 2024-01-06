@@ -59,5 +59,6 @@ public class Test_StringExtensionMethods
         Assert.Equal("a", "ba".RemoveText("b"));
         Assert.Equal("a", "bab".RemoveText("b"));
         Assert.Equal("AA", "BABA".RemoveText("b"));
+        Assert.Equal("BABA", "BABA".RemoveText("b", StringComparison.CurrentCulture));
     }
 }
