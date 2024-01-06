@@ -6,7 +6,7 @@ using System.Linq;
 namespace CSharpExtender.ExtensionMethods
 {
     /// <summary>
-    /// Scott's extension methods for LINQ
+    /// Extension methods for LINQ
     /// </summary>
     public static class LinqExtensionMethods
     {

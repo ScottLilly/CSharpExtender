@@ -1,7 +1,7 @@
 ﻿namespace CSharpExtender.ExtensionMethods
 {
     /// <summary>
-    /// Scott's extension methods for numbers
+    /// Extension methods for numbers
     /// </summary>
     public static class NumericExtensionMethods
     {

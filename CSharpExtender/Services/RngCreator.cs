@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 namespace CSharpExtender.Services
 {
     /// <summary>
-    /// Scott's class to create cryptographically random numbers
+    /// Class to create cryptographically random numbers
     /// </summary>
     public static class RngCreator
     {

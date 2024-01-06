@@ -4,7 +4,7 @@ using System.Xml;
 namespace CSharpExtender.ExtensionMethods
 {
     /// <summary>
-    /// Scott's extension methods for XML
+    /// Extension methods for XML
     /// </summary>
     public static class XmlExtensionMethods
     {

@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 namespace CSharpExtender.ExtensionMethods
 {
     /// <summary>
-    /// Scott's extension methods for JSON
+    /// Extension methods for JSON
     /// </summary>
     public static class JsonExtensionMethods
     {

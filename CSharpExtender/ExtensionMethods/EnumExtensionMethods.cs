@@ -7,7 +7,7 @@ using System.Reflection;
 namespace CSharpExtender.ExtensionMethods
 {
     /// <summary>
-    /// Scott's extension methods for Enums
+    /// Extension methods for Enums
     /// </summary>
     public static class EnumExtensionMethods
     {

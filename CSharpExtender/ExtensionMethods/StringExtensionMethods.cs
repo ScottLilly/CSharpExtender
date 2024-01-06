@@ -5,7 +5,7 @@ using System;
 namespace CSharpExtender.ExtensionMethods
 {
     /// <summary>
-    /// Scott's extension methods for strings
+    /// Extension methods for strings
     /// </summary>
     public static class StringExtensionMethods
     {
