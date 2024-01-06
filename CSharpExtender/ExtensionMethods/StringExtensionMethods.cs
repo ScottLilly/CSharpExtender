@@ -4,6 +4,9 @@ using System;
 
 namespace CSharpExtender.ExtensionMethods
 {
+    /// <summary>
+    /// Extension methods for strings
+    /// </summary>
     public static class StringExtensionMethods
     {
         private static readonly List<string> s_lowerCaseWords =

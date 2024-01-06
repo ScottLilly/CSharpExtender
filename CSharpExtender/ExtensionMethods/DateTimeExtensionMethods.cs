@@ -4,7 +4,7 @@ using System.Globalization;
 namespace CSharpExtender.ExtensionMethods
 {
     /// <summary>
-    /// Scott's extension methods for DateTime
+    /// Extension methods for DateTime
     /// </summary>
     public static class DateTimeExtensionMethods
     {

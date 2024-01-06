@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace CSharpExtender.ExtensionMethods
 {
+    /// <summary>
+    /// Extension methods for LINQ
+    /// </summary>
     public static class LinqExtensionMethods
     {
         /// <summary>
