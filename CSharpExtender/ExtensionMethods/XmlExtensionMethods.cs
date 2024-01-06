@@ -1,23 +1,25 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 
-namespace CSharpExtender.ExtensionMethods;
-
-public static class XmlExtensionMethods
+namespace CSharpExtender.ExtensionMethods
 {
-    public static int AttributeAsInt(this XmlNode node, string attributeName)
+    public static class XmlExtensionMethods
     {
-        return Convert.ToInt32(node.AttributeAsString(attributeName));
-    }
-
-    public static string AttributeAsString(this XmlNode node, string attributeName)
-    {
-        XmlAttribute attribute = node.Attributes?[attributeName];
-
-        if (attribute == null)
+        public static int AttributeAsInt(this XmlNode node, string attributeName)
         {
-            throw new ArgumentException($"The attribute '{attributeName}' does not exist");
+            return Convert.ToInt32(node.AttributeAsString(attributeName));
         }
 
-        return attribute.Value;
+        public static string AttributeAsString(this XmlNode node, string attributeName)
+        {
+            XmlAttribute attribute = node.Attributes?[attributeName];
+
+            if (attribute == null)
+            {
+                throw new ArgumentException($"The attribute '{attributeName}' does not exist");
+            }
+
+            return attribute.Value;
+        }
     }
 }

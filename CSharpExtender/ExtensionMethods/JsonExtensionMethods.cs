@@ -1,68 +1,38 @@
-﻿using System.Text.Json;
+﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace CSharpExtender.ExtensionMethods;
-
-public static class JsonExtensionMethods
+namespace CSharpExtender.ExtensionMethods
 {
-    private static readonly JsonSerializerOptions _jsonSerializerOptions =
-       new() { PropertyNameCaseInsensitive = true };
-
-    public static string GetValueFromJsonPath(this string json, string path,
-        JsonSerializerOptions? options = null) =>
-        JsonSerializer.Deserialize<JsonElement>(json, options ?? _jsonSerializerOptions)
-        .GetJsonElement(path)
-        .GetJsonElementValue() ??
-        throw new InvalidOperationException($"JSON path '{path}' not found.");
-
-    private static readonly char[] separator = new char[] { '.', ':' };
-
-    public static JsonElement GetJsonElement(this JsonElement jsonElement, string path)
+    public static class JsonExtensionMethods
     {
-        if (jsonElement.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
-        {
-            return default;
-        }
+        public static string GetValueFromJsonPath(this string json, string path) =>
+            TryGetValueFromJsonPath(json, path, out string value) ? value
+            : throw new InvalidOperationException($"JSON path '{path}' not found.");
 
-        string[] segments =
-            path.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-
-        foreach (var segment in segments)
+        private static bool TryGetValueFromJsonPath(this string json, string path, out string value)
         {
-            if (int.TryParse(segment, out var index) &&
-                jsonElement.ValueKind == JsonValueKind.Array)
+            try
             {
-                jsonElement = jsonElement.EnumerateArray().ElementAtOrDefault(index);
-
-                if (jsonElement.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+                var token = JToken.Parse(json).SelectToken(path);
+                if (token != null && token.Type != JTokenType.Null)
                 {
-                    return default;
+                    value = token.ToString();
+                    return true;
                 }
-
-                continue;
             }
-
-            jsonElement = jsonElement.TryGetProperty(segment, out var value) ? value : default;
-
-            if (jsonElement.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+            catch (JsonException)
             {
-                return default;
+                // Handle or log parsing exceptions
             }
+
+            value = default;
+            return false;
         }
 
-        return jsonElement;
-    }
-
-    public static string? GetJsonElementValue(this JsonElement jsonElement) =>
-        jsonElement.ValueKind != JsonValueKind.Null &&
-        jsonElement.ValueKind != JsonValueKind.Undefined
-        ? jsonElement.ToString()
-        : default;
-
-    public static string? AsSerializedJson<T>(
-        this T? value, JsonSerializerOptions? options = null) where T : class
-    {
-        return value == null
-            ? null
-            : JsonSerializer.Serialize(value, options);
+        public static string AsSerializedJson<T>(this T value) where T : class
+        {
+            return JsonConvert.SerializeObject(value);
+        }
     }
 }
