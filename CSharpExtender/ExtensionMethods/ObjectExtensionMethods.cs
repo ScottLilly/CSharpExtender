@@ -4,6 +4,9 @@ using System.Reflection;
 
 namespace CSharpExtender.ExtensionMethods
 {
+    /// <summary>
+    /// Scott's extension methods for objects
+    /// </summary>
     public static class ObjectExtensionMethods
     {
         public static T Clone<T>(this T source)

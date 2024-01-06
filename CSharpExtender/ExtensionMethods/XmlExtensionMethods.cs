@@ -3,6 +3,9 @@ using System.Xml;
 
 namespace CSharpExtender.ExtensionMethods
 {
+    /// <summary>
+    /// Scott's extension methods for XML
+    /// </summary>
     public static class XmlExtensionMethods
     {
         public static int AttributeAsInt(this XmlNode node, string attributeName)

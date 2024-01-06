@@ -4,6 +4,9 @@ using Newtonsoft.Json.Linq;
 
 namespace CSharpExtender.ExtensionMethods
 {
+    /// <summary>
+    /// Scott's extension methods for JSON
+    /// </summary>
     public static class JsonExtensionMethods
     {
         public static string GetValueFromJsonPath(this string json, string path) =>
