@@ -2,7 +2,7 @@
 
 namespace Test.CSharpExtender.ExtensionMethods;
 
-public class DateTimeExtensionMethodsTests
+public class Test_DateTimeExtensionMethods
 {
     [Fact]
     public void StartOfDay_ShouldReturnStartOfDay()

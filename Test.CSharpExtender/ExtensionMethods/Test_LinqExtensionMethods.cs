@@ -2,7 +2,7 @@
 
 namespace Test.CSharpExtender.ExtensionMethods;
 
-public class LinqExtensionMethodsTests
+public class Test_LinqExtensionMethods
 {
     [Fact]
     public void None_EmptyList_ReturnsTrue()

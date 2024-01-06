@@ -12,7 +12,7 @@ public enum TestEnum
     TestValue3
 }
 
-public class EnumExtensionMethodsTests
+public class Test_EnumExtensionMethods
 {
     [Fact]
     public void GetEnumDescription_ReturnsCorrectDescription()

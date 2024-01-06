@@ -3,7 +3,7 @@ using CSharpExtender.ExtensionMethods;
 
 namespace Test.CSharpExtender.ExtensionMethods;
 
-public class JsonExtensionMethodsTests
+public class Test_JsonExtensionMethods
 {
     [Fact]
     public void GetValueFromJsonPath_ValidPath_ReturnsValue()
