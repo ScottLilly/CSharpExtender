@@ -111,61 +111,128 @@ public static class StringExtensionMethods
         return string.Join(' ', properCasedWords);
     }
 
+    /// <summary>
+    /// Returns 'true' if the string is not null, empty or only contains whitespace
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static bool HasText(this string? value) =>
         value != null && !string.IsNullOrWhiteSpace(value);
 
+    /// <summary>
+    /// Returns 'true' if the string is null, empty or only contains whitespace
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static bool DoesNotHaveText(this string? value) =>
         value == null || string.IsNullOrWhiteSpace(value);
 
+    /// <summary>
+    /// Returns a null if the string is null, empty or only contains whitespace
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static string? NullIfEmpty(this string? value) =>
-    string.IsNullOrWhiteSpace(value) ? null : value;
+        string.IsNullOrWhiteSpace(value) ? null : value;
 
+    /// <summary>
+    /// Returns a string with all non-digits removed
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static string? ToDigitsOnly(this string? value) =>
         string.IsNullOrWhiteSpace(value)
         ? null
         : new string(value.Where(char.IsDigit).ToArray());
 
+    /// <summary>
+    /// Returns 'true' is the string only contains digits
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns></returns>
     public static bool IsDigitsOnly(this string s) =>
-        double.TryParse(s, out double i);
+        !s.Any(c => !char.IsDigit(c));
 
+    /// <summary>
+    /// Converts an IEnumerable of strings to a single string with line feeds between each string
+    /// </summary>
+    /// <param name="lines"></param>
+    /// <returns></returns>
     public static string ToStringWithLineFeeds(this IEnumerable<string> lines)
     {
         return string.Join("\r\n", lines);
     }
 
-    public static string Repeated(this string text, int times)
+    /// <summary>
+    /// Returns a string with the text repeated the specified number of times
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="times"></param>
+    /// <returns></returns>
+    public static string Repeat(this string text, int times)
     {
+        if (times < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(times), "Must be zero or greater.");
+        }
+
         return string.Concat(Enumerable.Repeat(text, times));
     }
 
-    public static bool IsNotNullEmptyOrWhitespace(this string? value) =>
-    !string.IsNullOrWhiteSpace(value);
-
-    public static bool IsNullEmptyOrWhitespace(this string? value) =>
-        value == null || string.IsNullOrWhiteSpace(value);
-
+    /// <summary>
+    /// Convert a file path into an array of the individual directories.
+    /// Handles both forward and double back slashes.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns>
+    /// An array of trimmed strings, split by the path separator characters.
+    /// Does not include any empty entries.
+    /// </returns>
     public static IEnumerable<string> SplitPath(this string path)
     {
-        return path.Split('/', '\\');
+        return path.Split('/', '\\', 
+            StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries);
     }
 
-    public static bool IncludesTheWords(this string text, params string[] words)
+    /// <summary>
+    /// Checks if a string contains all the words in the specified array.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="requiredWords"></param>
+    /// <returns></returns>
+    public static bool IncludesTheWords(this string text, params string[] requiredWords)
     {
         if (string.IsNullOrWhiteSpace(text) ||
-           words.Length == 0 ||
-           words.All(string.IsNullOrWhiteSpace))
+            requiredWords.Length == 0 ||
+            requiredWords.All(string.IsNullOrWhiteSpace))
         {
             return false;
         }
 
-        return words.All(word => text.Contains(word, StringComparison.CurrentCultureIgnoreCase));
+        // TODO: Verifiy this handles punctuation
+        // TODO: Accept a StringComparison parameter
+        return requiredWords
+            .All(word => text.Contains(word, StringComparison.CurrentCultureIgnoreCase));
     }
 
-    public static string RemoveText(this string text, string textToRemove)
+    /// <summary>
+    /// Removes all instances of the specified text from the string.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="textToRemove"></param>
+    /// <param name="stringComparisonMethod"></param>
+    /// <returns></returns>
+    public static string RemoveText(this string text, string textToRemove,
+        StringComparison stringComparisonMethod = StringComparison.CurrentCultureIgnoreCase)
     {
-        while (text.Contains(textToRemove, StringComparison.CurrentCultureIgnoreCase))
+        if(text.DoesNotHaveText() || textToRemove.DoesNotHaveText())
         {
-            text = text.Replace(textToRemove, "", StringComparison.CurrentCultureIgnoreCase);
+            return text;
+        }
+
+        while (text.Contains(textToRemove, stringComparisonMethod))
+        {
+            text = text.Replace(textToRemove, "", stringComparisonMethod);
         }
 
         return text;

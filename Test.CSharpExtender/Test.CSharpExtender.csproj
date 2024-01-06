@@ -25,4 +25,8 @@
     <ProjectReference Include="..\CSharpExtender\CSharpExtender.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestFiles\" />
+  </ItemGroup>
+
 </Project>
