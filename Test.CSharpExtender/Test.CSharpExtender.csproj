@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <Folder Include="ExtensionMethods\" />
-    <Folder Include="TestFiles\" />
   </ItemGroup>
 
 </Project>
