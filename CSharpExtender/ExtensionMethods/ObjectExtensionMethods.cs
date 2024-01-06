@@ -1,54 +1,65 @@
-﻿using System.Reflection;
-using System.Text.Json;
+﻿using Newtonsoft.Json;
+using System;
+using System.Reflection;
 
-namespace CSharpExtender.ExtensionMethods;
-
-public static class ObjectExtensionMethods
+namespace CSharpExtender.ExtensionMethods
 {
-    public static T Clone<T>(this T source)
+    public static class ObjectExtensionMethods
     {
-        return JsonSerializer.Deserialize<T>((string?)JsonSerializer.Serialize(source));
-    }
-
-    public static bool IsNumericType(this object obj)
-    {
-        switch (Type.GetTypeCode(obj.GetType()))
+        public static T Clone<T>(this T source)
         {
-            case TypeCode.Byte:
-            case TypeCode.SByte:
-            case TypeCode.UInt16:
-            case TypeCode.UInt32:
-            case TypeCode.UInt64:
-            case TypeCode.Int16:
-            case TypeCode.Int32:
-            case TypeCode.Int64:
-            case TypeCode.Decimal:
-            case TypeCode.Double:
-            case TypeCode.Single:
-                return true;
-            default:
-                return false;
-        }
-    }
+            if (source == null)
+            {
+                return default;
+            }
 
-    public static bool IsIntegerType(this object obj)
-    {
-        switch (Type.GetTypeCode(obj.GetType()))
+            // Serialize the object to a JSON string.
+            var serialized = JsonConvert.SerializeObject(source);
+
+            // Deserialize the JSON string to a new object of the same type.
+            return JsonConvert.DeserializeObject<T>(serialized);
+        }
+
+        public static bool IsNumericType(this object obj)
         {
-            case TypeCode.UInt16:
-            case TypeCode.UInt32:
-            case TypeCode.UInt64:
-            case TypeCode.Int16:
-            case TypeCode.Int32:
-            case TypeCode.Int64:
-                return true;
-            default:
-                return false;
+            switch (Type.GetTypeCode(obj.GetType()))
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    return true;
+                default:
+                    return false;
+            }
         }
-    }
 
-    internal static bool HasCustomAttributeOfType(this PropertyInfo obj, Type attributeType)
-    {
-        return obj.GetCustomAttributes(attributeType, true).Length > 0;
+        public static bool IsIntegerType(this object obj)
+        {
+            switch (Type.GetTypeCode(obj.GetType()))
+            {
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        internal static bool HasCustomAttributeOfType(this PropertyInfo obj, Type attributeType)
+        {
+            return obj.GetCustomAttributes(attributeType, true).Length > 0;
+        }
     }
 }

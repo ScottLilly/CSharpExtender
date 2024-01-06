@@ -1,14 +1,15 @@
-﻿namespace CSharpExtender.ExtensionMethods;
-
-public static class NumericExtensionMethods
+﻿namespace CSharpExtender.ExtensionMethods
 {
-    public static bool IsEven(this int val)
+    public static class NumericExtensionMethods
     {
-        return val % 2 == 0;
-    }
+        public static bool IsEven(this int val)
+        {
+            return val % 2 == 0;
+        }
 
-    public static bool IsOdd(this int val)
-    {
-        return !val.IsEven();
+        public static bool IsOdd(this int val)
+        {
+            return !val.IsEven();
+        }
     }
 }
