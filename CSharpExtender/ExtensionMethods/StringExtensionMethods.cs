@@ -80,7 +80,7 @@ namespace CSharpExtender.ExtensionMethods
         /// <returns></returns>
         public static string ToStringWithLineFeeds(this IEnumerable<string> lines)
         {
-            return string.Join("\r\n", lines);
+            return string.Join(Environment.NewLine, lines);
         }
 
         /// <summary>
