@@ -86,7 +86,6 @@ This class provides extension methods for string manipulations in C#.
 
 - **`Matches`**: Check if strings are equal, using InvariantCultureIgnoreCase.
 - **`DoesNotMatch`**: Check if strings are not equal, using InvariantCultureIgnoreCase.
-- **`ToTitleCase`**: Get string with the first character of each word in correct book title casing.
 - **`HasText`**: Returns 'true' if the string is not null, empty, or only contains whitespace.
 - **`DoesNotHaveText`**: Returns 'true' if the string is null, empty, or only contains whitespace.
 - **`NullIfEmpty`**: Returns a null if the string is null, empty, or only contains whitespace.
