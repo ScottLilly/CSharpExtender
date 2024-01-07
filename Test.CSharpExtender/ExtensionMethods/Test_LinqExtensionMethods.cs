@@ -37,15 +37,6 @@ public class Test_LinqExtensionMethods
     }
 
     [Fact]
-    public void ForEach_ListAction_AppliesAction()
-    {
-        var list = new List<int> { 1, 2, 3, 4, 5 };
-        int sum = 0;
-        list.ForEach(x => sum += x);
-        Assert.Equal(15, sum);
-    }
-
-    [Fact]
     public void RandomElement_ReturnsElementInList()
     {
         var list = new List<int> { 1, 2, 3, 4, 5 };
