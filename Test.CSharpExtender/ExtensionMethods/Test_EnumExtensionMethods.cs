@@ -12,6 +12,14 @@ public enum TestEnum
     TestValue3
 }
 
+public enum SecondEnum
+{
+    [Description("Second Enum First Option")]
+    FirstOption,
+    [Description("Second Enum Second Option")]
+    SecondOption
+}
+
 public class Test_EnumExtensionMethods
 {
     [Fact]
@@ -21,6 +29,12 @@ public class Test_EnumExtensionMethods
             TestEnum.TestValue.GetEnumDescription());
         Assert.Equal("Test Description 2",
             TestEnum.TestValue2.GetEnumDescription());
+
+        // Test caching
+        Assert.Equal("Second Enum First Option",
+            SecondEnum.FirstOption.GetEnumDescription());
+        Assert.Equal("Second Enum Second Option",
+            SecondEnum.SecondOption.GetEnumDescription());
     }
 
     [Fact]

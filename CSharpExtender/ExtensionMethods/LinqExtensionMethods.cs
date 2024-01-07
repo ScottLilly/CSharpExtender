@@ -43,20 +43,6 @@ namespace CSharpExtender.ExtensionMethods
         }
 
         /// <summary>
-        /// Applies an action to each element in the list.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the list.</typeparam>
-        /// <param name="list">The list to iterate over.</param>
-        /// <param name="action">The action to apply to each element.</param>
-        public static void ForEach<T>(this List<T> list, Action<T> action)
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                action(list[i]);
-            }
-        }
-
-        /// <summary>
         /// Returns a random element from the list.
         /// </summary>
         /// <typeparam name="T">The type of elements in the list.</typeparam>

@@ -11,7 +11,7 @@ namespace CSharpExtender.ExtensionMethods
         private static readonly TimeSpan s_endOfDay = new TimeSpan(23, 59, 59);
 
         /// <summary>
-        /// Returns the start of the day 00:00:00 for the provided date.
+        /// Returns the start of the day, at 00:00:00, for the provided date.
         /// </summary>
         /// <param name="date">The date to get the start of the day from.</param>
         /// <returns>The start of the day for the provided date.</returns>
@@ -21,7 +21,7 @@ namespace CSharpExtender.ExtensionMethods
         }
 
         /// <summary>
-        /// Returns the end of the day 23:59:59 for the provided date.
+        /// Returns the end of the day, at 23:59:59, for the provided date.
         /// </summary>
         /// <param name="date">The date to get the end of the day from.</param>
         /// <returns>The end of the day for the provided date.</returns>
