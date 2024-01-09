@@ -13,12 +13,22 @@ namespace CSharpExtender.ExtensionMethods
         /// Retrieves a value from a JSON string using a JSON path.
         /// </summary>
         /// <param name="json">The JSON string.</param>
-        /// <param name="path">The JSON path.</param>
+        /// <param name="path">The JSON path, using "." to identify child.</param>
         /// <returns>The value from the JSON string at the specified path.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the JSON path is not found.</exception>
-        public static string GetValueFromJsonPath(this string json, string path) =>
-            TryGetValueFromJsonPath(json, path, out string value) ? value
-            : throw new InvalidOperationException($"JSON path '{path}' not found.");
+        public static string GetValueFromJsonPath(this string json, string path)
+        {
+            try
+            {
+                var token = JToken.Parse(json).SelectToken(path);
+
+                return token.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Unable to retrieve value from JSON path '{path}'.", ex);
+            }
+        }
 
         /// <summary>
         /// Serializes the specified object to a JSON string.
@@ -63,33 +73,5 @@ namespace CSharpExtender.ExtensionMethods
         {
             return JsonConvert.SerializeObject(obj, Formatting.Indented);
         }
-
-        #region Private Methods
-
-        private static bool TryGetValueFromJsonPath(this string json,
-            string path, out string value)
-        {
-            try
-            {
-                var token = JToken.Parse(json).SelectToken(path);
-
-                if (token != null && token.Type != JTokenType.Null)
-                {
-                    value = token.ToString();
-
-                    return true;
-                }
-            }
-            catch (JsonException)
-            {
-                // Handle or log parsing exceptions
-            }
-
-            value = default;
-
-            return false;
-        }
-
-        #endregion
     }
 }

@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using CSharpExtender.ExtensionMethods;
+﻿using CSharpExtender.ExtensionMethods;
 
 namespace Test.CSharpExtender.ExtensionMethods;
 
@@ -14,6 +13,17 @@ public class Test_JsonExtensionMethods
         string result = json.GetValueFromJsonPath(path);
 
         Assert.Equal("John", result);
+    }
+
+    [Fact]
+    public void GetValueFromJsonPath_ValidChildPath_ReturnsValue()
+    {
+        string json = "{ \"keys\": { \"apiKey\": \"YOUR_KEY_HERE\" } }";
+        string path = "keys.apiKey";
+
+        string result = json.GetValueFromJsonPath(path);
+
+        Assert.Equal("YOUR_KEY_HERE", result);
     }
 
     [Fact]
@@ -40,10 +50,10 @@ public class Test_JsonExtensionMethods
     {
         string json = "{\"name\":\"John\", \"age\":30}";
 
-        var result = json.AsDeserializedJson<JObject>();
+        var person = json.AsDeserializedJson<Person>();
 
-        Assert.Equal("John", result["name"].ToString());
-        Assert.Equal("30", result["age"].ToString());
+        Assert.Equal("John", person.Name);
+        Assert.Equal(30, person.Age);
     }
 
     [Fact]
@@ -68,5 +78,11 @@ public class Test_JsonExtensionMethods
         string expected = $"{{{Environment.NewLine}  \"name\": \"John\",{Environment.NewLine}  \"age\": 30{Environment.NewLine}}}";
 
         Assert.Equal(expected, result);
+    }
+
+    public class Person
+    {
+        public string Name { get; set; } = string.Empty;
+        public int Age { get; set; }
     }
 }
