@@ -1,6 +1,8 @@
 ﻿using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Xml;
 
 namespace CSharpExtender.ExtensionMethods
 {
@@ -13,16 +15,30 @@ namespace CSharpExtender.ExtensionMethods
         /// Retrieves a value from a JSON string using a JSON path.
         /// </summary>
         /// <param name="json">The JSON string.</param>
-        /// <param name="path">The JSON path, using "." to identify child.</param>
+        /// <param name="path">The case-sensitive JSON path, using "." to identify children.</param>
         /// <returns>The value from the JSON string at the specified path.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the JSON path is not found.</exception>
         public static string GetValueFromJsonPath(this string json, string path)
         {
             try
             {
-                var token = JToken.Parse(json).SelectToken(path);
+                using JsonDocument doc = JsonDocument.Parse(json);
 
-                return token.ToString();
+                JsonElement root = doc.RootElement;
+
+                foreach (var element in path.Split('.'))
+                {
+                    if (root.TryGetProperty(element, out var value))
+                    {
+                        root = value;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Property '{element}' not found in JSON path '{path}'.");
+                    }
+                }
+
+                return root.ToString();
             }
             catch (Exception ex)
             {
@@ -38,7 +54,7 @@ namespace CSharpExtender.ExtensionMethods
         /// <returns>A JSON string representation of the object.</returns>
         public static string AsSerializedJson<T>(this T value) where T : class
         {
-            return JsonConvert.SerializeObject(value);
+            return JsonSerializer.Serialize(value);
         }
 
         /// <summary>
@@ -49,7 +65,7 @@ namespace CSharpExtender.ExtensionMethods
         /// <returns>An object of the specified type.</returns>
         public static T AsDeserializedJson<T>(this string json) where T : class
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonSerializer.Deserialize<T>(json);
         }
 
         /// <summary>
@@ -59,19 +75,37 @@ namespace CSharpExtender.ExtensionMethods
         /// <returns>A formatted JSON string.</returns>
         public static string PrettyPrintJson(this string json)
         {
-            var token = JToken.Parse(json);
+            using JsonDocument doc = JsonDocument.Parse(json);
 
-            return token.ToString(Formatting.Indented);
+            JsonSerializerOptions options = 
+                new JsonSerializerOptions { WriteIndented = true };
+
+            return JsonSerializer.Serialize(doc, options);
         }
 
         /// <summary>
         /// Serializes the specified object to a JSON string with indented formatting.
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
+        /// <param name="jsonSerializerOptions">The JSON serializer options (optional).</param>
         /// <returns>A formatted JSON string representation of the object.</returns>
-        public static string PrettyPrintJson(this object obj)
+        public static string PrettyPrintJson(this object obj, 
+            JsonSerializerOptions jsonSerializerOptions = null)
         {
-            return JsonConvert.SerializeObject(obj, Formatting.Indented);
+            if (jsonSerializerOptions == null)
+            {
+                jsonSerializerOptions =
+                    new JsonSerializerOptions { WriteIndented = true };
+            }
+            else
+            {
+                if (!jsonSerializerOptions.WriteIndented)
+                {
+                    jsonSerializerOptions.WriteIndented = true;
+                }
+            }
+
+            return JsonSerializer.Serialize(obj, jsonSerializerOptions);
         }
     }
 }

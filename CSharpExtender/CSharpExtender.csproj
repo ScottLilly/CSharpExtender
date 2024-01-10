@@ -33,7 +33,7 @@ NOTE: There may be breaking changes from previous .NET 6 version</PackageRelease
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Text.Json" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
