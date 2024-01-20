@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Xml;
 
 namespace CSharpExtender.ExtensionMethods
 {
@@ -12,23 +9,36 @@ namespace CSharpExtender.ExtensionMethods
     public static class JsonExtensionMethods
     {
         /// <summary>
-        /// Retrieves a value from a JSON string using a JSON path.
+        /// Retrieves a value from a JSON element using a JSON path.
         /// </summary>
         /// <param name="json">The JSON string.</param>
         /// <param name="path">The case-sensitive JSON path, using "." to identify children.</param>
-        /// <returns>The value from the JSON string at the specified path.</returns>
-        /// <exception cref="InvalidOperationException">Thrown when the JSON path is not found.</exception>
-        public static string GetValueFromJsonPath(this string json, string path)
+        /// <returns>The value from the JSON element at the specified path.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if json or path is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the property is not found or JSON is invalid.</exception>
+        public static T GetValueFromJsonPath<T>(this string json, string path)
         {
+            if (string.IsNullOrEmpty(json))
+            {
+                throw new ArgumentNullException(nameof(json), 
+                    "JSON string cannot be null or empty.");
+            }
+
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentNullException(nameof(path), 
+                    "JSON path cannot be null or empty.");
+            }
+
             try
             {
                 using JsonDocument doc = JsonDocument.Parse(json);
-
                 JsonElement root = doc.RootElement;
 
                 foreach (var element in path.Split('.'))
                 {
-                    if (root.TryGetProperty(element, out var value))
+                    if (root.ValueKind == JsonValueKind.Object && 
+                        root.TryGetProperty(element, out var value))
                     {
                         root = value;
                     }
@@ -38,12 +48,34 @@ namespace CSharpExtender.ExtensionMethods
                     }
                 }
 
-                return root.ToString();
+                return root.ToString().ConvertFromString<T>();
+            }
+            catch (JsonException ex)
+            {
+                throw new InvalidOperationException("Invalid JSON format.", ex);
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException($"Unable to retrieve value from JSON path '{path}'.", ex);
+                throw new InvalidOperationException($"Error processing JSON path '{path}'.", ex);
             }
+        }
+
+        /// <summary>
+        /// Retrieves a string value from a JSON element using a JSON path.
+        /// This is a convenience method for GetValueFromJsonPath&lt;string&gt;.
+        /// </summary>
+        /// <param name="json">The JSON string.</param>
+        /// <param name="path">The case-sensitive JSON path, using "." to identify children.</param>
+        /// <returns>The value from the JSON element at the specified path.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if json or path is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the property is not found or JSON is invalid.</exception>
+        public static string GetValueFromJsonPath(this string json, string path)
+        {
+            return GetValueFromJsonPath<string>(json, path);
         }
 
         /// <summary>

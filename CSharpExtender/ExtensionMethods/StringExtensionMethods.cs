@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.ComponentModel;
 
 namespace CSharpExtender.ExtensionMethods
 {
@@ -157,6 +158,28 @@ namespace CSharpExtender.ExtensionMethods
             }
 
             return text;
+        }
+
+        /// <summary>
+        /// Converts a string to a specified generic type T.
+        /// </summary>
+        /// <typeparam name="T">The type to convert the string to.</typeparam>
+        /// <param name="input">The string to convert.</param>
+        /// <returns>The converted value of type T.</returns>
+        /// <exception cref="NotSupportedException">Thrown if conversion is not supported for the type.</exception>
+        /// <exception cref="FormatException">Thrown if the string is not in a format compliant with the type.</exception>
+        public static T ConvertFromString<T>(this string input)
+        {
+            TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
+
+            if (converter != null && converter.CanConvertFrom(typeof(string)))
+            {
+                return (T)converter.ConvertFromString(input);
+            }
+            else
+            {
+                throw new NotSupportedException($"Conversion from string to type {typeof(T).Name} is not supported.");
+            }
         }
     }
 }

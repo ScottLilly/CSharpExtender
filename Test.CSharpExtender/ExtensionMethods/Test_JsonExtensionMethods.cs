@@ -27,12 +27,12 @@ public class Test_JsonExtensionMethods
             Age = 30
         };
 
-        Assert.Equal("30",
-            complexPerson.AsSerializedJson().GetValueFromJsonPath("Age"));
-        Assert.Equal("John", 
-            complexPerson.AsSerializedJson().GetValueFromJsonPath("Name.First"));
-        Assert.Equal("John Smith", 
-            complexPerson.AsSerializedJson().GetValueFromJsonPath("Name.Full"));
+        var serializedJson = complexPerson.AsSerializedJson();
+
+        Assert.Equal(30, serializedJson.GetValueFromJsonPath<int>("Age"));
+        Assert.Equal("30", serializedJson.GetValueFromJsonPath("Age"));
+        Assert.Equal("John", serializedJson.GetValueFromJsonPath("Name.First"));
+        Assert.Equal("John Smith", serializedJson.GetValueFromJsonPath("Name.Full"));
     }
 
     [Fact]

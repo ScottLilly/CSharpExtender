@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>ScottLilly.$(AssemblyName)</PackageId>
     <Title>ScottLilly.CSharpExtender</Title>
-    <Version>2.0.0.0</Version>
+    <Version>2.1.0.0</Version>
     <Authors>Scott Lilly</Authors>
     <Description>Extension methods and functions that I often reuse acroross proejcts.</Description>
     <Copyright>2022</Copyright>
