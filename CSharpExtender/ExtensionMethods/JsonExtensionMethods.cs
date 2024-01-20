@@ -1,6 +1,5 @@
 ﻿using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
 
 namespace CSharpExtender.ExtensionMethods
 {
@@ -10,15 +9,74 @@ namespace CSharpExtender.ExtensionMethods
     public static class JsonExtensionMethods
     {
         /// <summary>
-        /// Retrieves a value from a JSON string using a JSON path.
+        /// Retrieves a value from a JSON element using a JSON path.
         /// </summary>
         /// <param name="json">The JSON string.</param>
-        /// <param name="path">The JSON path.</param>
-        /// <returns>The value from the JSON string at the specified path.</returns>
-        /// <exception cref="InvalidOperationException">Thrown when the JSON path is not found.</exception>
-        public static string GetValueFromJsonPath(this string json, string path) =>
-            TryGetValueFromJsonPath(json, path, out string value) ? value
-            : throw new InvalidOperationException($"JSON path '{path}' not found.");
+        /// <param name="path">The case-sensitive JSON path, using "." to identify children.</param>
+        /// <returns>The value from the JSON element at the specified path.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if json or path is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the property is not found or JSON is invalid.</exception>
+        public static T GetValueFromJsonPath<T>(this string json, string path)
+        {
+            if (string.IsNullOrEmpty(json))
+            {
+                throw new ArgumentNullException(nameof(json), 
+                    "JSON string cannot be null or empty.");
+            }
+
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentNullException(nameof(path), 
+                    "JSON path cannot be null or empty.");
+            }
+
+            try
+            {
+                using JsonDocument doc = JsonDocument.Parse(json);
+                JsonElement root = doc.RootElement;
+
+                foreach (var element in path.Split('.'))
+                {
+                    if (root.ValueKind == JsonValueKind.Object && 
+                        root.TryGetProperty(element, out var value))
+                    {
+                        root = value;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Property '{element}' not found in JSON path '{path}'.");
+                    }
+                }
+
+                return root.ToString().ConvertFromString<T>();
+            }
+            catch (JsonException ex)
+            {
+                throw new InvalidOperationException("Invalid JSON format.", ex);
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error processing JSON path '{path}'.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a string value from a JSON element using a JSON path.
+        /// This is a convenience method for GetValueFromJsonPath&lt;string&gt;.
+        /// </summary>
+        /// <param name="json">The JSON string.</param>
+        /// <param name="path">The case-sensitive JSON path, using "." to identify children.</param>
+        /// <returns>The value from the JSON element at the specified path.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if json or path is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the property is not found or JSON is invalid.</exception>
+        public static string GetValueFromJsonPath(this string json, string path)
+        {
+            return GetValueFromJsonPath<string>(json, path);
+        }
 
         /// <summary>
         /// Serializes the specified object to a JSON string.
@@ -28,7 +86,7 @@ namespace CSharpExtender.ExtensionMethods
         /// <returns>A JSON string representation of the object.</returns>
         public static string AsSerializedJson<T>(this T value) where T : class
         {
-            return JsonConvert.SerializeObject(value);
+            return JsonSerializer.Serialize(value);
         }
 
         /// <summary>
@@ -39,7 +97,7 @@ namespace CSharpExtender.ExtensionMethods
         /// <returns>An object of the specified type.</returns>
         public static T AsDeserializedJson<T>(this string json) where T : class
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonSerializer.Deserialize<T>(json);
         }
 
         /// <summary>
@@ -49,47 +107,37 @@ namespace CSharpExtender.ExtensionMethods
         /// <returns>A formatted JSON string.</returns>
         public static string PrettyPrintJson(this string json)
         {
-            var token = JToken.Parse(json);
+            using JsonDocument doc = JsonDocument.Parse(json);
 
-            return token.ToString(Formatting.Indented);
+            JsonSerializerOptions options = 
+                new JsonSerializerOptions { WriteIndented = true };
+
+            return JsonSerializer.Serialize(doc, options);
         }
 
         /// <summary>
         /// Serializes the specified object to a JSON string with indented formatting.
         /// </summary>
         /// <param name="obj">The object to serialize.</param>
+        /// <param name="jsonSerializerOptions">The JSON serializer options (optional).</param>
         /// <returns>A formatted JSON string representation of the object.</returns>
-        public static string PrettyPrintJson(this object obj)
+        public static string PrettyPrintJson(this object obj, 
+            JsonSerializerOptions jsonSerializerOptions = null)
         {
-            return JsonConvert.SerializeObject(obj, Formatting.Indented);
-        }
-
-        #region Private Methods
-
-        private static bool TryGetValueFromJsonPath(this string json,
-            string path, out string value)
-        {
-            try
+            if (jsonSerializerOptions == null)
             {
-                var token = JToken.Parse(json).SelectToken(path);
-
-                if (token != null && token.Type != JTokenType.Null)
+                jsonSerializerOptions =
+                    new JsonSerializerOptions { WriteIndented = true };
+            }
+            else
+            {
+                if (!jsonSerializerOptions.WriteIndented)
                 {
-                    value = token.ToString();
-
-                    return true;
+                    jsonSerializerOptions.WriteIndented = true;
                 }
             }
-            catch (JsonException)
-            {
-                // Handle or log parsing exceptions
-            }
 
-            value = default;
-
-            return false;
+            return JsonSerializer.Serialize(obj, jsonSerializerOptions);
         }
-
-        #endregion
     }
 }

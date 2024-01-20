@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace CSharpExtender.ExtensionMethods
 {
@@ -21,11 +23,16 @@ namespace CSharpExtender.ExtensionMethods
                 return default;
             }
 
-            // Serialize the object to a JSON string.
-            var serialized = source.AsSerializedJson();
+            // Configure JsonSerializer options to handle circular references
+            // This is crucial for circular references
+            var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            };
 
-            // Deserialize the JSON string to a new object of the same type.
-            return serialized.AsDeserializedJson<T>();
+            var jsonString = JsonSerializer.Serialize(source, options);
+
+            return JsonSerializer.Deserialize<T>(jsonString, options);
         }
 
         /// <summary>

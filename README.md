@@ -28,6 +28,7 @@ This class provides extension methods for Enums in C#.
 This class provides extension methods for JSON manipulation in C#.
 
 - **`GetValueFromJsonPath`**: Retrieves a value from a JSON string using a JSON path.
+- **`GetValueFromJsonPath<T>`**: Retrieves a typed value from a JSON string using a JSON path.
 - **`AsSerializedJson`**: Serializes the specified object to a JSON string.
 - **`AsDeserializedJson`**: Deserializes the JSON string to an object of the specified type.
 - **`PrettyPrintJson` (string)**: Formats the JSON string with indented formatting.
@@ -96,6 +97,13 @@ This class provides extension methods for string manipulations in C#.
 - **`SplitPath`**: Convert a file path into an array of the individual directories.
 - **`IncludesTheWords`**: Checks if a string contains all the words in the specified array.
 - **`RemoveText`**: Removes all instances of the specified text from the string.
+- **`ConvertFromString<T>`**: Converts a string to the specified type, if possible.
+
+# StringBuilderExtensionMethods
+
+This class provides extension methods for StringBuilder objects in C#.
+
+- **`AppendLineIfNotEmpty`**: If the passed in line is not empty, it will be appended to the StringBuilder object.
 
 # XmlExtensionMethods
 

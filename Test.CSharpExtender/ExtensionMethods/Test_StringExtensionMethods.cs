@@ -231,4 +231,63 @@ public class Test_StringExtensionMethods
         Assert.Equal("AA", "BABA".RemoveText("b"));
         Assert.Equal("BABA", "BABA".RemoveText("b", StringComparison.CurrentCulture));
     }
+
+    [Fact]
+    public void ConvertFromString_Int_Success()
+    {
+        string input = "123";
+
+        int result = input.ConvertFromString<int>();
+
+        Assert.Equal(123, result);
+    }
+
+    [Fact]
+    public void ConvertFromString_Bool_Success()
+    {
+        string input = "true";
+
+        bool result = input.ConvertFromString<bool>();
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ConvertFromString_DateTime_Success()
+    {
+        string input = "2024-01-20";
+
+        DateTime result = input.ConvertFromString<DateTime>();
+
+        Assert.Equal(new DateTime(2024, 1, 20), result);
+    }
+
+    [Fact]
+    public void ConvertFromString_UnsupportedType_ThrowsNotSupportedException()
+    {
+        string input = "example";
+
+        Assert.Throws<NotSupportedException>(input.ConvertFromString<MyUnsupportedType>);
+    }
+
+    [Fact]
+    public void ConvertFromString_NullInput_ThrowsException()
+    {
+        string input = null;
+
+        Assert.Throws<NotSupportedException>(() => input.ConvertFromString<int>());
+    }
+
+    [Fact]
+    public void ConvertFromString_NullInput_IsNullable()
+    {
+        string? input = null;
+
+        Assert.Null(input.ConvertFromString<int?>());
+    }
+
+    // Define a custom type that does not support string conversion for testing
+    private class MyUnsupportedType
+    {
+    }
 }
