@@ -7,7 +7,7 @@
     <Title>ScottLilly.CSharpExtender</Title>
     <Version>2.1.0.0</Version>
     <Authors>Scott Lilly</Authors>
-    <Description>Extension methods and functions that I often reuse acroross proejcts.</Description>
+    <Description>Extension methods and functions that I often reuse across projects.</Description>
     <Copyright>2022</Copyright>
     <PackageProjectUrl>https://github.com/scottlilly/csharpextender</PackageProjectUrl>
     <PackageIcon>Icon.png</PackageIcon>
@@ -15,9 +15,7 @@
     <RepositoryUrl>https://github.com/scottlilly/csharpextender</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csharp;extensions</PackageTags>
-    <PackageReleaseNotes>Changed from .NET 6 to .NET Standard 2.1
-
-NOTE: There may be breaking changes from previous .NET 6 version</PackageReleaseNotes>
+    <PackageReleaseNotes>Replaced Newtonsoft with System.Text.Json. Added new StringBuilder extention method to only append non-blank lines. Added string and JSON converters to different datatypes.</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
 
