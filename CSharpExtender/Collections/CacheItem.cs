@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class CacheItem<T>
+internal class CacheItem<T>
 {
     public T Value { get; set; }
     public DateTime ExpirationTime { get; set; }

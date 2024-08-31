@@ -3,6 +3,9 @@ using System.Runtime.CompilerServices;
 
 namespace CSharpExtender.Models
 {
+    /// <summary>
+    /// Base class for observable models (used for simpler property changed notification).
+    /// </summary>
     public abstract class ObservableModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
