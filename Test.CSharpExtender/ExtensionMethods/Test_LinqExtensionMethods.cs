@@ -51,4 +51,30 @@ public class Test_LinqExtensionMethods
         var randomElement = list.RandomElement();
         Assert.Equal(default, randomElement);
     }
+
+    [Fact]
+    public void DetectDuplicatePropertyValues()
+    {
+        var people = new List<Person>()
+        { 
+            new() { Id = 1, FirstName = "John", LastName = "Smith" }, 
+            new() { Id = 2, FirstName = "Jane", LastName = "SMITH" } 
+        };
+
+        Assert.False(people.HasDuplicatePropertyValue(p => p.FirstName));
+
+        // Check that the string override of IgnoreCase works
+        // True, because the default is case-sensitive
+        Assert.False(people.HasDuplicatePropertyValue(p => p.LastName));
+
+        Assert.True(people.HasDuplicatePropertyValue(p => p.LastName, ignoreCase: true));
+        Assert.False(people.HasDuplicatePropertyValue(p => p.LastName, ignoreCase: false));
+    }
+
+    private class Person
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+    }
 }

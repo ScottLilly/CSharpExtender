@@ -286,6 +286,25 @@ public class Test_StringExtensionMethods
         Assert.Null(input.ConvertFromString<int?>());
     }
 
+    [Fact]
+    public void PascalCaseStringSplit()
+    {
+        var output = "asd".SplitPascalCase();
+        Assert.Single(output);
+        Assert.Equal("asd", output.First());
+
+        output = "asdAsd".SplitPascalCase();
+        Assert.Equal(2, output.Count);
+        Assert.Equal("asd", output.First());
+        Assert.Equal("Asd", output.Last());
+
+        output = "asdAsdQwe".SplitPascalCase();
+        Assert.Equal(3, output.Count);
+        Assert.Equal("asd", output.First());
+        Assert.Equal("Asd", output[1]);
+        Assert.Equal("Qwe", output.Last());
+    }
+
     // Define a custom type that does not support string conversion for testing
     private class MyUnsupportedType
     {

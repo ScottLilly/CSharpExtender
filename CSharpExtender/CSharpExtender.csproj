@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>ScottLilly.$(AssemblyName)</PackageId>
     <Title>ScottLilly.CSharpExtender</Title>
-    <Version>2.1.0.0</Version>
+    <Version>3.0.0.0</Version>
     <Authors>Scott Lilly</Authors>
     <Description>Extension methods and functions that I often reuse across projects.</Description>
     <Copyright>2022</Copyright>
@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="8.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>

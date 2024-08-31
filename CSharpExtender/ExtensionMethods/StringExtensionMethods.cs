@@ -2,6 +2,7 @@
 using System.Linq;
 using System;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace CSharpExtender.ExtensionMethods
 {
@@ -180,6 +181,21 @@ namespace CSharpExtender.ExtensionMethods
             {
                 throw new NotSupportedException($"Conversion from string to type {typeof(T).Name} is not supported.");
             }
+        }
+
+        /// <summary>
+        /// Splits a PascalCase string into list of words, based on locaiton of upper-case letters
+        /// </summary>
+        /// <param name="input">String to split</param>
+        /// <returns>List of strings, split on the uppercase letters</returns>
+        public static List<string> SplitPascalCase(this string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return new List<string>() { input };
+            }
+
+            return Regex.Replace(input, @"(?<!^)(?<![\W_])(?=[A-Z])", " ").Split(' ').ToList();
         }
     }
 }
