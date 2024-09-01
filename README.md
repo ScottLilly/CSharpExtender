@@ -160,5 +160,5 @@ Base class that handles property changed notification.
 
 Base class that inherits from ObservableModel (to handle property change notification) and also logs the values of the changed properties. Implements IChangeTracking.
 
--**`AcceptChanges`**: Clears the PropertyChangeLog. 
+-**`AcceptChanges`**: Clears the PropertyChangeLog.  
 -**`PropertyChangeLog`**: ObservableCollection of properties values that were changed.
