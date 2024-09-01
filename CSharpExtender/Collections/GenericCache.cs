@@ -9,7 +9,7 @@ using System.Linq;
 /// </summary>
 /// <typeparam name="TKey">Key value datatype</typeparam>
 /// <typeparam name="TValue">Cached value datatype</typeparam>
-public class GenericCache<TKey, TValue> where TValue : IEquatable<TKey>
+public class GenericCache<TKey, TValue> where TKey : IEquatable<TKey>
 {
     private readonly TimeSpan _defaultExpiration = TimeSpan.FromMinutes(15);
 
@@ -53,6 +53,7 @@ public class GenericCache<TKey, TValue> where TValue : IEquatable<TKey>
                 Remove(key);
             }
         }
+
         return default;
     }
 

@@ -24,7 +24,7 @@ namespace CSharpExtender.ExtensionMethods
         /// <param name="row">DataRow being read from</param>
         /// <param name="columnName">Name of the column</param>
         /// <returns>Value of the column</returns>
-        public static T Get<T>(DataRow row, string columnName)
+        public static T Get<T>(this DataRow row, string columnName)
         {
             if (row == null || !row.Table.Columns.Contains(columnName))
             {

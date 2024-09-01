@@ -9,16 +9,7 @@ namespace CSharpExtender.Models
     /// </summary>
     public class PropertyChangeTrackingModel : ObservableModel, IChangeTracking
     {
-        private bool _isChanged;
-
-        public bool IsChanged
-        {
-            get => _isChanged;
-            private set
-            {
-                SetProperty(ref _isChanged, value);
-            }
-        }
+        public bool IsChanged => PropertyChangeLog.Count > 0;
 
         public ObservableCollection<PropertyChangedLog> PropertyChangeLog { get; } = 
             new ObservableCollection<PropertyChangedLog>();
@@ -27,7 +18,7 @@ namespace CSharpExtender.Models
         {
             PropertyChangeLog.CollectionChanged += (s, e) =>
             {
-                IsChanged = PropertyChangeLog.Count > 0;
+                OnPropertyChanged(nameof(IsChanged));
             };
         }
 

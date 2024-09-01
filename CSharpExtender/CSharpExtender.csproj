@@ -17,6 +17,7 @@
     <PackageTags>csharp;extensions</PackageTags>
     <PackageReleaseNotes>Replaced Newtonsoft with System.Text.Json. Added new StringBuilder extention method to only append non-blank lines. Added string and JSON converters to different datatypes.</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
