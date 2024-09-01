@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>ScottLilly.$(AssemblyName)</PackageId>
     <Title>ScottLilly.CSharpExtender</Title>
-    <Version>2.1.0.0</Version>
+    <Version>2.2.0.0</Version>
     <Authors>Scott Lilly</Authors>
     <Description>Extension methods and functions that I often reuse across projects.</Description>
     <Copyright>2022</Copyright>
@@ -17,6 +17,7 @@
     <PackageTags>csharp;extensions</PackageTags>
     <PackageReleaseNotes>Replaced Newtonsoft with System.Text.Json. Added new StringBuilder extention method to only append non-blank lines. Added string and JSON converters to different datatypes.</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="8.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>

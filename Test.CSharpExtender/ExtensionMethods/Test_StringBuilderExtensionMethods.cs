@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Test.CSharpExtender.ExtensionMethods;
 
-public class StringBuilderExtensionMethodsTests
+public class Test_StringBuilderExtensionMethods
 {
     [Fact]
     public void AppendLineIfNotEmpty_ShouldNotAppend_WhenTextIsNull()
