@@ -305,6 +305,15 @@ public class Test_StringExtensionMethods
         Assert.Equal("Qwe", output.Last());
     }
 
+    [Fact]
+    public void TrimStringToMaximumLength()
+    {
+        Assert.Equal("asd", "asdfgh".ToMaxLengthOf(3));
+        Assert.Equal("", "asdfgh".ToMaxLengthOf(0));
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => "asd".ToMaxLengthOf(-1));
+    }
+
     // Define a custom type that does not support string conversion for testing
     private class MyUnsupportedType
     {

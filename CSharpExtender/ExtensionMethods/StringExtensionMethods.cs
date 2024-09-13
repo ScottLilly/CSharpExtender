@@ -197,5 +197,27 @@ namespace CSharpExtender.ExtensionMethods
 
             return Regex.Replace(input, @"(?<!^)(?<![\W_])(?=[A-Z])", " ").Split(' ').ToList();
         }
+
+        /// <summary>
+        /// Safely trim a string to a maximumlength
+        /// </summary>
+        /// <param name="text">String to trim</param>
+        /// <param name="maxLength">Maximum length of string</param>
+        /// <returns>String, trimmed (if necessary) to maximum length</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Exception, if a negative number is passed as maxLength</exception>
+        public static string ToMaxLengthOf(this string text, int maxLength)
+        {
+            if (text == null)
+            {
+                return null;
+            }
+
+            if (maxLength < 0)
+            {
+                throw new ArgumentOutOfRangeException("maxLength must be non-negative", nameof(maxLength));
+            }
+
+            return text.Length <= maxLength ? text : text.Substring(0, maxLength);
+        }
     }
 }

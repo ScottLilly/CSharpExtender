@@ -1,5 +1,7 @@
 # CSharpExtender
 
+Extension methods and classes I often find useful for C# development.
+
 ## Collections
 
 ### GenericCache
@@ -10,7 +12,7 @@ This class creates a cache object with a generic key and generic value.
 - **`Get`**: Retrieves a value from the cache, or default, if not in the cache.
 - **`Set`**: Adds or updates a value in the cache.
 - **`Remove`**: Remove an entry fom the cache.
-- **`RemoveExpiredItems`**: Removes all expired items fromthe cache.
+- **`RemoveExpiredItems`**: Removes all expired items from the cache.
 
 ## Extension Methods
 
@@ -121,6 +123,7 @@ This class provides extension methods for string manipulations in C#.
 - **`Repeat`**: Returns a string with the text repeated the specified number of times.
 - **`SplitPath`**: Convert a file path into an array of the individual directories.
 - **`ToDigitsOnly`**: Returns a string with all non-digits removed.
+- **`ToMaxLengthOf`**: Trims string to a maximum length, if it exceeds that length
 - **`ToStringWithLineFeeds`**: Converts an IEnumerable of strings to a single string with line feeds between each string.
 
 ### StringBuilderExtensionMethods
