@@ -55,8 +55,16 @@ public static class LinqExtensionMethods
         Func<T, TProperty> propertySelector,
         IEqualityComparer<TProperty> comparer = null)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(propertySelector);
+
+        if (source == null)
+        { 
+            throw new ArgumentNullException(nameof(source)); 
+        }
+
+        if (propertySelector == null)
+        {
+            throw new ArgumentNullException(nameof(propertySelector));
+        }
 
         comparer ??= EqualityComparer<TProperty>.Default;
 

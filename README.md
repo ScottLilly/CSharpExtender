@@ -127,9 +127,19 @@ This class provides extension methods for string manipulations in C#.
 
 ### StringBuilderExtensionMethods
 
-This class provides extension methods for StringBuilder objects in C#.
+This class provides extension methods for StringBuilder objects in C#. 
+All functions accept optional StringBuilderOptions object, which can be used to specify the behavior of the function. 
+The default value is `StringBuilderOptions.None`.
 
+- **`Append`**: Appends a string to the StringBuilder object.
+- **`AppendFormatted`**: Appends a formatted string to the StringBuilder object.
+- **`AppendIf`**: Appends text to the StringBuilder object, if a function evaluates to 'true'.
+- **`AppendJoined`**: Appends a joined string to the StringBuilder object, using the specified separator.
+- **`AppendLine`**: Appends a string and line feed to the StringBuilder object.
+- **`AppendLineFormatted`**: Appends a formatted string and line feed to the StringBuilder object.
+- **`AppendLineIf`**: Appends text and line feed to the StringBuilder object, if a function evaluates to 'true'.
 - **`AppendLineIfNotEmpty`**: If the passed in line is not empty, it will be appended to the StringBuilder object.
+- **`AppendLineJoined`**: Appends a joined string and line feed to the StringBuilder object, using the specified separator.
 
 ### XmlExtensionMethods
 
