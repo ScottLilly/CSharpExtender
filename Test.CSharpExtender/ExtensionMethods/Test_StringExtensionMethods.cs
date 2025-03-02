@@ -148,7 +148,7 @@ public class Test_StringExtensionMethods
     [Fact]
     public void ToStringWithLineFeeds_WithNullEnumerable_ThrowsArgumentNullException()
     {
-        IEnumerable<string> lines = null;
+        IEnumerable<string>? lines = null;
         Assert.Throws<ArgumentNullException>(lines.ToStringWithLineFeeds);
     }
 
@@ -273,7 +273,7 @@ public class Test_StringExtensionMethods
     [Fact]
     public void ConvertFromString_NullInput_ThrowsException()
     {
-        string input = null;
+        string? input = null;
 
         Assert.Throws<NotSupportedException>(() => input.ConvertFromString<int>());
     }

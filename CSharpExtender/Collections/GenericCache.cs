@@ -18,7 +18,7 @@ public class GenericCache<TKey, TValue> where TKey : IEquatable<TKey>
 
     /// <summary>
     /// Instance constructor. 
-    /// Uses default expiration of 15 minutes, if no value is passed in during instanitation.
+    /// Uses default expiration of 15 minutes, if no value is passed in during instantiation.
     /// </summary>
     /// <param name="defaultExpiration"></param>
     public GenericCache(TimeSpan? defaultExpiration = null)
