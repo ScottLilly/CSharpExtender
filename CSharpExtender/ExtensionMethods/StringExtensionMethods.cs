@@ -132,7 +132,7 @@ public static class StringExtensionMethods
             return false;
         }
 
-        // TODO: Verify this handles punctuation
+        // TODO: Verifiy this handles punctuation
         // TODO: Accept a StringComparison parameter
         return requiredWords
             .All(word => text.Contains(word, StringComparison.CurrentCultureIgnoreCase));
@@ -184,7 +184,7 @@ public static class StringExtensionMethods
     }
 
     /// <summary>
-    /// Splits a PascalCase string into list of words, based on location of upper-case letters
+    /// Splits a PascalCase string into list of words, based on locaiton of upper-case letters
     /// </summary>
     /// <param name="input">String to split</param>
     /// <returns>List of strings, split on the uppercase letters</returns>
@@ -199,7 +199,7 @@ public static class StringExtensionMethods
     }
 
     /// <summary>
-    /// Safely trim a string to a maximum length
+    /// Safely trim a string to a maximumlength
     /// </summary>
     /// <param name="text">String to trim</param>
     /// <param name="maxLength">Maximum length of string</param>
