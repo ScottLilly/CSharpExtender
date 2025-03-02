@@ -38,7 +38,7 @@ public class Test_ObjectExtensionMethods
     [Fact]
     public void TestIsNull()
     {
-        object obj = null;
+        object? obj = null;
         Assert.True(obj.IsNull());
     }
 

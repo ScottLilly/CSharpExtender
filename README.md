@@ -67,7 +67,6 @@ This class provides LINQ-related extension methods in C#.
 - **`HasDuplicatePropertyValue<T, TProperty>`**: Checks if any objects have the same value in the specified property.
 - **`HasDuplicatePropertyValue<T>`**: Checks if any objects have the same value in the specified string property.
 - **`None`**: Checks if none of the elements in the collection satisfy the provided condition. If no condition is provided, it checks if the collection is empty.
-- **`RandomElement`**: Returns a random element from the list.
 
 ### NumericExtensionMethods
 
@@ -142,12 +141,6 @@ This class provides extension methods for XML handling in C#.
 - **`AttributeAsString`**: Returns the value of the specified attribute as a string.
 - **`ElementAsInt`**: Returns the inner text of the specified child element as an integer.
 - **`ElementAsString`**: Returns the inner text of the specified child element as a string.
-
-### RngCreator
-
-This class is designed to create cryptographically random numbers in C#.
-
-- **`GetNumberBetween`**: Generates a cryptographically random number between the specified minimum and maximum values.
 
 ## Models
 

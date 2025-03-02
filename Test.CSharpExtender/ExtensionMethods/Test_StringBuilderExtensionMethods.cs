@@ -9,11 +9,11 @@ public class Test_StringBuilderExtensionMethods
     public void AppendLineIfNotEmpty_ShouldNotAppend_WhenTextIsNull()
     {
         var sb = new StringBuilder();
-        string text = null;
+        string text = string.Empty;
 
         sb.AppendLineIfNotEmpty(text);
 
-        Assert.Equal("", sb.ToString());
+        Assert.Equal(string.Empty, sb.ToString());
     }
 
     [Fact]
