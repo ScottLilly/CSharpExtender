@@ -83,10 +83,11 @@ public static class JsonExtensionMethods
     /// </summary>
     /// <typeparam name="T">The type of the object.</typeparam>
     /// <param name="value">The object to serialize.</param>
+    /// <param name="jsonSerializerOptions">The JSON serializer options (optional).</param>
     /// <returns>A JSON string representation of the object.</returns>
-    public static string AsSerializedJson<T>(this T value) where T : class
+    public static string AsSerializedJson<T>(this T value, JsonSerializerOptions jsonSerializerOptions = null) where T : class
     {
-        return JsonSerializer.Serialize(value);
+        return JsonSerializer.Serialize(value, jsonSerializerOptions);
     }
 
     /// <summary>
