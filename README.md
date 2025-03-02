@@ -158,3 +158,13 @@ Base class that inherits from ObservableModel (to handle property change notific
 
 -**`AcceptChanges`**: Clears the PropertyChangeLog.  
 -**`PropertyChangeLog`**: ObservableCollection of properties values that were changed.
+
+## Service classes
+
+Classes to handle common tasks.
+
+### CompositeRegexMatcher
+
+Accepts a list of regex patterns and checks if a string matches any of them.
+
+-**`MatchesAny`**: Checks if the string matches any of the regex patterns.
