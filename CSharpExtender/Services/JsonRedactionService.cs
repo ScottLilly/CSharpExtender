@@ -8,7 +8,7 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
     : BaseRedactionService(redactedPaths, ignoreCase), IRedactionService<JsonObject>
 {
     /// <summary>
-    /// Redacts values in the given JsonObject based on the specified redacted paths.
+    /// Redact values in the given JsonObject based on the specified redacted paths.
     /// </summary>
     /// <param name="obj">The JsonObject to redact.</param>
     /// <returns>The redacted JsonObject.</returns>
