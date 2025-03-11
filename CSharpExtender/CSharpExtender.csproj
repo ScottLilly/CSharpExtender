@@ -29,6 +29,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <None Include="D:\Development\MyNuGetPackages\CSharpExtender\CSharpExtender\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +46,10 @@
 
   <ItemGroup>
     <Folder Include="DataAnnotations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Development\MyNuGetPackages\CSharpExtender\CSharpExtender\.editorconfig" />
   </ItemGroup>
 
 </Project>
