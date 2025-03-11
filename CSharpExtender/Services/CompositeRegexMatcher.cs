@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System;
 using System.Linq;
+using CSharpExtender.ExtensionMethods;
 
 namespace CSharpExtender.Services;
 
@@ -14,27 +15,24 @@ public class CompositeRegexMatcher
     {
         patterns = patterns?.Where(p => !string.IsNullOrEmpty(p)).Distinct() ?? [];
 
-        var combinedPattern = patterns.Any()
-            ? string.Join("|", patterns.Select(p => $"(?:{p})"))
-            : "";
+        _isEmptyPattern = patterns.None() || patterns.All(string.IsNullOrEmpty);
 
-        _isEmptyPattern = string.IsNullOrEmpty(combinedPattern);
-
-        if (!_isEmptyPattern)
-        {
-            var options = RegexOptions.Compiled | RegexOptions.CultureInvariant;
-
-            if (ignoreCase)
-            {
-                options |= RegexOptions.IgnoreCase;
-            }
-
-            _combinedRegex = new Regex(combinedPattern, options, TimeSpan.FromSeconds(2));
-        }
-        else
+        if (_isEmptyPattern)
         {
             _combinedRegex = null; // No regex needed
+            return;
         }
+
+        var combinedPattern = string.Join("|", patterns.Select(p => $"(?:{p})"));
+
+        var options = RegexOptions.Compiled | RegexOptions.CultureInvariant;
+
+        if (ignoreCase)
+        {
+            options |= RegexOptions.IgnoreCase;
+        }
+
+        _combinedRegex = new Regex(combinedPattern, options, TimeSpan.FromSeconds(2));
     }
 
     public bool MatchesAny(string input)
