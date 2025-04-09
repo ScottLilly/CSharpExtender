@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace CSharpExtender.Attributes;
+namespace CSharpExtender.DataAnnotations;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public class UniqueItemsAttribute : ValidationAttribute

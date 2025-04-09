@@ -1,9 +1,9 @@
-﻿using CSharpExtender.Attributes;
+﻿using CSharpExtender.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
 
-namespace Test.CSharpExtender.Attributes;
+namespace Test.CSharpExtender.DataAnnotations;
 
-public class UniqueItemsAttributeTests
+public class Test_UniqueItemsAttribute
 {
     private static ValidationContext GetValidationContext(object instance) => new(instance);
 
