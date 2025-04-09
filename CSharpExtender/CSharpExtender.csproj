@@ -21,6 +21,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DataAnnotations\**" />
+    <EmbeddedResource Remove="DataAnnotations\**" />
+    <None Remove="DataAnnotations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\LICENSE.txt">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -42,10 +48,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DataAnnotations\" />
   </ItemGroup>
 
   <ItemGroup>
