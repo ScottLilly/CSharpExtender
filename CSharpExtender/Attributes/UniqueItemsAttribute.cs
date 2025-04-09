@@ -17,8 +17,8 @@ public class UniqueItemsAttribute : ValidationAttribute
             return ValidationResult.Success;
         }
 
-        // Ensure the value is a collection
-        // Need to explicitly check for a string as it is enumerable
+        // Ensure the value is a collection.
+        // Need to explicitly check for string, as it is enumerable.
         if (value is string || value is not IEnumerable collection)
         {
             return new ValidationResult("The UniqueItemsAttribute must be applied to a collection.");
@@ -37,8 +37,10 @@ public class UniqueItemsAttribute : ValidationAttribute
             {
                 if (AreItemsEqual(items[i], items[j]))
                 {
-                    return new ValidationResult(ErrorMessage ??
-                        $"The list contains duplicate items at indices {i} and {j}.");
+                    // Use ErrorMessage if provided; otherwise, use default
+                    string errorMessage = ErrorMessage ??
+                        $"The list contains duplicate items at indices {i} and {j}.";
+                    return new ValidationResult(errorMessage);
                 }
             }
         }
@@ -46,15 +48,12 @@ public class UniqueItemsAttribute : ValidationAttribute
         return ValidationResult.Success;
     }
 
-    private static bool AreItemsEqual(object item1, object item2)
+    private bool AreItemsEqual(object item1, object item2)
     {
-        // If both items are null, they are considered equal
         if (item1 == null && item2 == null)
         {
             return true;
         }
-
-        // If one is null and the other is not, they are not equal
         if (item1 == null || item2 == null)
         {
             return false;
