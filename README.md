@@ -2,6 +2,12 @@
 
 Extension methods and classes I often find useful for C# development.
 
+## DataAnnotations
+
+Attribute classes to validate properties in models.
+
+- **`UniqueItemsAttribute`**: Check that a collection property does not contain duplicate items.
+
 ## Collections
 
 ### GenericCache
