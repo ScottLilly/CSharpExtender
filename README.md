@@ -6,6 +6,7 @@ Extension methods and classes I often find useful for C# development.
 
 Attribute classes to validate properties in models.
 
+- **`AlphaOnlyAttribute`**: Check that a string only contains letters.
 - **`UniqueItemsAttribute`**: Check that a collection property does not contain duplicate items.
 
 ## Collections
