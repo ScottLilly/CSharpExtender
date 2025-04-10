@@ -72,8 +72,20 @@ public static class StringExtensionMethods
     /// </summary>
     /// <param name="s"></param>
     /// <returns></returns>
-    public static bool IsDigitsOnly(this string s) =>
-        !s.Any(c => !char.IsDigit(c));
+    public static bool IsDigitsOnly(this string s)
+    {
+        ReadOnlySpan<char> span = s.AsSpan();
+
+        for (int i = 0; i < span.Length; i++)
+        {
+            if (!char.IsDigit(span[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     /// <summary>
     /// Converts an IEnumerable of strings to a single string with line feeds between each string
