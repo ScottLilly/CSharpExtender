@@ -2,6 +2,10 @@
 
 Extension methods and classes I often find useful for C# development.
 
+![Build Status](https://github.com/ScottLilly/CSharpExtender/actions/workflows/ci.yml/badge.svg)
+[![NuGet](https://img.shields.io/nuget/v/ScottLilly.CSharpExtender)](https://www.nuget.org/packages/ScottLilly.CSharpExtender/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/ScottLilly.CSharpExtender)](https://www.nuget.org/packages/ScottLilly.CSharpExtender/)
+
 ## DataAnnotations
 
 Attribute classes to validate properties in models.
@@ -74,7 +78,8 @@ This class provides LINQ-related extension methods in C#.
 - **`HasDuplicatePropertyValue<T, TProperty>`**: Checks if any objects have the same value in the specified property.
 - **`HasDuplicatePropertyValue<T>`**: Checks if any objects have the same value in the specified string property.
 - **`None`**: Checks if none of the elements in the collection satisfy the provided condition. If no condition is provided, it checks if the collection is empty.
-
+- **`RandomElement`**: Returns a random element from the list.
+- 
 ### NumericExtensionMethods
 
 This class provides extension methods for numerical operations in C#.
@@ -178,10 +183,16 @@ Base class that inherits from ObservableModel (to handle property change notific
 
 ## Service classes
 
-Classes to handle common tasks.
+Static classes to handle common tasks.
 
 ### CompositeRegexMatcher
 
 Accepts a list of regex patterns and checks if a string matches any of them.
 
 -**`MatchesAny`**: Checks if the string matches any of the regex patterns.
+
+### RngCreator
+
+This class is designed to create cryptographically random numbers in C#.
+
+- **`GetNumberBetween`**: Generates a cryptographically random number between the specified minimum and maximum values.
