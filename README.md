@@ -5,6 +5,7 @@ Extension methods and classes I often find useful for C# development.
 ![Build Status](https://github.com/ScottLilly/CSharpExtender/actions/workflows/ci.yml/badge.svg)
 [![NuGet](https://img.shields.io/nuget/v/ScottLilly.CSharpExtender)](https://www.nuget.org/packages/ScottLilly.CSharpExtender/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/ScottLilly.CSharpExtender)](https://www.nuget.org/packages/ScottLilly.CSharpExtender/)
+[![License](https://img.shields.io/github/license/ScottLilly/CSharpExtender)](https://github.com/ScottLilly/CSharpExtender/LICENSE)
 
 ## DataAnnotations
 
