@@ -37,6 +37,22 @@ public class Test_LinqExtensionMethods
     }
 
     [Fact]
+    public void RandomElement_ReturnsElementInList()
+    {
+        var list = new List<int> { 1, 2, 3, 4, 5 };
+        var randomElement = list.RandomElement();
+        Assert.Contains(randomElement, list);
+    }
+
+    [Fact]
+    public void RandomElement_EmptyList_ReturnsDefault()
+    {
+        var list = new List<int>();
+        var randomElement = list.RandomElement();
+        Assert.Equal(default, randomElement);
+    }
+
+    [Fact]
     public void DetectDuplicatePropertyValues()
     {
         var people = new List<Person>()

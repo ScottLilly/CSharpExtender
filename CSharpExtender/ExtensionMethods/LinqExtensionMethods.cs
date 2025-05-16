@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using CSharpExtender.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CSharpExtender.ExtensionMethods;
@@ -39,6 +40,19 @@ public static class LinqExtensionMethods
         {
             action(element);
         }
+    }
+
+    /// <summary>
+    /// Returns a random element from the list.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the list.</typeparam>
+    /// <param name="options">The list to pick a random element from.</param>
+    /// <returns>A random element from the list, or default(T) if the list is empty.</returns>
+    public static T RandomElement<T>(this List<T> options)
+    {
+        return options.Count == 0
+            ? default
+            : options[RngCreator.GetNumberBetween(0, options.Count - 1)];
     }
 
     /// <summary>
