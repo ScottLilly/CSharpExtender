@@ -1,6 +1,6 @@
 # CSharpExtender
 
-<img align="left" width="100" height="100" style="color:white" src="https://github.com/ScottLilly/CSharpExtender/blob/master/CSharpExtender/Icon.png">
+<img align="left" width="75" height="75" style="color:white" src="https://github.com/ScottLilly/CSharpExtender/blob/master/CSharpExtender/Icon.png">
 
 Extension methods and classes I often find useful for C# development.
 
