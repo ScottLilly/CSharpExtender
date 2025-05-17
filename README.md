@@ -1,7 +1,12 @@
 # CSharpExtender
 
+<img align="left" width="100" height="100" style="color:white" src="https://github.com/ScottLilly/CSharpExtender/blob/master/CSharpExtender/Icon.png">
+
 Extension methods and classes I often find useful for C# development.
 
+The extension methods are written to make the source code read more like a natural language, sometimes just wrapping an existing "negative" function into a more natural "not postive" name, eliminating the need for a "!", which doesn't read as naturally.
+
+## Status
 ![Build Status](https://github.com/ScottLilly/CSharpExtender/actions/workflows/ci.yml/badge.svg)
 [![NuGet](https://img.shields.io/nuget/v/ScottLilly.CSharpExtender)](https://www.nuget.org/packages/ScottLilly.CSharpExtender/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/ScottLilly.CSharpExtender)](https://www.nuget.org/packages/ScottLilly.CSharpExtender/)
