@@ -1,4 +1,4 @@
-# CSharpExtender
+# ScottLilly.CSharpExtender (NuGet package)
 
 <img align="left" width="75" height="75" style="color:white" src="https://github.com/ScottLilly/CSharpExtender/blob/master/CSharpExtender/Icon.png">
 
