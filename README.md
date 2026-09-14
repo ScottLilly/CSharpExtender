@@ -80,11 +80,12 @@ This class provides LINQ-related extension methods in C#.
 - **`HasDuplicatePropertyValue<T>`**: Checks if any objects have the same value in the specified string property.
 - **`None`**: Checks if none of the elements in the collection satisfy the provided condition. If no condition is provided, it checks if the collection is empty.
 - **`RandomElement`**: Returns a random element from the list.
-- 
+
 ### NumericExtensionMethods
 
 This class provides extension methods for numerical operations in C#.
 
+- **`ApproximatelyEquals`**: Checks if two floating point numbers are approximately equal, within a specified tolerance.
 - **`IsEven`**: Checks if the given integer is even.
 - **`IsEvenlyDivisibleBy`**: Checks if the given integer is evenly divisible by another integer.
 - **`IsNegative`**: Checks if the given integer is negative.
@@ -100,24 +101,26 @@ This class provides extension methods for objects in C#.
 - **`IsFloatingPointType`**: Checks if the object is of a floating point type.
 - **`IsIntegerType`**: Checks if the object is of an integer type.
 - **`IsNotNull`**: Checks if the object is not null.
-- **`IsNotOfType` (with Type parameter)**: Checks if the object is not of a specific type.
-- **`IsNotOfType` (for Type with baseType parameter)**: Checks if the type is not of a specific type.
-- **`IsNotOfType<T>`**: Checks if the object is not of a specific type.
-- **`IsNotOfType<T>` (for Type)**: Checks if the type is not of a specific type.
-- **`IsNotOfTypeOrSubclass` (with Type parameter)**: Checks if the object is not of a specific type and not a subclass of that type.
-- **`IsNotOfTypeOrSubclass` (for Type with baseType parameter)**: Checks if the type is not of a specific type and not a subclass of that type.
-- **`IsNotOfTypeOrSubclass<T>`**: Checks if the object is not of a specific type and not a subclass of that type.
-- **`IsNotOfTypeOrSubclass<T>` (for Type)**: Checks if the type is not of a specific type and not a subclass of that type.
+- **`IsNotOfType` (with Type parameter)**: Checks if the object is not exactly of a specific type.
+- **`IsNotOfType` (for Type with baseType parameter)**: Checks if the type is not exactly a specific type.
+- **`IsNotOfType<T>`**: Checks if the object is not exactly of a specific type.
+- **`IsNotOfType<T>` (for Type)**: Checks if the type is not exactly a specific type.
+- **`IsNotOfTypeOrSubclass` (with Type parameter)**: Checks if the object is not of a specific type, a subclass of it, or an implementation of it.
+- **`IsNotOfTypeOrSubclass` (for Type with baseType parameter)**: Checks if the type is not a specific type, a subclass of it, or an implementation of it.
+- **`IsNotOfTypeOrSubclass<T>`**: Checks if the object is not of a specific type, a subclass of it, or an implementation of it.
+- **`IsNotOfTypeOrSubclass<T>` (for Type)**: Checks if the type is not a specific type, a subclass of it, or an implementation of it.
 - **`IsNull`**: Checks if the object is null.
 - **`IsNumericType`**: Checks if the object is of a numeric type.
-- **`IsOfType` (with Type parameter)**: Checks if the object is of a specific type.
-- **`IsOfType` (for Type with baseType parameter)**: Checks if the type is of a specific type.
-- **`IsOfType<T>`**: Checks if the object is of a specific type.
-- **`IsOfType<T>` (for Type)**: Checks if the type is of a specific type.
-- **`IsOfTypeOrSubclass` (with Type parameter)**: Checks if the object is of a specific type or a subclass of that type.
-- **`IsOfTypeOrSubclass` (for Type with baseType parameter)**: Checks if the type is of a specific type or a subclass of that type.
-- **`IsOfTypeOrSubclass<T>`**: Checks if the object is of a specific type or a subclass of that type.
-- **`IsOfTypeOrSubclass<T>` (for Type)**: Checks if the type is of a specific type or a subclass of that type.
+- **`IsOfType` (with Type parameter)**: Checks if the object is exactly of a specific type.
+- **`IsOfType` (for Type with baseType parameter)**: Checks if the type is exactly a specific type.
+- **`IsOfType<T>`**: Checks if the object is exactly of a specific type.
+- **`IsOfType<T>` (for Type)**: Checks if the type is exactly a specific type.
+- **`IsOfTypeOrSubclass` (with Type parameter)**: Checks if the object is of a specific type, a subclass of it, or an implementation of it.
+- **`IsOfTypeOrSubclass` (for Type with baseType parameter)**: Checks if the type is a specific type, a subclass of it, or an implementation of it.
+- **`IsOfTypeOrSubclass<T>`**: Checks if the object is of a specific type, a subclass of it, or an implementation of it.
+- **`IsOfTypeOrSubclass<T>` (for Type)**: Checks if the type is a specific type, a subclass of it, or an implementation of it.
+
+The `IsOfType` family is an exact type match. The `IsOfTypeOrSubclass` family also accepts subclasses and, when the type is an interface, implementations of it.
 
 ### StringExtensionMethods
 
@@ -184,7 +187,7 @@ Base class that inherits from ObservableModel (to handle property change notific
 
 ## Service classes
 
-Static classes to handle common tasks.
+Classes to handle common tasks.
 
 ### CompositeRegexMatcher
 
@@ -192,8 +195,48 @@ Accepts a list of regex patterns and checks if a string matches any of them.
 
 -**`MatchesAny`**: Checks if the string matches any of the regex patterns.
 
+### JsonRedactionService
+
+Removes sensitive values from JSON, for paths matching any of a list of regex patterns. Implements `IRedactionService<JsonObject>`.
+
+Paths are property names from the root, separated by `.`, with array entries indexed: the `ssn` property in `{"user": {"ssn": "..."}}` has the path `user.ssn`, and the first entry of an `items` array has the path `items[0]`. Patterns are matched anywhere in a path rather than against the whole of it, so a pattern matching an object also matches everything below it.
+
+A redacted string becomes empty, a number becomes zero, a boolean becomes false, and an object or array becomes null. Pass `ignoreCase: true` to the constructor to match paths case-insensitively.
+
+- **`Redact` (JsonObject)**: Redacts the JsonObject in place and returns it.
+- **`Redact` (string)**: Parses the JSON string, redacts it, and returns the result as a JsonObject.
+- **`RedactToString` (JsonObject)**: Redacts the JsonObject in place and returns the result as a JSON string.
+- **`RedactToString` (string)**: Parses the JSON string, redacts it, and returns the result as a JSON string.
+
 ### RngCreator
 
 This class is designed to create cryptographically random numbers in C#.
 
 - **`GetNumberBetween`**: Generates a cryptographically random number between the specified minimum and maximum values.
+
+### SmartReflection
+
+This class provides efficient, type-safe reflection utilities with property caching for improved performance in .NET applications.
+
+- **`HasAttribute<TAttribute>`**: Checks if a type has a specific attribute.
+- **`HasPropertyAttribute<TAttribute>`**: Checks if a property on a type has a specific attribute.
+- **`GetPropertiesWithAttribute<TAttribute>`**: Retrieves all properties on a type that have a specific attribute.
+- **`GetPropertyValue<TProperty>`**: Gets the value of a property from an object, with type safety.
+- **`SetPropertyValue<TProperty>`**: Sets the value of a property on an object, with type safety.
+- **`GetPropertyNames`**: Gets the names of all public instance properties on a type.
+- **`HasProperty`**: Checks if a type has a specific property.
+- **`GetPropertyType`**: Gets the type of a specified property on a type.
+- **`InvokeMethod<TResult>`**: Invokes a method on an object by name, with type-safe return value.
+
+### XmlRedactionService
+
+Removes sensitive values from XML, for paths matching any of a list of regex patterns. Implements `IRedactionService<XmlDocument>`.
+
+Paths are element names from the root, separated by `.`, so the `ssn` element in `<person><ssn/></person>` has the path `person.ssn`. An attribute is its element's path plus `.@` and the attribute name, so `person.@id`. Repeated sibling elements are not indexed, so one pattern redacts every element sharing a path. Patterns are matched anywhere in a path rather than against the whole of it, so a pattern matching an element also matches everything below it, including its attributes.
+
+A redacted element keeps its tag and loses all of its content, including child elements. A redacted attribute keeps its name and gets an empty value. Pass `ignoreCase: true` to the constructor to match paths case-insensitively.
+
+- **`Redact` (XmlDocument)**: Redacts the XmlDocument in place and returns it.
+- **`Redact` (string)**: Loads the XML string, redacts it, and returns the result as an XmlDocument.
+- **`RedactToString` (XmlDocument)**: Redacts the XmlDocument in place and returns the result as an XML string.
+- **`RedactToString` (string)**: Loads the XML string, redacts it, and returns the result as an XML string.

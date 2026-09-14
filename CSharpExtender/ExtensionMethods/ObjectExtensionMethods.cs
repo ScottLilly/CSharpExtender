@@ -138,51 +138,56 @@ public static class ObjectExtensionMethods
     }
 
     /// <summary>
-    /// Checks if the object is of a specific type.
+    /// Checks if the object is exactly of a specific type. A subclass of that type does not count.
+    /// Use <see cref="IsOfTypeOrSubclass{T}(object)"/> to include subclasses and implementations.
     /// </summary>
     /// <typeparam name="T">The type to check for.</typeparam>
     /// <param name="obj">The object to check.</param>
-    /// <returns>True if the object is of the specified type, false otherwise.</returns>
+    /// <returns>True if the object is exactly of the specified type, false otherwise.</returns>
     public static bool IsOfType<T>(this object obj)
     {
-        return obj is T;
+        return obj.GetType() == typeof(T);
     }
 
     /// <summary>
-    /// Checks if the object is of a specific type.
+    /// Checks if the object is exactly of a specific type. A subclass of that type does not count.
+    /// Use <see cref="IsOfTypeOrSubclass(object, Type)"/> to include subclasses and implementations.
     /// </summary>
     /// <param name="obj">The object to check.</param>
     /// <param name="type">The type to check for.</param>
-    /// <returns>True if the object is of the specified type, false otherwise.</returns>
+    /// <returns>True if the object is exactly of the specified type, false otherwise.</returns>
     public static bool IsOfType(this object obj, Type type)
     {
         return obj.GetType() == type;
     }
 
     /// <summary>
-    /// Checks if the object is not of a specific type.
+    /// Checks if the object is not exactly of a specific type. A subclass of that type counts as
+    /// not being of the type.
     /// </summary>
     /// <typeparam name="T">The type to check against.</typeparam>
     /// <param name="obj">The object to check.</param>
-    /// <returns>True if the object is not of the specified type, false otherwise.</returns>
+    /// <returns>True if the object is not exactly of the specified type, false otherwise.</returns>
     public static bool IsNotOfType<T>(this object obj)
     {
-        return !(obj is T);
+        return obj.GetType() != typeof(T);
     }
 
     /// <summary>
-    /// Checks if the object is not of a specific type.
+    /// Checks if the object is not exactly of a specific type. A subclass of that type counts as
+    /// not being of the type.
     /// </summary>
     /// <param name="obj">The object to check.</param>
     /// <param name="type">The type to check against.</param>
-    /// <returns>True if the object is not of the specified type, false otherwise.</returns>
+    /// <returns>True if the object is not exactly of the specified type, false otherwise.</returns>
     public static bool IsNotOfType(this object obj, Type type)
     {
         return obj.GetType() != type;
     }
 
     /// <summary>
-    /// Checks if the object is of a specific type or a subclass of that type.
+    /// Checks if the object is of a specific type, a subclass of that type, or an implementation
+    /// of it when it is an interface.
     /// </summary>
     /// <typeparam name="T">The type to check for.</typeparam>
     /// <param name="obj">The object to check.</param>
@@ -193,7 +198,8 @@ public static class ObjectExtensionMethods
     }
 
     /// <summary>
-    /// Checks if the object is of a specific type or a subclass of that type.
+    /// Checks if the object is of a specific type, a subclass of that type, or an implementation
+    /// of it when it is an interface.
     /// </summary>
     /// <param name="obj">The object to check.</param>
     /// <param name="type">The type to check for.</param>
@@ -204,7 +210,8 @@ public static class ObjectExtensionMethods
     }
 
     /// <summary>
-    /// Checks if the object is not of a specific type and not a subclass of that type.
+    /// Checks if the object is not of a specific type, not a subclass of that type, and not an
+    /// implementation of it when it is an interface.
     /// </summary>
     /// <typeparam name="T">The type to check against.</typeparam>
     /// <param name="obj">The object to check.</param>
@@ -226,47 +233,51 @@ public static class ObjectExtensionMethods
     }
 
     /// <summary>
-    /// Checks if the type is of a specific type or a subclass of that type.
+    /// Checks if the type is a specific type, a subclass of that type, or an implementation of it
+    /// when it is an interface.
     /// </summary>
     /// <typeparam name="T">The type to check for.</typeparam>
     /// <param name="type">The type to check.</param>
-    /// <returns>True if the type is of the specified type or a subclass of that type, false otherwise.</returns>
+    /// <returns>True if the type is the specified type or a subclass of that type, false otherwise.</returns>
     public static bool IsOfTypeOrSubclass<T>(this Type type)
     {
-        return type.IsSubclassOf(typeof(T));
+        return typeof(T).IsAssignableFrom(type);
     }
 
     /// <summary>
-    /// Checks if the type is of a specific type or a subclass of that type.
+    /// Checks if the type is a specific type, a subclass of that type, or an implementation of it
+    /// when it is an interface.
     /// </summary>
     /// <param name="type">The type to check.</param>
     /// <param name="baseType">The base type to check for.</param>
-    /// <returns>True if the type is of the specified base type or a subclass of that base type, false otherwise.</returns>
+    /// <returns>True if the type is the specified base type or a subclass of that base type, false otherwise.</returns>
     public static bool IsOfTypeOrSubclass(this Type type, Type baseType)
     {
-        return type.IsSubclassOf(baseType);
+        return baseType.IsAssignableFrom(type);
     }
 
     /// <summary>
-    /// Checks if the type is not of a specific type and not a subclass of that type.
+    /// Checks if the type is not a specific type, not a subclass of that type, and not an
+    /// implementation of it when it is an interface.
     /// </summary>
     /// <typeparam name="T">The type to check against.</typeparam>
     /// <param name="type">The type to check.</param>
-    /// <returns>True if the type is not of the specified type and not a subclass of that type, false otherwise.</returns>
+    /// <returns>True if the type is not the specified type and not a subclass of that type, false otherwise.</returns>
     public static bool IsNotOfTypeOrSubclass<T>(this Type type)
     {
-        return !type.IsSubclassOf(typeof(T));
+        return !typeof(T).IsAssignableFrom(type);
     }
 
     /// <summary>
-    /// Checks if the type is not of a specific type and not a subclass of that type.
+    /// Checks if the type is not a specific type, not a subclass of that type, and not an
+    /// implementation of it when it is an interface.
     /// </summary>
     /// <param name="type">The type to check.</param>
     /// <param name="baseType">The base type to check against.</param>
-    /// <returns>True if the type is not of the specified base type and not a subclass of that base type, false otherwise.</returns>
+    /// <returns>True if the type is not the specified base type and not a subclass of that base type, false otherwise.</returns>
     public static bool IsNotOfTypeOrSubclass(this Type type, Type baseType)
     {
-        return !type.IsSubclassOf(baseType);
+        return !baseType.IsAssignableFrom(type);
     }
 
     /// <summary>

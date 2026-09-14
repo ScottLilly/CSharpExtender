@@ -51,4 +51,147 @@ public class Test_NumericExtensionMethods
     {
         Assert.Equal(expectedResult, value.IsEvenlyDivisibleBy(divisor));
     }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsTrue_ForIdenticalValues()
+    {
+        float a = 1.0f;
+        float b = 1.0f;
+
+        bool result = a.ApproximatelyEquals(b);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsTrue_ForValuesWithinDefaultTolerance()
+    {
+        float a = 100.0f;
+        float b = 100.00005f;
+
+        bool result = a.ApproximatelyEquals(b);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsFalse_ForValuesOutsideDefaultTolerance()
+    {
+        float a = 100.0f;
+        float b = 100.1f;
+
+        bool result = a.ApproximatelyEquals(b);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_UsesCustomTolerance()
+    {
+        float a = 100.0f;
+        float b = 101.0f;
+
+        bool result = a.ApproximatelyEquals(b, 0.02f); // 2% tolerance
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsFalse_WhenNaNComparedToNumber()
+    {
+        float a = float.NaN;
+        float b = 1.0f;
+
+        bool result = a.ApproximatelyEquals(b);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsFalse_WhenBothAreNaN()
+    {
+        float a = float.NaN;
+        float b = float.NaN;
+
+        bool result = a.ApproximatelyEquals(b);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsTrue_WhenBothArePositiveInfinity()
+    {
+        float a = float.PositiveInfinity;
+        float b = float.PositiveInfinity;
+
+        bool result = a.ApproximatelyEquals(b);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsTrue_WhenBothAreNegativeInfinity()
+    {
+        float a = float.NegativeInfinity;
+        float b = float.NegativeInfinity;
+
+        bool result = a.ApproximatelyEquals(b);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsFalse_WhenOneIsInfinityAndOtherIsNot()
+    {
+        float a = float.PositiveInfinity;
+        float b = 100.0f;
+
+        bool result = a.ApproximatelyEquals(b);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsTrue_ForZeroAndNearZeroWithinTolerance()
+    {
+        float a = 0.0f;
+        float b = 0.00000001f;
+
+        bool result = a.ApproximatelyEquals(b, 0.0001f);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsFalse_ForZeroAndLargerValueOutsideTolerance()
+    {
+        float a = 0.0f;
+        float b = 1.0f;
+
+        bool result = a.ApproximatelyEquals(b);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsTrue_ForNegativeValuesWithinTolerance()
+    {
+        float a = -100.0f;
+        float b = -100.00005f;
+
+        bool result = a.ApproximatelyEquals(b);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ApproximatelyEquals_ReturnsFalse_ForNegativeAndPositiveValue()
+    {
+        float a = -100.0f;
+        float b = 100.0f;
+
+        bool result = a.ApproximatelyEquals(b);
+
+        Assert.False(result);
+    }
 }

@@ -15,7 +15,7 @@
     <RepositoryUrl>https://github.com/scottlilly/csharpextender</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csharp;extensions</PackageTags>
-    <PackageReleaseNotes>Version 3.0.0.0 (and future versions) based on .NET 8.0</PackageReleaseNotes>
+    <PackageReleaseNotes>Release notes for every version: https://github.com/ScottLilly/CSharpExtender/blob/master/RELEASE_NOTES.md</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
   </PropertyGroup>
@@ -29,7 +29,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="D:\Development\MyNuGetPackages\CSharpExtender\CSharpExtender\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,10 +41,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EditorConfigFiles Remove="D:\Development\MyNuGetPackages\CSharpExtender\CSharpExtender\.editorconfig" />
   </ItemGroup>
 
 </Project>

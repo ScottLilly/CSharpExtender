@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
+
+namespace CSharpExtender.Collections;
 
 /// <summary>
 /// Generic cache implementation. Default expiration is 15 minutes.
@@ -11,10 +11,8 @@ using System.Linq;
 /// <typeparam name="TValue">Cached value datatype</typeparam>
 public class GenericCache<TKey, TValue> where TKey : IEquatable<TKey>
 {
-    private readonly TimeSpan _defaultExpiration = TimeSpan.FromMinutes(15);
-
-    private readonly ConcurrentDictionary<TKey, CacheItem<TValue>> _cache = 
-        new ConcurrentDictionary<TKey, CacheItem<TValue>>();
+    private readonly ConcurrentDictionary<TKey, CacheItem<TValue>> _cache = new();
+    private readonly TimeSpan _defaultExpiration;
 
     /// <summary>
     /// Instance constructor. 
@@ -23,7 +21,11 @@ public class GenericCache<TKey, TValue> where TKey : IEquatable<TKey>
     /// <param name="defaultExpiration"></param>
     public GenericCache(TimeSpan? defaultExpiration = null)
     {
-        if(defaultExpiration != null)
+        if (defaultExpiration == null)
+        {
+            _defaultExpiration = TimeSpan.FromMinutes(15);
+        }
+        else
         {
             _defaultExpiration = (TimeSpan)defaultExpiration;
         }
@@ -31,19 +33,21 @@ public class GenericCache<TKey, TValue> where TKey : IEquatable<TKey>
 
     public void Set(TKey key, TValue value, TimeSpan? expiration = null)
     {
-        _cache[key] =
-            new CacheItem<TValue>
-            {
-                Value = value,
-                ExpirationTime = DateTime.Now.Add(expiration ?? _defaultExpiration)
-            };
+        var expirationTime = DateTime.UtcNow.Add(expiration ?? _defaultExpiration);
+        var newItem = new CacheItem<TValue>
+        {
+            Value = value,
+            ExpirationTime = expirationTime
+        };
+
+        _cache.AddOrUpdate(key, newItem, (_, _) => newItem);
     }
 
     public TValue Get(TKey key)
     {
         if (_cache.TryGetValue(key, out CacheItem<TValue> item))
         {
-            if (DateTime.Now < item.ExpirationTime)
+            if (DateTime.UtcNow < item.ExpirationTime)
             {
                 return item.Value;
             }
@@ -57,12 +61,26 @@ public class GenericCache<TKey, TValue> where TKey : IEquatable<TKey>
         return default;
     }
 
-    public void Remove(TKey key)
+    public bool TryGet(TKey key, out TValue value)
     {
-        if (!_cache.TryRemove(key, out _))
+        if (_cache.TryGetValue(key, out var item))
         {
-            throw new Exception("Unable to remove item from cache.");
+            if (DateTime.UtcNow < item.ExpirationTime)
+            {
+                value = item.Value;
+                return true;
+            }
+
+            Remove(key);
         }
+
+        value = default;
+        return false;
+    }
+
+    public bool Remove(TKey key)
+    {
+        return _cache.TryRemove(key, out _);
     }
 
     public void Clear()
@@ -72,14 +90,20 @@ public class GenericCache<TKey, TValue> where TKey : IEquatable<TKey>
 
     public void RemoveExpiredItems()
     {
-        List<TKey> expiredKeys = 
-            _cache.Where(kvp => DateTime.Now >= kvp.Value.ExpirationTime)
-            .Select(kvp => kvp.Key)
-            .ToList();
+        var now = DateTime.UtcNow;
 
-        foreach (TKey key in expiredKeys)
+        foreach (var kvp in _cache)
         {
-            Remove(key);
+            if (now >= kvp.Value.ExpirationTime)
+            {
+                _cache.TryRemove(kvp.Key, out _);
+            }
         }
+    }
+
+    private class CacheItem<T>
+    {
+        public T Value { get; set; }
+        public DateTime ExpirationTime { get; set; }
     }
 }

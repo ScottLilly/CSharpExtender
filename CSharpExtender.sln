@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkTestBench", "Bench
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		CLAUDE.md = CLAUDE.md
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 		RELEASE_NOTES.md = RELEASE_NOTES.md
@@ -21,6 +25,18 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{7B81E5AC-5679-484F-8757-6C3DE84DACBF}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\ci.yml = .github\workflows\ci.yml
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{3F2C8A41-6D5B-4E97-9C13-7A0E5B84D216}"
+	ProjectSection(SolutionItems) = preProject
+		docs\ARCHITECTURE.md = docs\ARCHITECTURE.md
+		docs\BACKLOG.md = docs\BACKLOG.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B9D74E0-2C83-4A16-8F45-C6E1B7093D8A}"
+	ProjectSection(SolutionItems) = preProject
+		tools\README.md = tools\README.md
 	EndProjectSection
 EndProject
 Global
