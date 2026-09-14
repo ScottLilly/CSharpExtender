@@ -77,6 +77,31 @@ public class Test_EnumExtensionMethods
     }
 
     [Fact]
+    public void GetEnumDescription_TwoEnumsSharingAnUnderlyingValue_DoNotShareACacheEntry()
+    {
+        // The cache is held per closed enum type rather than keyed on a boxed
+        // Enum, so two types whose members are both 0 must not collide
+        Assert.Equal(0, (int)TestEnum.TestValue);
+        Assert.Equal(0, (int)SecondEnum.FirstOption);
+
+        Assert.Equal("Test Description", TestEnum.TestValue.GetEnumDescription());
+        Assert.Equal("Second Enum First Option", SecondEnum.FirstOption.GetEnumDescription());
+        Assert.Equal("Test Description", TestEnum.TestValue.GetEnumDescription());
+    }
+
+    [Fact]
+    public void GetEnumDescription_RepeatedCalls_ReturnTheSameAnswer()
+    {
+        // Second and later calls come from the cache rather than reflection
+        for (int i = 0; i < 3; i++)
+        {
+            Assert.Equal("Test Description 2", TestEnum.TestValue2.GetEnumDescription());
+            Assert.Equal("TestValue3", TestEnum.TestValue3.GetEnumDescription());
+            Assert.Equal("999", ((TestEnum)999).GetEnumDescription());
+        }
+    }
+
+    [Fact]
     public void GetEnumValues_ReturnsAllValues()
     {
         var values = EnumExtensionMethods.GetEnumValues<TestEnum>();

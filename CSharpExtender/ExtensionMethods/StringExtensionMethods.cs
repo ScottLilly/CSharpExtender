@@ -14,6 +14,8 @@ public static class StringExtensionMethods
     // Inputs at or below this length get a stack buffer instead of a heap array
     private const int _stackAllocCharLimit = 256;
 
+    private static readonly char[] _pathSeparators = new char[] { '/', '\\' };
+
     /// <summary>
     /// Check if strings are equal, using InvariantCultureIgnoreCase
     /// </summary>
@@ -174,8 +176,10 @@ public static class StringExtensionMethods
     /// </returns>
     public static IEnumerable<string> SplitPath(this string path)
     {
-        // Manually trim the split strings as StringSplitOptions.TrimEntries is not available
-        return path.Split(new char[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries)
+        // Manually trim the split strings, rather than using
+        // StringSplitOptions.TrimEntries, because that would also drop a segment
+        // of nothing but whitespace instead of returning it as an empty string
+        return path.Split(_pathSeparators, StringSplitOptions.RemoveEmptyEntries)
                    .Select(s => s.Trim());
     }
 

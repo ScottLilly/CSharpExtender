@@ -75,4 +75,32 @@ public class Test_GenericCache
         Assert.False(result);
         Assert.Null(value);
     }
+
+    [Fact]
+    public void Set_ExistingKey_ReplacesTheValue()
+    {
+        // Set writes through the indexer rather than AddOrUpdate, so prove the
+        // update half still behaves
+        var cache = new GenericCache<int, string>();
+
+        cache.Set(1, "first");
+        cache.Set(1, "second");
+
+        Assert.True(cache.TryGet(1, out var value));
+        Assert.Equal("second", value);
+    }
+
+    [Fact]
+    public void Set_ExistingKey_ReplacesTheExpiration()
+    {
+        var cache = new GenericCache<int, string>();
+
+        cache.Set(1, "first", TimeSpan.FromMilliseconds(10));
+        cache.Set(1, "second", TimeSpan.FromMinutes(5));
+
+        Thread.Sleep(50);
+
+        Assert.True(cache.TryGet(1, out var value));
+        Assert.Equal("second", value);
+    }
 }

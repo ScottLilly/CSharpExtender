@@ -40,7 +40,9 @@ public class GenericCache<TKey, TValue> where TKey : IEquatable<TKey>
             ExpirationTime = expirationTime
         };
 
-        _cache.AddOrUpdate(key, newItem, (_, _) => newItem);
+        // The indexer does what AddOrUpdate with a constant update would, without
+        // the lambda capturing newItem into a closure on every call
+        _cache[key] = newItem;
     }
 
     public TValue Get(TKey key)

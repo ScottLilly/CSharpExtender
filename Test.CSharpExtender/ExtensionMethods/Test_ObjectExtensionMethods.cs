@@ -15,6 +15,70 @@ public class Test_ObjectExtensionMethods
     }
 
     [Fact]
+    public void DeepClone_NestedObject_IsAlsoCloned()
+    {
+        var original = new NestedOwner { Child = new TestClass { Value = 7 } };
+
+        var clone = original.DeepClone();
+
+        Assert.NotSame(original, clone);
+        Assert.NotSame(original.Child, clone.Child);
+        Assert.Equal(7, clone.Child.Value);
+    }
+
+    [Fact]
+    public void DeepClone_CircularReference_DoesNotThrow()
+    {
+        // The shared options keep ReferenceHandler.Preserve, which is the only
+        // reason this terminates
+        var parent = new CircularNode { Name = "parent" };
+        var child = new CircularNode { Name = "child", Parent = parent };
+        parent.Child = child;
+
+        var clone = parent.DeepClone();
+
+        Assert.NotSame(parent, clone);
+        Assert.Equal("parent", clone.Name);
+        Assert.Equal("child", clone.Child.Name);
+        Assert.Same(clone, clone.Child.Parent);
+    }
+
+    [Fact]
+    public void DeepClone_RepeatedCalls_AreIndependent()
+    {
+        // The options instance is now shared across calls, so prove one clone
+        // cannot affect the next
+        var original = new TestClass { Value = 1 };
+
+        var first = original.DeepClone();
+        first.Value = 99;
+        var second = original.DeepClone();
+
+        Assert.Equal(1, second.Value);
+        Assert.NotSame(first, second);
+    }
+
+    [Fact]
+    public void DeepClone_Null_ReturnsNull()
+    {
+        TestClass nullObject = null;
+
+        Assert.Null(nullObject.DeepClone());
+    }
+
+    private class NestedOwner
+    {
+        public TestClass Child { get; set; }
+    }
+
+    private class CircularNode
+    {
+        public string Name { get; set; }
+        public CircularNode Child { get; set; }
+        public CircularNode Parent { get; set; }
+    }
+
+    [Fact]
     public void TestIsNumericType()
     {
         Assert.True(1.IsNumericType());

@@ -190,4 +190,48 @@ public class Test_StringBuilderExtensionMethods
 
         Assert.Equal(expected, sb.ToString());
     }
+
+    [Fact]
+    public void ProcessText_SharedDefaultOptions_AreNotAffectedByACallThatPassesOptions()
+    {
+        // The no-options path now reads a single shared StringBuilderOptions, so
+        // a call that supplies its own must not change what the next call sees
+        var withOptions = new StringBuilder();
+        withOptions.AppendLine("test", new StringBuilderOptions
+        {
+            ToUpper = true,
+            PrefixText = ">> ",
+            IndentLevel = 2
+        });
+
+        Assert.Equal($">> TEST{Environment.NewLine}",
+            withOptions.ToString().TrimStart());
+
+        var withoutOptions = new StringBuilder();
+        withoutOptions.AppendLine("test");
+
+        Assert.Equal($"test{Environment.NewLine}", withoutOptions.ToString());
+    }
+
+    [Fact]
+    public void AppendLineIfNotEmpty_StillHonorsOptions()
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLineIfNotEmpty("test", new StringBuilderOptions { ToUpper = true });
+
+        Assert.Equal($"TEST{Environment.NewLine}", sb.ToString());
+    }
+
+    [Fact]
+    public void AppendLineIfNotEmpty_EmptyOrWhitespace_AppendsNothing()
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLineIfNotEmpty("");
+        sb.AppendLineIfNotEmpty("   ");
+        sb.AppendLineIfNotEmpty(null);
+
+        Assert.Equal("", sb.ToString());
+    }
 }

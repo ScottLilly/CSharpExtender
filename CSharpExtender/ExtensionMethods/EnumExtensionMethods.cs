@@ -10,9 +10,14 @@ namespace CSharpExtender.ExtensionMethods;
 /// </summary>
 public static class EnumExtensionMethods
 {
-    // Cache the display names for each enum value
-    private static readonly ConcurrentDictionary<Type, ConcurrentDictionary<Enum, string>> s_enumDescriptionCache = 
-        new ConcurrentDictionary<Type, ConcurrentDictionary<Enum, string>>();
+    // Cache the display names for each enum value. Held per closed TEnum rather
+    // than in one dictionary keyed on Type, so a lookup neither boxes the value
+    // nor needs a second dictionary hit to find the right inner cache.
+    private static class DescriptionCache<TEnum> where TEnum : Enum
+    {
+        internal static readonly ConcurrentDictionary<TEnum, string> Values =
+            new ConcurrentDictionary<TEnum, string>();
+    }
 
     /// <summary>
     /// Gets the description of an enum value.
@@ -25,14 +30,11 @@ public static class EnumExtensionMethods
     /// </returns>
     public static string GetEnumDescription<TEnum>(this TEnum value) where TEnum : Enum
     {
-        var enumType = typeof(TEnum);
-        var enumCache = s_enumDescriptionCache.GetOrAdd(enumType, _ => new ConcurrentDictionary<Enum, string>());
-
-        return enumCache.GetOrAdd((Enum)(object)value, enumValue =>
+        return DescriptionCache<TEnum>.Values.GetOrAdd(value, static enumValue =>
         {
             // GetField returns null when the value is not a single named member,
             // which is the case for undefined values and combined [Flags] values.
-            var fieldInfo = enumType.GetField(enumValue.ToString());
+            var fieldInfo = typeof(TEnum).GetField(enumValue.ToString());
 
             if (fieldInfo == null)
             {

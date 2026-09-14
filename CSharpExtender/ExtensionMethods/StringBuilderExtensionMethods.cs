@@ -61,7 +61,12 @@ public static class StringBuilderExtensionMethods
     /// <param name="options"></param>
     public static void AppendLineIfNotEmpty(this StringBuilder sb, string text, StringBuilderOptions options = null)
     {
-        sb.AppendLineIf(() => !string.IsNullOrWhiteSpace(text), text, options);
+        // Tested directly rather than through AppendLineIf, whose Func<bool> would
+        // capture text and allocate a closure and a delegate on every call
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            sb.AppendLine(ProcessText(text, options));
+        }
     }
 
     /// <summary>
@@ -162,6 +167,12 @@ public static class StringBuilderExtensionMethods
 
     #region Private Methods
 
+    // Every method in this class routes through ProcessText, and options is
+    // optional on all of them, so the common call would otherwise allocate an
+    // object just to read defaults off it. Private, never handed to a caller, and
+    // never written to, so one shared instance is safe.
+    private static readonly StringBuilderOptions s_defaultOptions = new StringBuilderOptions();
+
     private static string ProcessText(string text, StringBuilderOptions options = null)
     {
         if (string.IsNullOrEmpty(text))
@@ -169,7 +180,7 @@ public static class StringBuilderExtensionMethods
             return text;
         }
 
-        options ??= new StringBuilderOptions();
+        options ??= s_defaultOptions;
 
         string result = text;
 

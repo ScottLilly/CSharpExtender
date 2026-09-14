@@ -58,6 +58,11 @@ Measured with BenchmarkDotNet. No behavior changes: every method below returns w
 * `StringExtensionMethods.ToDigitsOnly` filters into a stack buffer instead of a LINQ `Where` and `ToArray`. Between 2.7x and 4.3x faster, allocating a sixth as much for short strings.
 * `StringExtensionMethods.IncludesTheWords` searches a `ReadOnlySpan<char>` and no longer uses LINQ. Around 5% faster, and no longer allocates.
 * `StringExtensionMethods.RemoveText` tests whether a pass shortened the string instead of calling `Contains` before each `Replace`, saving a scan of the string per pass.
+* `EnumExtensionMethods.GetEnumDescription` holds its cache per closed enum type instead of in one dictionary keyed on a boxed `Enum`. Between 10x and 18x faster, and no longer allocates on a cache hit. `GetEnumDescriptions` benefits through it.
+* `ObjectExtensionMethods.DeepClone` reuses one `JsonSerializerOptions` instead of building one per call, and round-trips through UTF-8 bytes rather than a string. About 30% faster, allocating 15% less, and no longer reaching gen 1 or gen 2.
+* `StringBuilderExtensionMethods` share one default `StringBuilderOptions` instead of allocating one whenever the caller passes none, and `AppendLineIfNotEmpty` tests its condition directly instead of through a `Func<bool>` that captured the text. `AppendLineIfNotEmpty` is 3.5x faster; both stop allocating.
+* `GenericCache.Set` writes through the dictionary indexer instead of `AddOrUpdate` with a lambda that captured the new item. About 29% faster, allocating a quarter as much.
+* `StringExtensionMethods.SplitPath` holds its separator array in a static field instead of building one per call.
 
 ### Dependencies
 
