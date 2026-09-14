@@ -230,6 +230,42 @@ public class Test_StringExtensionMethods
         Assert.False(result);
     }
 
+    [Fact]
+    public void IncludesTheWords_WithOrdinal_IsCaseSensitive()
+    {
+        string text = "This is a sample text";
+
+        Assert.True(text.IncludesTheWords(StringComparison.Ordinal, "sample", "text"));
+        Assert.False(text.IncludesTheWords(StringComparison.Ordinal, "sample", "Text"));
+    }
+
+    [Fact]
+    public void IncludesTheWords_WithOrdinalIgnoreCase_IsNotCaseSensitive()
+    {
+        string text = "This is a sample text";
+
+        Assert.True(text.IncludesTheWords(StringComparison.OrdinalIgnoreCase, "sample", "Text"));
+        Assert.False(text.IncludesTheWords(StringComparison.OrdinalIgnoreCase, "sample", "missing"));
+    }
+
+    [Fact]
+    public void IncludesTheWords_WithoutAComparison_StillIgnoresCase()
+    {
+        // The overload taking no comparison has to keep the original behavior
+        string text = "This is a sample text";
+
+        Assert.True(text.IncludesTheWords("sample", "Text"));
+    }
+
+    [Fact]
+    public void IncludesTheWords_WithComparison_KeepsTheGuardClauseAnswers()
+    {
+        Assert.False("".IncludesTheWords(StringComparison.Ordinal, "sample"));
+        Assert.False("This is a sample text".IncludesTheWords(StringComparison.Ordinal));
+        Assert.False("This is a sample text"
+            .IncludesTheWords(StringComparison.Ordinal, " ", "  "));
+    }
+
 
     [Fact]
     public void Test_RemoveText()

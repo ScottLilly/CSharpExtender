@@ -180,12 +180,28 @@ public static class StringExtensionMethods
     }
 
     /// <summary>
-    /// Checks if a string contains all the words in the specified array.
+    /// Checks if a string contains all the words in the specified array, comparing
+    /// with CurrentCultureIgnoreCase.
     /// </summary>
     /// <param name="text"></param>
     /// <param name="requiredWords"></param>
     /// <returns></returns>
-    public static bool IncludesTheWords(this string text, params string[] requiredWords)
+    public static bool IncludesTheWords(this string text, params string[] requiredWords) =>
+        text.IncludesTheWords(StringComparison.CurrentCultureIgnoreCase, requiredWords);
+
+    /// <summary>
+    /// Checks if a string contains all the words in the specified array.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="stringComparisonMethod">
+    /// How to compare. Ordinal and OrdinalIgnoreCase are an order of magnitude
+    /// faster than the culture-aware options, and are the right choice whenever the
+    /// text is not natural language a person will read.
+    /// </param>
+    /// <param name="requiredWords"></param>
+    /// <returns></returns>
+    public static bool IncludesTheWords(this string text,
+        StringComparison stringComparisonMethod, params string[] requiredWords)
     {
         if (string.IsNullOrWhiteSpace(text) || requiredWords.Length == 0)
         {
@@ -209,13 +225,11 @@ public static class StringExtensionMethods
         }
 
         // TODO: Verifiy this handles punctuation
-        // TODO: Accept a StringComparison parameter
         var source = text.AsSpan();
 
         for (int i = 0; i < requiredWords.Length; i++)
         {
-            if (source.IndexOf(requiredWords[i].AsSpan(),
-                    StringComparison.CurrentCultureIgnoreCase) < 0)
+            if (source.IndexOf(requiredWords[i].AsSpan(), stringComparisonMethod) < 0)
             {
                 return false;
             }

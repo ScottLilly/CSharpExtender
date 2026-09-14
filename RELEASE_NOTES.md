@@ -42,6 +42,7 @@ New members:
 * `StringExtensionMethods.Mask` - replaces the middle of a string with a mask character, leaving a number of characters visible at each end. Separators stay visible by default, so a card or phone number keeps its shape.
 * `NumericExtensionMethods.StandardDeviation` and `PopulationStandardDeviation` - sample (n-1) and population (n) standard deviation of a collection, with overloads for `double`, `int` and `decimal`.
 * `JsonExtensionMethods.AsSerializedJson` accepts an optional `JsonSerializerOptions`.
+* `StringExtensionMethods.IncludesTheWords` gains an overload taking a `StringComparison` before the words. The existing signature keeps comparing with `CurrentCultureIgnoreCase`, so nothing has to change; `Ordinal` and `OrdinalIgnoreCase` measure 12x to 20x faster.
 
 ### Bug Fixes
 

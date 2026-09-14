@@ -154,7 +154,7 @@ This class provides extension methods for string manipulations in C#.
 - **`DoesNotHaveText`**: Returns 'true' if the string is null, empty, or only contains whitespace.
 - **`DoesNotMatch`**: Check if strings are not equal, using InvariantCultureIgnoreCase.
 - **`HasText`**: Returns 'true' if the string is not null, empty, or only contains whitespace.
-- **`IncludesTheWords`**: Checks if a string contains all the words in the specified array.
+- **`IncludesTheWords`**: Checks if a string contains all the words in the specified array. Compares with `CurrentCultureIgnoreCase`, or pass a `StringComparison` as the first argument. `Ordinal` and `OrdinalIgnoreCase` are an order of magnitude faster.
 - **`IsDigitsOnly`**: Returns 'true' if the string only contains digits. A null returns 'false'.
 - **`Mask`**: Replaces the middle of a string with a mask character, leaving a number of characters visible at each end. Separators stay visible by default, so `"1234-5678-9012-5678".Mask('*', 4, 4)` returns `"1234-****-****-5678"`.
 - **`Matches`**: Check if strings are equal, using InvariantCultureIgnoreCase.
