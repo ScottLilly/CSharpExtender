@@ -176,11 +176,11 @@ public static class StringExtensionMethods
     /// </returns>
     public static IEnumerable<string> SplitPath(this string path)
     {
-        // Manually trim the split strings, rather than using
-        // StringSplitOptions.TrimEntries, because that would also drop a segment
-        // of nothing but whitespace instead of returning it as an empty string
-        return path.Split(_pathSeparators, StringSplitOptions.RemoveEmptyEntries)
-                   .Select(s => s.Trim());
+        // TrimEntries runs before RemoveEmptyEntries, so a segment of nothing but
+        // whitespace is trimmed to empty and then dropped. Trimming afterwards
+        // instead left it in the result as an empty string.
+        return path.Split(_pathSeparators,
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
     /// <summary>

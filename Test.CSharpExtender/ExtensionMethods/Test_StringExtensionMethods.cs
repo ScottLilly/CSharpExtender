@@ -195,6 +195,34 @@ public class Test_StringExtensionMethods
     }
 
     [Fact]
+    public void SplitPath_WithWhitespaceOnlySegment_DoesNotReturnAnEmptyEntry()
+    {
+        Assert.Equal(new[] { "a", "b" }, @"a/ /b".SplitPath());
+        Assert.Equal(new[] { "a", "b" }, @"a\   \b".SplitPath());
+    }
+
+    [Fact]
+    public void SplitPath_WithWhitespaceOnlyPath_ReturnsEmptyEnumerable()
+    {
+        Assert.Empty("   ".SplitPath());
+        Assert.Empty(" / / ".SplitPath());
+    }
+
+    [Fact]
+    public void SplitPath_WithPaddedSegments_TrimsThem()
+    {
+        Assert.Equal(new[] { "home", "user", "projects" },
+            @" home / user \ projects ".SplitPath());
+    }
+
+    [Fact]
+    public void SplitPath_WithConsecutiveSeparators_DropsTheEmptySegments()
+    {
+        Assert.Equal(new[] { "a", "b" }, @"a//b".SplitPath());
+        Assert.Equal(new[] { "a", "b" }, @"/a/b/".SplitPath());
+    }
+
+    [Fact]
     public void IncludesTheWords_WithValidTextAndWords_ReturnsTrue()
     {
         string text = "This is a sample text";

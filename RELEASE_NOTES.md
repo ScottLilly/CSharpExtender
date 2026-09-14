@@ -16,6 +16,7 @@ Changes are against version 2.2.0, the previous release on NuGet.
 * `DateTimeExtensionMethods.ToIso8601String` uses the round-trip ("O") format instead of `yyyy-MM-ddTHH:mm:ss.fffZ`. It previously appended a literal "Z" to every value, publishing a local or unspecified time as though it were UTC. A `Utc` value now ends in "Z", a `Local` value carries its real offset, and an `Unspecified` value carries neither. The fractional second is now seven digits rather than three, so the string changes for every caller.
 * `StringExtensionMethods.IsDigitsOnly` returns `false` for a null string instead of `true`. An empty string still returns `true`.
 * `StringExtensionMethods.SplitPascalCase` returns an empty list for a null or empty string. It previously returned a list holding that null or empty string, so a caller iterating the result got a null element.
+* `StringExtensionMethods.SplitPath` no longer returns an empty entry for a path segment of nothing but whitespace. `@"a/ /b".SplitPath()` returned `["a", "", "b"]` and now returns `["a", "b"]`, which is what the method always documented. Segments are trimmed before empty ones are removed, rather than after.
 
 ### Features
 
@@ -62,7 +63,7 @@ Measured with BenchmarkDotNet. No behavior changes: every method below returns w
 * `ObjectExtensionMethods.DeepClone` reuses one `JsonSerializerOptions` instead of building one per call, and round-trips through UTF-8 bytes rather than a string. About 30% faster, allocating 15% less, and no longer reaching gen 1 or gen 2.
 * `StringBuilderExtensionMethods` share one default `StringBuilderOptions` instead of allocating one whenever the caller passes none, and `AppendLineIfNotEmpty` tests its condition directly instead of through a `Func<bool>` that captured the text. `AppendLineIfNotEmpty` is 3.5x faster; both stop allocating.
 * `GenericCache.Set` writes through the dictionary indexer instead of `AddOrUpdate` with a lambda that captured the new item. About 29% faster, allocating a quarter as much.
-* `StringExtensionMethods.SplitPath` holds its separator array in a static field instead of building one per call.
+* `StringExtensionMethods.SplitPath` holds its separator array in a static field instead of building one per call, and splits with `StringSplitOptions.TrimEntries` rather than trimming through LINQ afterwards. See Breaking Changes: that also corrected the whitespace-only segment case.
 
 ### Dependencies
 

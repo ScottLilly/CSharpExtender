@@ -161,7 +161,7 @@ This class provides extension methods for string manipulations in C#.
 - **`NullIfEmpty`**: Returns a null if the string is null, empty, or only contains whitespace.
 - **`RemoveText`**: Removes all instances of the specified text from the string.
 - **`Repeat`**: Returns a string with the text repeated the specified number of times.
-- **`SplitPath`**: Convert a file path into an array of the individual directories.
+- **`SplitPath`**: Convert a file path into an array of the individual directories, splitting on both forward and back slashes. Entries are trimmed, and no empty entries are returned.
 - **`ToDigitsOnly`**: Returns a string with all non-digits removed.
 - **`ToMaxLengthOf`**: Trims string to a maximum length, if it exceeds that length
 - **`ToStringWithLineFeeds`**: Converts an IEnumerable of strings to a single string with line feeds between each string.
