@@ -49,6 +49,12 @@ jobs:
     - name: Read package version
       id: package
       run: |
+        COUNT=$(ls -1 ./artifacts/ScottLilly.CSharpExtender.*.nupkg | wc -l)
+        if [ "$COUNT" -ne 1 ]; then
+          echo "Expected exactly one .nupkg, found $COUNT:"
+          ls -1 ./artifacts
+          exit 1
+        fi
         PACKAGE=$(ls ./artifacts/ScottLilly.CSharpExtender.*.nupkg)
         VERSION=$(basename "$PACKAGE" .nupkg)
         VERSION=${VERSION#ScottLilly.CSharpExtender.}
@@ -66,20 +72,23 @@ jobs:
         echo "Tag $TAG is free."
 
     # Pulls the matching "## Version x.y.z" section out of RELEASE_NOTES.md. Falls back to
-    # GitHub's generated notes if that version has no section yet.
+    # GitHub's generated notes if there is no such section, or no such file.
     - name: Extract release notes
       id: notes
       run: |
         VERSION="${{ steps.package.outputs.version }}"
-        awk -v hdr="## Version $VERSION" '
-          index($0, hdr) == 1 { found = 1; next }
-          found && index($0, "## Version ") == 1 { exit }
-          found { print }
-        ' RELEASE_NOTES.md > ./release-notes.md
+        : > ./release-notes.md
+        if [ -f RELEASE_NOTES.md ]; then
+          awk -v hdr="## Version $VERSION" '
+            index($0, hdr) == 1 { found = 1; next }
+            found && index($0, "## Version ") == 1 { exit }
+            found { print }
+          ' RELEASE_NOTES.md > ./release-notes.md
+        fi
         if [ -s ./release-notes.md ]; then
           echo "found=true" >> "$GITHUB_OUTPUT"
         else
-          echo "No '## Version $VERSION' section in RELEASE_NOTES.md. Using generated notes."
+          echo "No '## Version $VERSION' section available. Using generated notes."
           echo "found=false" >> "$GITHUB_OUTPUT"
         fi
 
