@@ -11,6 +11,9 @@ namespace CSharpExtender.ExtensionMethods;
 /// </summary>
 public static class StringExtensionMethods
 {
+    // Inputs at or below this length get a stack buffer instead of a heap array
+    private const int _stackAllocCharLimit = 256;
+
     /// <summary>
     /// Check if strings are equal, using InvariantCultureIgnoreCase
     /// </summary>
@@ -62,10 +65,33 @@ public static class StringExtensionMethods
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static string ToDigitsOnly(this string value) =>
-        string.IsNullOrWhiteSpace(value)
-        ? null
-        : new string(value.Where(char.IsDigit).ToArray());
+    public static string ToDigitsOnly(this string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        var source = value.AsSpan();
+
+        // Sized to the input rather than to the limit, so only what is needed
+        // gets zero-initialized
+        Span<char> digits = source.Length <= _stackAllocCharLimit
+            ? stackalloc char[source.Length]
+            : new char[source.Length];
+
+        int count = 0;
+
+        for (int i = 0; i < source.Length; i++)
+        {
+            if (char.IsDigit(source[i]))
+            {
+                digits[count++] = source[i];
+            }
+        }
+
+        return new string(digits.Slice(0, count));
+    }
 
     /// <summary>
     /// Returns 'true' is the string only contains digits
@@ -115,7 +141,26 @@ public static class StringExtensionMethods
             throw new ArgumentOutOfRangeException(nameof(times), "Must be zero or greater.");
         }
 
-        return string.Concat(Enumerable.Repeat(text, times));
+        if (times == 0 || string.IsNullOrEmpty(text))
+        {
+            return string.Empty;
+        }
+
+        // Repeating one character is common enough to be worth its own path
+        if (text.Length == 1)
+        {
+            return new string(text[0], times);
+        }
+
+        return string.Create(text.Length * times, (text, times), (destination, state) =>
+        {
+            var source = state.text.AsSpan();
+
+            for (int i = 0; i < state.times; i++)
+            {
+                source.CopyTo(destination.Slice(i * source.Length));
+            }
+        });
     }
 
     /// <summary>
@@ -142,17 +187,41 @@ public static class StringExtensionMethods
     /// <returns></returns>
     public static bool IncludesTheWords(this string text, params string[] requiredWords)
     {
-        if (string.IsNullOrWhiteSpace(text) ||
-            requiredWords.Length == 0 ||
-            requiredWords.All(string.IsNullOrWhiteSpace))
+        if (string.IsNullOrWhiteSpace(text) || requiredWords.Length == 0)
+        {
+            return false;
+        }
+
+        bool anyWordHasText = false;
+
+        for (int i = 0; i < requiredWords.Length; i++)
+        {
+            if (requiredWords[i].HasText())
+            {
+                anyWordHasText = true;
+                break;
+            }
+        }
+
+        if (!anyWordHasText)
         {
             return false;
         }
 
         // TODO: Verifiy this handles punctuation
         // TODO: Accept a StringComparison parameter
-        return requiredWords
-            .All(word => text.Contains(word, StringComparison.CurrentCultureIgnoreCase));
+        var source = text.AsSpan();
+
+        for (int i = 0; i < requiredWords.Length; i++)
+        {
+            if (source.IndexOf(requiredWords[i].AsSpan(),
+                    StringComparison.CurrentCultureIgnoreCase) < 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -170,12 +239,22 @@ public static class StringExtensionMethods
             return text;
         }
 
-        while (text.Contains(textToRemove, stringComparisonMethod))
+        // Removing one instance can create another ("aabb" minus "ab" leaves "ab"),
+        // so this repeats until a pass changes nothing. Replacing with an empty
+        // string can only shorten, and textToRemove is known non-empty by here, so
+        // an unchanged length means the pass found nothing. Testing that rather
+        // than calling Contains first saves a scan of the string per pass.
+        while (true)
         {
-            text = text.Replace(textToRemove, "", stringComparisonMethod);
-        }
+            string shortened = text.Replace(textToRemove, "", stringComparisonMethod);
 
-        return text;
+            if (shortened.Length == text.Length)
+            {
+                return text;
+            }
+
+            text = shortened;
+        }
     }
 
     /// <summary>

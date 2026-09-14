@@ -245,6 +245,68 @@ public class Test_StringExtensionMethods
     }
 
     [Fact]
+    public void RemoveText_RemovalThatCreatesANewMatch_KeepsGoing()
+    {
+        // Taking "ab" out of "aabb" leaves "ab", which has to go too
+        Assert.Equal("", "aabb".RemoveText("ab"));
+        Assert.Equal("", "aaabbb".RemoveText("ab"));
+        Assert.Equal("c", "aabbc".RemoveText("ab"));
+        Assert.Equal("aacbb", "aacbb".RemoveText("ab"));
+    }
+
+    [Theory]
+    [InlineData(StringComparison.Ordinal)]
+    [InlineData(StringComparison.OrdinalIgnoreCase)]
+    [InlineData(StringComparison.CurrentCulture)]
+    [InlineData(StringComparison.CurrentCultureIgnoreCase)]
+    [InlineData(StringComparison.InvariantCulture)]
+    [InlineData(StringComparison.InvariantCultureIgnoreCase)]
+    public void RemoveText_NoMatch_ReturnsTheInputForEveryComparison(StringComparison comparison)
+    {
+        // The loop ends on an unchanged length, so a comparison that never matches
+        // has to terminate rather than spin
+        Assert.Equal("the quick brown fox", "the quick brown fox".RemoveText("zzz", comparison));
+    }
+
+    [Fact]
+    public void Test_Repeat_NullOrEmptyText_ReturnsEmptyString()
+    {
+        Assert.Equal("", ((string)null).Repeat(3));
+        Assert.Equal("", "".Repeat(3));
+        Assert.Equal("", ((string)null).Repeat(0));
+    }
+
+    [Fact]
+    public void Test_Repeat_MultiCharacterText()
+    {
+        Assert.Equal("abcabcabc", "abc".Repeat(3));
+        Assert.Equal("abc", "abc".Repeat(1));
+        Assert.Equal(300, "abc".Repeat(100).Length);
+    }
+
+    [Fact]
+    public void ToDigitsOnly_LongStringPastTheStackBuffer_ReturnsAllDigits()
+    {
+        // 256 characters is where the implementation switches from a stack buffer
+        // to a heap array, so cover both sides of it
+        foreach (int length in new[] { 255, 256, 257, 1000 })
+        {
+            string value = string.Concat(Enumerable.Repeat("a1", length / 2));
+
+            string result = value.ToDigitsOnly();
+
+            Assert.Equal(length / 2, result.Length);
+            Assert.True(result.IsDigitsOnly());
+        }
+    }
+
+    [Fact]
+    public void ToDigitsOnly_StringOfNonDigits_ReturnsEmptyString()
+    {
+        Assert.Equal("", "abcXYZ".ToDigitsOnly());
+    }
+
+    [Fact]
     public void ConvertFromString_Int_Success()
     {
         string input = "123";
