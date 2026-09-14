@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ "master" ]
 
+# Stated explicitly so this workflow stays read-only regardless of the repo's
+# default token permissions. It only needs to check out, build, and test.
+permissions:
+  contents: read
+
 jobs:
   build:
 
