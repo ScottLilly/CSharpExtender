@@ -81,8 +81,88 @@ public class Test_ObjectExtensionMethods
         Assert.False(obj.IsNotOfTypeOrSubclass<TestClass>());
     }
 
-    private class TestClass
+    [Fact]
+    public void TestIsOfType_SubclassInstance_IsNotTheBaseType()
+    {
+        object obj = new DerivedTestClass();
+
+        Assert.True(obj.IsOfType<DerivedTestClass>());
+        Assert.False(obj.IsOfType<TestClass>());
+        Assert.True(obj.IsNotOfType<TestClass>());
+    }
+
+    [Fact]
+    public void TestIsOfType_GenericAndTypeParameterOverloadsAgree()
+    {
+        object obj = new DerivedTestClass();
+
+        Assert.Equal(obj.IsOfType<TestClass>(), obj.IsOfType(typeof(TestClass)));
+        Assert.Equal(obj.IsOfType<DerivedTestClass>(), obj.IsOfType(typeof(DerivedTestClass)));
+    }
+
+    [Fact]
+    public void TestIsOfTypeOrSubclass_SubclassInstance_IsTheBaseType()
+    {
+        object obj = new DerivedTestClass();
+
+        Assert.True(obj.IsOfTypeOrSubclass<DerivedTestClass>());
+        Assert.True(obj.IsOfTypeOrSubclass<TestClass>());
+        Assert.False(obj.IsNotOfTypeOrSubclass<TestClass>());
+    }
+
+    [Fact]
+    public void TestIsOfTypeOrSubclass_Interface_IsMatchedByImplementation()
+    {
+        object obj = new TestClass();
+
+        Assert.True(obj.IsOfTypeOrSubclass<ITestMarker>());
+        Assert.True(obj.IsOfTypeOrSubclass(typeof(ITestMarker)));
+        Assert.False(obj.IsOfType<ITestMarker>());
+    }
+
+    [Fact]
+    public void TestIsOfTypeOrSubclass_OnType_IncludesTheTypeItself()
+    {
+        Assert.True(typeof(TestClass).IsOfTypeOrSubclass<TestClass>());
+        Assert.True(typeof(TestClass).IsOfTypeOrSubclass(typeof(TestClass)));
+        Assert.False(typeof(TestClass).IsNotOfTypeOrSubclass<TestClass>());
+    }
+
+    [Fact]
+    public void TestIsOfTypeOrSubclass_OnType_IncludesSubclassesAndInterfaces()
+    {
+        Assert.True(typeof(DerivedTestClass).IsOfTypeOrSubclass<TestClass>());
+        Assert.True(typeof(TestClass).IsOfTypeOrSubclass<ITestMarker>());
+        Assert.False(typeof(string).IsOfTypeOrSubclass<TestClass>());
+    }
+
+    [Fact]
+    public void TestIsOfType_OnType_IsExactMatchOnly()
+    {
+        Assert.True(typeof(TestClass).IsOfType<TestClass>());
+        Assert.False(typeof(DerivedTestClass).IsOfType<TestClass>());
+        Assert.True(typeof(DerivedTestClass).IsNotOfType<TestClass>());
+    }
+
+    [Fact]
+    public void TestIsOfType_ObjectAndTypeReceiversAgree()
+    {
+        object obj = new DerivedTestClass();
+
+        Assert.Equal(obj.IsOfType<TestClass>(), typeof(DerivedTestClass).IsOfType<TestClass>());
+        Assert.Equal(obj.IsOfTypeOrSubclass<TestClass>(), typeof(DerivedTestClass).IsOfTypeOrSubclass<TestClass>());
+    }
+
+    private interface ITestMarker
+    {
+    }
+
+    private class TestClass : ITestMarker
     {
         public int Value { get; set; }
+    }
+
+    private class DerivedTestClass : TestClass
+    {
     }
 }

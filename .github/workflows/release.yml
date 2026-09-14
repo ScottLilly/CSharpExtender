@@ -1,0 +1,115 @@
+name: Release
+
+# Manually triggered from the Actions tab. Builds and tests the solution, packs the NuGet
+# package, and creates a GitHub Release with the .nupkg attached.
+#
+# The version comes from <Version> in CSharpExtender/CSharpExtender.csproj, so the release tag
+# can never disagree with the package. Bump it there before running this.
+on:
+  workflow_dispatch:
+    inputs:
+      draft:
+        description: "Create the release as a draft, to review before publishing"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --configuration Release --no-build --verbosity normal
+
+    # The library is the only thing that ships. Test.CSharpExtender and BenchmarkTestBench both
+    # set IsPackable=false, so naming the project here is belt and braces rather than the only
+    # thing stopping a stray .nupkg.
+    - name: Pack
+      run: dotnet pack CSharpExtender/CSharpExtender.csproj --configuration Release --no-build --output ./artifacts
+
+    # The version is read back off the file NuGet produced, so it is already normalized
+    # (a <Version> of 3.0.0.0 packs as 3.0.0).
+    - name: Read package version
+      id: package
+      run: |
+        COUNT=$(ls -1 ./artifacts/ScottLilly.CSharpExtender.*.nupkg | wc -l)
+        if [ "$COUNT" -ne 1 ]; then
+          echo "Expected exactly one .nupkg, found $COUNT:"
+          ls -1 ./artifacts
+          exit 1
+        fi
+        PACKAGE=$(ls ./artifacts/ScottLilly.CSharpExtender.*.nupkg)
+        VERSION=$(basename "$PACKAGE" .nupkg)
+        VERSION=${VERSION#ScottLilly.CSharpExtender.}
+        echo "path=$PACKAGE" >> "$GITHUB_OUTPUT"
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        echo "Packed $PACKAGE as version $VERSION"
+
+    - name: Check the tag is not already used
+      run: |
+        TAG="v${{ steps.package.outputs.version }}"
+        if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+          echo "Tag $TAG already exists. Bump <Version> in CSharpExtender/CSharpExtender.csproj."
+          exit 1
+        fi
+        echo "Tag $TAG is free."
+
+    # Pulls the matching "## Version x.y.z" section out of RELEASE_NOTES.md. Falls back to
+    # GitHub's generated notes if there is no such section, or no such file.
+    - name: Extract release notes
+      id: notes
+      run: |
+        VERSION="${{ steps.package.outputs.version }}"
+        : > ./release-notes.md
+        if [ -f RELEASE_NOTES.md ]; then
+          awk -v hdr="## Version $VERSION" '
+            index($0, hdr) == 1 { found = 1; next }
+            found && index($0, "## Version ") == 1 { exit }
+            found { print }
+          ' RELEASE_NOTES.md > ./release-notes.md
+        fi
+        if [ -s ./release-notes.md ]; then
+          echo "found=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "No '## Version $VERSION' section available. Using generated notes."
+          echo "found=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Create the GitHub Release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        VERSION="${{ steps.package.outputs.version }}"
+        ARGS=(--title "Version $VERSION" --target "$GITHUB_SHA")
+        if [ "${{ steps.notes.outputs.found }}" = "true" ]; then
+          ARGS+=(--notes-file ./release-notes.md)
+        else
+          ARGS+=(--generate-notes)
+        fi
+        if [ "${{ inputs.draft }}" = "true" ]; then
+          ARGS+=(--draft)
+        fi
+        gh release create "v$VERSION" "${ARGS[@]}" "${{ steps.package.outputs.path }}"
+
+    - name: Upload the package as a build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-package
+        path: ./artifacts/*.nupkg
