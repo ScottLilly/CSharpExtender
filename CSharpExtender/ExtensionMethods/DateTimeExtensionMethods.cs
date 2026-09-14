@@ -52,14 +52,16 @@ public static class DateTimeExtensionMethods
     }
 
     /// <summary>
-    /// Converts the provided date to an ISO 8601 string.
+    /// Converts the provided date to an ISO 8601 string, using the round-trip
+    /// ("O") format so the value's Kind is represented honestly. A Utc value ends
+    /// in "Z", a Local value carries its real offset, and an Unspecified value
+    /// carries neither.
     /// </summary>
-    /// <param name="date">The date to convert.</param>
+    /// <param name="dateTime">The date to convert.</param>
     /// <returns>The ISO 8601 string representation of the provided date.</returns>
     public static string ToIso8601String(this DateTime dateTime)
     {
-        return dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ",
-            CultureInfo.InvariantCulture);
+        return dateTime.ToString("O", CultureInfo.InvariantCulture);
     }
 
     /// <summary>

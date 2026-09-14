@@ -20,6 +20,16 @@ public enum SecondEnum
     SecondOption
 }
 
+[Flags]
+public enum FlagsEnum
+{
+    None = 0,
+    [Description("Read access")]
+    Read = 1,
+    [Description("Write access")]
+    Write = 2
+}
+
 public class Test_EnumExtensionMethods
 {
     [Fact]
@@ -42,6 +52,28 @@ public class Test_EnumExtensionMethods
     {
         Assert.Equal("TestValue3",
             TestEnum.TestValue3.GetEnumDescription());
+    }
+
+    [Fact]
+    public void GetEnumDescription_ReturnsValueForUndefinedEnumValue()
+    {
+        var undefined = (TestEnum)999;
+
+        Assert.Equal("999", undefined.GetEnumDescription());
+    }
+
+    [Fact]
+    public void GetEnumDescription_ReturnsCombinedNamesForCombinedFlags()
+    {
+        var combined = FlagsEnum.Read | FlagsEnum.Write;
+
+        Assert.Equal("Read, Write", combined.GetEnumDescription());
+    }
+
+    [Fact]
+    public void GetEnumDescription_ReturnsDescriptionForSingleFlag()
+    {
+        Assert.Equal("Read access", FlagsEnum.Read.GetEnumDescription());
     }
 
     [Fact]

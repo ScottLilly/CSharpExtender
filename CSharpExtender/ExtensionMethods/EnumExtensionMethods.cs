@@ -18,8 +18,11 @@ public static class EnumExtensionMethods
     /// Gets the description of an enum value.
     /// </summary>
     /// <param name="value">The enum value.</param>
-    /// <returns>The value of the DescriptionAttribute of the enum value.</returns>
-
+    /// <returns>
+    /// The value of the DescriptionAttribute of the enum value, or the value's
+    /// string representation when it has no DescriptionAttribute, is a combination
+    /// of [Flags] members, or is not a defined member of the enum.
+    /// </returns>
     public static string GetEnumDescription<TEnum>(this TEnum value) where TEnum : Enum
     {
         var enumType = typeof(TEnum);
@@ -27,7 +30,15 @@ public static class EnumExtensionMethods
 
         return enumCache.GetOrAdd((Enum)(object)value, enumValue =>
         {
+            // GetField returns null when the value is not a single named member,
+            // which is the case for undefined values and combined [Flags] values.
             var fieldInfo = enumType.GetField(enumValue.ToString());
+
+            if (fieldInfo == null)
+            {
+                return enumValue.ToString();
+            }
+
             var attributes = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
             return attributes.Length > 0

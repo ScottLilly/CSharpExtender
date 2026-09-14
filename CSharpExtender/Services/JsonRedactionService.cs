@@ -72,12 +72,10 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
             return;
         }
 
-        // Check if the current node path matches any of the redacted paths
-        if (_redactedPathRegex.IsMatch(currentPath))
-        {
-            // Apply redaction if the current path matches any redacted path
-            node = GetDefaultValue(node);
-        }
+        // A node is redacted by its parent, below, which is the only place the
+        // replacement can be written back into the document. The root has no
+        // parent, so it is out of scope: a pattern matching the root's empty
+        // path does not blank the whole document.
 
         // Recursively process child nodes (objects or arrays)
         if (node is JsonObject jObject)

@@ -13,6 +13,9 @@ Changes are against version 2.2.0, the previous release on NuGet.
 * `ObjectExtensionMethods.IsOfType<T>` and `IsNotOfType<T>` on an object are now an exact type match. An instance of a subclass of `T` no longer counts as being of type `T`. Use `IsOfTypeOrSubclass<T>` for the old behavior.
 * `ObjectExtensionMethods.IsOfTypeOrSubclass` and `IsNotOfTypeOrSubclass` on a `Type` now include the type itself and, for an interface, its implementations. They previously used `Type.IsSubclassOf`, which excluded both, so `typeof(Foo).IsOfTypeOrSubclass<Foo>()` returned `false`.
 * `JsonExtensionMethods.AsSerializedJson` and `StringBuilderExtensionMethods.AppendLineIfNotEmpty` each take a new optional parameter. Existing calls still compile, but they have to be recompiled.
+* `DateTimeExtensionMethods.ToIso8601String` uses the round-trip ("O") format instead of `yyyy-MM-ddTHH:mm:ss.fffZ`. It previously appended a literal "Z" to every value, publishing a local or unspecified time as though it were UTC. A `Utc` value now ends in "Z", a `Local` value carries its real offset, and an `Unspecified` value carries neither. The fractional second is now seven digits rather than three, so the string changes for every caller.
+* `StringExtensionMethods.IsDigitsOnly` returns `false` for a null string instead of `true`. An empty string still returns `true`.
+* `StringExtensionMethods.SplitPascalCase` returns an empty list for a null or empty string. It previously returned a list holding that null or empty string, so a caller iterating the result got a null element.
 
 ### Features
 
@@ -32,6 +35,11 @@ New members:
 * `NumericExtensionMethods.ApproximatelyEquals` - compares two floats within a percentage tolerance, handling `NaN`, infinity, and values near zero.
 * `StringExtensionMethods.ToMaxLengthOf` - trims a string to a maximum length, leaving a shorter string and a null alone.
 * `JsonExtensionMethods.AsSerializedJson` accepts an optional `JsonSerializerOptions`.
+
+### Bug Fixes
+
+* `JsonExtensionMethods.PrettyPrintJson(object, JsonSerializerOptions)` copies the supplied options instead of setting `WriteIndented` on the caller's instance. It previously threw `InvalidOperationException` for any options instance that had already been used to serialize, and silently left `WriteIndented` set to `true` on the caller's object.
+* `EnumExtensionMethods.GetEnumDescription` returns the value's string representation instead of throwing `NullReferenceException` for an undefined value or a combination of `[Flags]` members.
 
 ### Performance
 

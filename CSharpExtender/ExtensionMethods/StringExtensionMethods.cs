@@ -70,10 +70,15 @@ public static class StringExtensionMethods
     /// <summary>
     /// Returns 'true' is the string only contains digits
     /// </summary>
-    /// <param name="s"></param>
-    /// <returns></returns>
+    /// <param name="s">String to check. A null returns false.</param>
+    /// <returns>True, if the string is not null and contains no non-digit characters.</returns>
     public static bool IsDigitsOnly(this string s)
     {
+        if (s == null)
+        {
+            return false;
+        }
+
         ReadOnlySpan<char> span = s.AsSpan();
 
         for (int i = 0; i < span.Length; i++)
@@ -198,13 +203,13 @@ public static class StringExtensionMethods
     /// <summary>
     /// Splits a PascalCase string into list of words, based on locaiton of upper-case letters
     /// </summary>
-    /// <param name="input">String to split</param>
+    /// <param name="input">String to split. A null or empty string returns an empty list.</param>
     /// <returns>List of strings, split on the uppercase letters</returns>
     public static List<string> SplitPascalCase(this string input)
     {
         if (string.IsNullOrEmpty(input))
         {
-            return new List<string>() { input };
+            return new List<string>();
         }
 
         return Regex.Replace(input, @"(?<!^)(?<![\W_])(?=[A-Z])", " ").Split(' ').ToList();
@@ -226,7 +231,7 @@ public static class StringExtensionMethods
 
         if (maxLength < 0)
         {
-            throw new ArgumentOutOfRangeException("maxLength must be non-negative", nameof(maxLength));
+            throw new ArgumentOutOfRangeException(nameof(maxLength), "Must be zero or greater.");
         }
 
         return text.Length <= maxLength ? text : text.Substring(0, maxLength);

@@ -122,6 +122,18 @@ public class Test_StringExtensionMethods
     }
 
     [Fact]
+    public void IsDigitsOnly_NullString_ReturnsFalse()
+    {
+        Assert.False(((string)null).IsDigitsOnly());
+    }
+
+    [Fact]
+    public void IsDigitsOnly_EmptyString_ReturnsTrue()
+    {
+        Assert.True("".IsDigitsOnly());
+    }
+
+    [Fact]
     public void Test_Repeat_Success()
     {
         Assert.Equal("aaa", "a".Repeat(3));
@@ -306,12 +318,33 @@ public class Test_StringExtensionMethods
     }
 
     [Fact]
+    public void SplitPascalCase_NullString_ReturnsEmptyList()
+    {
+        Assert.Empty(((string)null).SplitPascalCase());
+    }
+
+    [Fact]
+    public void SplitPascalCase_EmptyString_ReturnsEmptyList()
+    {
+        Assert.Empty("".SplitPascalCase());
+    }
+
+    [Fact]
     public void TrimStringToMaximumLength()
     {
         Assert.Equal("asd", "asdfgh".ToMaxLengthOf(3));
         Assert.Equal("", "asdfgh".ToMaxLengthOf(0));
 
         Assert.Throws<ArgumentOutOfRangeException>(() => "asd".ToMaxLengthOf(-1));
+    }
+
+    [Fact]
+    public void ToMaxLengthOf_NegativeLength_NamesTheParameterInTheException()
+    {
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => "asd".ToMaxLengthOf(-1));
+
+        Assert.Equal("maxLength", exception.ParamName);
+        Assert.Contains("Must be zero or greater.", exception.Message);
     }
 
     // Define a custom type that does not support string conversion for testing

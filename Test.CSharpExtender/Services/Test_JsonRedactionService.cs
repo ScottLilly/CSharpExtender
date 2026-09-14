@@ -201,4 +201,24 @@ public class Test_JsonRedactionService
         // Assert
         Assert.Null(result["data"]);
     }
+
+    [Fact]
+    public void Redact_PatternMatchingRootPath_LeavesDocumentIntact()
+    {
+        // The root has no parent to write a replacement back into, so it is out
+        // of scope. A pattern matching its empty path must not blank the document.
+
+        // Arrange
+        var service = new JsonRedactionService(["^$"]);
+        var input = new JsonObject
+        {
+            ["secret"] = "value"
+        };
+
+        // Act
+        var result = service.Redact(input);
+
+        // Assert
+        Assert.Equal("value", result["secret"]!.ToString());
+    }
 }

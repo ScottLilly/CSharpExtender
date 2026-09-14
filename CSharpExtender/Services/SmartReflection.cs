@@ -11,6 +11,10 @@ namespace CSharpExtender.Services;
 public static class SmartReflection
 {
     private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
+    private static readonly ConcurrentDictionary<string, MethodInfo> _methodCache = new();
+
+    private const BindingFlags MethodSearchFlags =
+        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
     // Get cached PropertyInfo for a type, or fetch and cache if not present
     private static PropertyInfo[] GetCachedProperties(Type type)
@@ -157,18 +161,22 @@ public static class SmartReflection
     /// <typeparam name="TResult">The expected return type of the method.</typeparam>
     /// <param name="obj">The object to invoke the method on.</param>
     /// <param name="methodName">The name of the method to invoke.</param>
-    /// <param name="parameters">The parameters to pass to the method.</param>
+    /// <param name="parameters">
+    /// The parameters to pass to the method. An overloaded method name is resolved
+    /// against the runtime types of these arguments. A null argument has no runtime
+    /// type, so a call that passes one can only be resolved by argument count.
+    /// </param>
     /// <returns>The result of the method invocation.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="obj"/> is null.</exception>
-    /// <exception cref="ArgumentException">Thrown when the method does not exist.</exception>
+    /// <exception cref="ArgumentException">Thrown when no method matches the name and supplied arguments.</exception>
     /// <exception cref="InvalidCastException">Thrown when the method's return type is not assignable to <typeparamref name="TResult"/>.</exception>
     public static TResult InvokeMethod<TResult>(object obj, string methodName, params object[] parameters)
     {
         ArgumentNullException.ThrowIfNull(obj);
 
-        var method =
-            obj.GetType().GetMethod(methodName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
-            ?? throw new ArgumentException($"Method {methodName} not found");
+        var method = GetCachedMethod(obj.GetType(), methodName, parameters)
+            ?? throw new ArgumentException(
+                $"Method {methodName} not found, or no overload of it matches the supplied arguments");
 
         if (!typeof(TResult).IsAssignableFrom(method.ReturnType))
         {
@@ -176,5 +184,57 @@ public static class SmartReflection
         }
 
         return (TResult)method.Invoke(obj, parameters);
+    }
+
+    // Get cached MethodInfo for a type, name and argument shape, or resolve and cache if not present
+    private static MethodInfo GetCachedMethod(Type type, string methodName, object[] parameters)
+    {
+        var arguments = parameters ?? Array.Empty<object>();
+
+        // A null argument has no runtime type, so overloads cannot be told apart
+        // by it. Those calls fall back to matching on name and argument count.
+        Type[] argumentTypes =
+            arguments.Length > 0 && arguments.All(p => p != null)
+            ? arguments.Select(p => p.GetType()).ToArray()
+            : null;
+
+        string cacheKey =
+            $"{type.FullName}|{methodName}|{arguments.Length}|" +
+            (argumentTypes == null ? "?" : string.Join(",", argumentTypes.Select(t => t.FullName)));
+
+        return _methodCache.GetOrAdd(cacheKey,
+            _ => FindMethod(type, methodName, argumentTypes, arguments.Length));
+    }
+
+    private static MethodInfo FindMethod(Type type, string methodName, Type[] argumentTypes, int argumentCount)
+    {
+        if (argumentTypes != null)
+        {
+            var exactMatch = type.GetMethod(methodName, MethodSearchFlags, null, argumentTypes, null);
+
+            if (exactMatch != null)
+            {
+                return exactMatch;
+            }
+        }
+
+        // Either there were no argument types to match on, or no overload takes
+        // exactly those types (an int argument to a long parameter, for example).
+        var candidates = type.GetMethods(MethodSearchFlags)
+            .Where(m => m.Name == methodName)
+            .ToArray();
+
+        if (candidates.Length == 1)
+        {
+            return candidates[0];
+        }
+
+        var byArgumentCount = candidates
+            .Where(m => m.GetParameters().Length == argumentCount)
+            .ToArray();
+
+        // More than one remaining candidate is ambiguous, and there is no way for
+        // the caller to say which they meant, so treat it as no match.
+        return byArgumentCount.Length == 1 ? byArgumentCount[0] : null;
     }
 }

@@ -120,24 +120,19 @@ public static class JsonExtensionMethods
     /// Serializes the specified object to a JSON string with indented formatting.
     /// </summary>
     /// <param name="obj">The object to serialize.</param>
-    /// <param name="jsonSerializerOptions">The JSON serializer options (optional).</param>
+    /// <param name="jsonSerializerOptions">The JSON serializer options (optional). The caller's instance is not modified.</param>
     /// <returns>A formatted JSON string representation of the object.</returns>
-    public static string PrettyPrintJson(this object obj, 
+    public static string PrettyPrintJson(this object obj,
         JsonSerializerOptions jsonSerializerOptions = null)
     {
-        if (jsonSerializerOptions == null)
-        {
-            jsonSerializerOptions =
-                new JsonSerializerOptions { WriteIndented = true };
-        }
-        else
-        {
-            if (!jsonSerializerOptions.WriteIndented)
-            {
-                jsonSerializerOptions.WriteIndented = true;
-            }
-        }
+        // Copy rather than set WriteIndented on the caller's instance. A
+        // JsonSerializerOptions becomes read-only once it has been used to
+        // serialize, so writing to it would throw for any cached instance.
+        JsonSerializerOptions options =
+            jsonSerializerOptions == null
+            ? new JsonSerializerOptions { WriteIndented = true }
+            : new JsonSerializerOptions(jsonSerializerOptions) { WriteIndented = true };
 
-        return JsonSerializer.Serialize(obj, jsonSerializerOptions);
+        return JsonSerializer.Serialize(obj, options);
     }
 }

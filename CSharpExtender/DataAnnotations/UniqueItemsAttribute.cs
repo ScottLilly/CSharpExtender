@@ -1,14 +1,26 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
 namespace CSharpExtender.DataAnnotations;
 
+/// <summary>
+/// Validates that a collection property or field contains no duplicate items.
+/// </summary>
+/// <remarks>
+/// Two items are duplicates when they are the same type and every public instance
+/// property is equal. The comparison is shallow: a property whose value is a
+/// reference type without its own Equals override compares by reference.
+/// </remarks>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public class UniqueItemsAttribute : ValidationAttribute
 {
+    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_propertyCache =
+        new ConcurrentDictionary<Type, PropertyInfo[]>();
+
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
         // If the value is null, let [Required] handle it if needed
@@ -48,7 +60,7 @@ public class UniqueItemsAttribute : ValidationAttribute
         return ValidationResult.Success;
     }
 
-    private bool AreItemsEqual(object item1, object item2)
+    private static bool AreItemsEqual(object item1, object item2)
     {
         if (item1 == null && item2 == null)
         {
@@ -59,14 +71,25 @@ public class UniqueItemsAttribute : ValidationAttribute
             return false;
         }
 
+        // Items of different types are never duplicates. This also keeps the
+        // property walk below from reading item1's PropertyInfo off an item2
+        // that does not have that property, which throws TargetException.
+        var itemType = item1.GetType();
+        if (itemType != item2.GetType())
+        {
+            return false;
+        }
+
         // Handle simple types (e.g., string, int)
-        if (item1.GetType().IsValueType || item1 is string)
+        if (itemType.IsValueType || item1 is string)
         {
             return item1.Equals(item2);
         }
 
         // Handle complex objects by comparing all properties
-        var properties = item1.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var properties = s_propertyCache.GetOrAdd(itemType,
+            t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance));
+
         foreach (var prop in properties)
         {
             var value1 = prop.GetValue(item1);

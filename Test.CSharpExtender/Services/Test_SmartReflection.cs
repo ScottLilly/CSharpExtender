@@ -21,6 +21,23 @@ public class TestClass
     public string GetGreeting() => "Hello";
 
     private int PrivateMethod(int x) => x * 2;
+
+    public static string StaticMethod() => "Static";
+}
+
+public class OverloadedMethodClass
+{
+    public string Go(string a) => $"string:{a}";
+
+    public string Go(int a) => $"int:{a}";
+
+    public string Go(string a, string b) => $"two:{a}{b}";
+
+    // Neither overload is an exact match for an int argument, so the call cannot
+    // be resolved by type or by argument count
+    public string Widening(long a) => $"long:{a}";
+
+    public string Widening(double a) => $"double:{a}";
 }
 
 [Description("Class description")]
@@ -223,5 +240,56 @@ public class Test_SmartReflection
     {
         Assert.Throws<ArgumentNullException>(() =>
             SmartReflection.InvokeMethod<string>(null, "GetGreeting"));
+    }
+
+    [Fact]
+    public void InvokeMethod_SelectsOverload_MatchingArgumentTypes()
+    {
+        var obj = new OverloadedMethodClass();
+
+        Assert.Equal("string:x", SmartReflection.InvokeMethod<string>(obj, "Go", "x"));
+        Assert.Equal("int:7", SmartReflection.InvokeMethod<string>(obj, "Go", 7));
+    }
+
+    [Fact]
+    public void InvokeMethod_SelectsOverload_MatchingArgumentCount()
+    {
+        var obj = new OverloadedMethodClass();
+
+        Assert.Equal("two:xy", SmartReflection.InvokeMethod<string>(obj, "Go", "x", "y"));
+    }
+
+    [Fact]
+    public void InvokeMethod_SelectsOverload_ByWideningConversion()
+    {
+        var obj = new OverloadedMethodClass();
+
+        Assert.Equal("long:7", SmartReflection.InvokeMethod<string>(obj, "Widening", 7));
+    }
+
+    [Fact]
+    public void InvokeMethod_Throws_WhenNoOverloadTakesThatManyArguments()
+    {
+        var obj = new OverloadedMethodClass();
+
+        Assert.Throws<ArgumentException>(() =>
+            SmartReflection.InvokeMethod<string>(obj, "Go", "x", "y", "z"));
+    }
+
+    [Fact]
+    public void InvokeMethod_Throws_WhenANullArgumentLeavesOverloadsAmbiguous()
+    {
+        // A null argument has no runtime type, so Go(string) and Go(int) cannot
+        // be told apart
+        var obj = new OverloadedMethodClass();
+
+        Assert.Throws<ArgumentException>(() =>
+            SmartReflection.InvokeMethod<string>(obj, "Go", [null]));
+    }
+
+    [Fact]
+    public void InvokeMethod_InvokesStaticMethod()
+    {
+        Assert.Equal("Static", SmartReflection.InvokeMethod<string>(_testObject, "StaticMethod"));
     }
 }

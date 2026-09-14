@@ -14,6 +14,22 @@ public class Test_UniqueItemsAttribute
         public string Name { get; set; } = name;
     }
 
+    // Two unrelated types that share a property name, for mixed-type comparison
+    private class Dog(string name)
+    {
+        public string Name { get; set; } = name;
+    }
+
+    private class Cat(string name)
+    {
+        public string Name { get; set; } = name;
+    }
+
+    // Two unrelated types with no properties at all
+    private class Empty1;
+
+    private class Empty2;
+
     [Fact]
     public void UniqueItemsAttribute_NullList_ReturnsSuccess()
     {
@@ -177,5 +193,50 @@ public class Test_UniqueItemsAttribute
 
         Assert.NotEqual(ValidationResult.Success, result);
         Assert.Contains("must be applied to a collection", result.ErrorMessage);
+    }
+
+    [Fact]
+    public void UniqueItemsAttribute_MixedTypesSharingAPropertyName_ReturnsSuccess()
+    {
+        var model = new { Items = new List<object> { new Dog("Rex"), new Cat("Rex") } };
+        var attribute = new UniqueItemsAttribute();
+
+        var result = attribute.GetValidationResult(model.Items, GetValidationContext(model));
+
+        Assert.Equal(ValidationResult.Success, result);
+    }
+
+    [Fact]
+    public void UniqueItemsAttribute_MixedTypesWithNoSharedProperties_ReturnsSuccess()
+    {
+        var model = new { Items = new List<object> { new Empty1(), new Empty2() } };
+        var attribute = new UniqueItemsAttribute();
+
+        var result = attribute.GetValidationResult(model.Items, GetValidationContext(model));
+
+        Assert.Equal(ValidationResult.Success, result);
+    }
+
+    [Fact]
+    public void UniqueItemsAttribute_TwoInstancesOfAPropertyLessType_ReturnsError()
+    {
+        var model = new { Items = new List<object> { new Empty1(), new Empty1() } };
+        var attribute = new UniqueItemsAttribute();
+
+        var result = attribute.GetValidationResult(model.Items, GetValidationContext(model));
+
+        Assert.NotEqual(ValidationResult.Success, result);
+        Assert.Contains("indices 0 and 1", result.ErrorMessage);
+    }
+
+    [Fact]
+    public void UniqueItemsAttribute_MixedValueAndReferenceTypes_ReturnsSuccess()
+    {
+        var model = new { Items = new List<object> { 1, "1", new Dog("1") } };
+        var attribute = new UniqueItemsAttribute();
+
+        var result = attribute.GetValidationResult(model.Items, GetValidationContext(model));
+
+        Assert.Equal(ValidationResult.Success, result);
     }
 }

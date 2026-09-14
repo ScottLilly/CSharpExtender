@@ -108,6 +108,31 @@ public class Test_JsonExtensionMethods
         Assert.Equal(expected, result);
     }
 
+    [Fact]
+    public void PrettyPrintJsonWithOptions_DoesNotModifyCallersOptions()
+    {
+        var options = new JsonSerializerOptions { WriteIndented = false };
+
+        _personObject.PrettyPrintJson(options);
+
+        Assert.False(options.WriteIndented);
+    }
+
+    [Fact]
+    public void PrettyPrintJsonWithOptions_AcceptsAlreadyUsedOptions()
+    {
+        var options = new JsonSerializerOptions();
+
+        // Serializing with an options instance makes it read-only
+        JsonSerializer.Serialize(_personObject, options);
+
+        string result = _personObject.PrettyPrintJson(options);
+
+        string expected = $"{{{Environment.NewLine}  \"Name\": \"John\",{Environment.NewLine}  \"Age\": 30{Environment.NewLine}}}";
+
+        Assert.Equal(expected, result);
+    }
+
     #region Classes used for testing
 
     public class Person
