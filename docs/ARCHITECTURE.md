@@ -51,9 +51,15 @@ The test project is xUnit and predates the MSTest default in `~/.claude/rules/cs
 ### Reflection results are cached
 
 `SmartReflection` holds a `ConcurrentDictionary<Type, PropertyInfo[]>` so repeated property lookups
-on the same type do not re-enter `Type.GetProperties`. `EnumExtensionMethods` caches description
-attributes the same way. The cache is static and unbounded, which is the right trade for a fixed
-set of types in a single process.
+on the same type do not re-enter `Type.GetProperties`, and a second dictionary of resolved
+`MethodInfo` so `InvokeMethod` does not re-resolve an overload on every call.
+`UniqueItemsAttribute` keys a property cache on `Type` the same way. Every cache is static and
+unbounded, which is the right trade for a fixed set of types in a single process.
+
+`EnumExtensionMethods` caches differently, and deliberately. Its cache is a nested generic class
+holding one `ConcurrentDictionary<TEnum, string>` per closed enum type, rather than one dictionary
+keyed on `Type`, so a lookup neither boxes the enum value nor needs a second dictionary hit to
+reach the right inner cache.
 
 Lookups key on the object's **runtime** type, `obj.GetType()`, never on a generic parameter. The
 extension-method wrappers in `SmartReflectionExtensionMethods` pass the object as `object`, so
@@ -117,5 +123,3 @@ The release body is the matching `## Version x.y.z` section lifted out of `RELEA
 | `xunit`, `coverlet.collector` | Test project only |
 
 `System.Text.Json` is the only dependency that reaches a consumer.
-
-## Open questions

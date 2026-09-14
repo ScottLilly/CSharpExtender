@@ -10,7 +10,7 @@ The extension methods are written to make the source code read more like a natur
 ![Build Status](https://github.com/ScottLilly/CSharpExtender/actions/workflows/ci.yml/badge.svg)
 [![NuGet](https://img.shields.io/nuget/v/ScottLilly.CSharpExtender)](https://www.nuget.org/packages/ScottLilly.CSharpExtender/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/ScottLilly.CSharpExtender)](https://www.nuget.org/packages/ScottLilly.CSharpExtender/)
-[![License](https://img.shields.io/github/license/ScottLilly/CSharpExtender)](https://github.com/ScottLilly/CSharpExtender/LICENSE)
+[![License](https://img.shields.io/github/license/ScottLilly/CSharpExtender)](https://github.com/ScottLilly/CSharpExtender/blob/master/LICENSE.txt)
 
 ## DataAnnotations
 
@@ -146,6 +146,22 @@ This class provides extension methods for objects in C#.
 
 The `IsOfType` family is an exact type match. The `IsOfTypeOrSubclass` family also accepts subclasses and, when the type is an interface, implementations of it.
 
+### SmartReflectionExtensionMethods
+
+The same reflection helpers as the `SmartReflection` service class, called on an object instead of on a `Type`, so `myObject.GetPropertyValue<string>("Name")` reads the way the rest of this package does. They share `SmartReflection`'s property cache.
+
+Lookups use the object's runtime type, so an object held in a base-class or `object` variable still finds its own properties.
+
+- **`GetPropertiesWithAttribute<TAttribute>`**: Retrieves all properties on the object that have a specific attribute.
+- **`GetPropertyNames`**: Gets the names of all public instance properties on the object.
+- **`GetPropertyType`**: Gets the type of a specified property on the object.
+- **`GetPropertyValue<TProperty>`**: Gets the value of a property from the object, with type safety.
+- **`HasAttribute<TAttribute>`**: Checks if the object's type has a specific attribute.
+- **`HasProperty`**: Checks if the object has a specific property.
+- **`HasPropertyAttribute<TAttribute>`**: Checks if a property on the object has a specific attribute.
+- **`InvokeMethod<TResult>`**: Invokes a method on the object by name, with type-safe return value.
+- **`SetPropertyValue<TProperty>`**: Sets the value of a property on the object, with type safety.
+
 ### StringExtensionMethods
 
 This class provides extension methods for string manipulations in C#.
@@ -169,8 +185,8 @@ This class provides extension methods for string manipulations in C#.
 ### StringBuilderExtensionMethods
 
 This class provides extension methods for StringBuilder objects in C#. 
-All functions accept optional StringBuilderOptions object, which can be used to specify the behavior of the function. 
-The default value is `StringBuilderOptions.None`.
+All functions accept an optional `StringBuilderOptions` object, which can be used to specify the behavior of the function. 
+When it is omitted, the text is appended unchanged.
 
 - **`Append`**: Appends a string to the StringBuilder object.
 - **`AppendFormatted`**: Appends a formatted string to the StringBuilder object.
@@ -181,6 +197,20 @@ The default value is `StringBuilderOptions.None`.
 - **`AppendLineIf`**: Appends text and line feed to the StringBuilder object, if a function evaluates to 'true'.
 - **`AppendLineIfNotEmpty`**: If the passed in line is not empty, it will be appended to the StringBuilder object.
 - **`AppendLineJoined`**: Appends a joined string and line feed to the StringBuilder object, using the specified separator.
+
+#### StringBuilderOptions
+
+Properties on the options object, all optional. A new `StringBuilderOptions` with nothing set leaves the text alone.
+
+- **`EscapeHtml`**: HTML-encodes the text.
+- **`Format`**: A composite format string the text is passed through, such as `"[{0}]"`.
+- **`IndentDepth`**: How many tabs or spaces make up one indent level. Defaults to 4.
+- **`IndentLevel`**: How many levels to indent the text.
+- **`IndentType`**: `IndentType.Spaces` (the default) or `IndentType.Tabs`.
+- **`MaxLength`**: Trims the text to this length.
+- **`PrefixText`**: Text placed before the value.
+- **`SuffixText`**: Text placed after the value.
+- **`ToLower`** / **`ToUpper`**: Changes the case of the text. Setting both leaves the case alone.
 
 ### XmlExtensionMethods
 
@@ -208,11 +238,29 @@ Base class that handles property changed notification.
 Base class that inherits from ObservableModel (to handle property change notification) and also logs the values of the changed properties. Implements IChangeTracking.
 
 -**`AcceptChanges`**: Clears the PropertyChangeLog.  
+-**`IsChanged`**: True when the PropertyChangeLog holds at least one entry. Raises property changed when that changes.  
 -**`PropertyChangeLog`**: ObservableCollection of properties values that were changed.
+
+### PropertyChangedLog
+
+One entry in a `PropertyChangeTrackingModel`'s log. Inherit from it to record more about a change, such as the user who made it.
+
+-**`ChangeDateTime`**: When the property was changed.  
+-**`NewValue`**: The value the property was changed to.  
+-**`PropertyName`**: The name of the property that changed.
 
 ## Service classes
 
 Classes to handle common tasks.
+
+### BaseRedactionService and IRedactionService&lt;T&gt;
+
+The shared shape behind `JsonRedactionService` and `XmlRedactionService`. `BaseRedactionService` compiles the supplied patterns into one regex, and `IRedactionService<T>` declares the four members both services expose, where `T` is the document type being redacted.
+
+- **`Redact` (T)**: Redacts the document in place and returns it.
+- **`Redact` (string)**: Parses the text, redacts it, and returns the document.
+- **`RedactToString` (T)**: Redacts the document in place and returns the result as text.
+- **`RedactToString` (string)**: Parses the text, redacts it, and returns the result as text.
 
 ### CompositeRegexMatcher
 

@@ -21,21 +21,6 @@ are not issues yet.
 Everything below came out of a code review in September 2026 and has not been raised as a GitHub
 issue. None of it is decided.
 
-### Defects
-
-Each one is real and reproducible. None has a test covering it yet.
-
-| Where | What |
-|---|---|
-| `StringExtensionMethods.ToMaxLengthOf` | The `ArgumentOutOfRangeException` arguments are swapped. The ctor is `(paramName, message)` and the message is passed first, so the exception names a parameter called "maxLength must be non-negative" |
-| `JsonExtensionMethods.PrettyPrintJson(object, options)` | Mutates the caller's `JsonSerializerOptions` by setting `WriteIndented`. In .NET 8 that instance is read-only once used for serialization, so it throws `InvalidOperationException`. It should copy |
-| `DateTimeExtensionMethods.ToIso8601String` | Appends a literal `Z` regardless of `DateTimeKind`, so a local time is published as UTC |
-| `EnumExtensionMethods.GetEnumDescription` | `GetField` result is used without a null check, so an undefined value cast to the enum, or a `[Flags]` combination, throws `NullReferenceException` |
-| `UniqueItemsAttribute.AreItemsEqual` | Never compares the two items' types. Two different classes with matching property names and values count as duplicates, and two objects of different types with no properties always do |
-| `JsonRedactionService.RedactJsonNode` | `node = GetDefaultValue(node);` assigns to the parameter and is discarded. Dead line |
-| `SmartReflection.InvokeMethod` | Throws `AmbiguousMatchException` on an overloaded method name, because `GetMethod(string, BindingFlags)` cannot disambiguate |
-| `StringExtensionMethods.IsDigitsOnly` | Returns `true` for `""` and for `null`. Probably not what a caller expects, but changing it is breaking |
-
 ### Structure and tooling
 
 | Item | What it would cost |
@@ -54,17 +39,9 @@ Each one is real and reproducible. None has a test covering it yet.
 | `BaseRedactionService` and `CompositeRegexMatcher` | The same 15 lines of regex-combining constructor logic, twice. The base class could hold a matcher |
 | `BaseRedactionService` | `public` constructor on an `abstract` class. Should be `protected` |
 | `Common/Enums.cs` | Holds `IndentType`. The filename should match the type |
-| `StringExtensionMethods.IncludesTheWords` | Two `TODO` comments, one misspelled ("Verifiy"): confirm punctuation handling, and accept a `StringComparison` |
+| `StringExtensionMethods.IncludesTheWords` | A misspelled `TODO` comment ("Verifiy") asking whether punctuation is handled. Confirm the behavior, cover it with a test, and delete the comment |
 | `StringBuilderExtensionMethods.ProcessText` | Applies `MaxLength` before prefix, suffix, format and indent, so the result can exceed `MaxLength` |
 | `StringBuilderExtensionMethods.AppendFormatted` | An optional parameter sits before `params object[] args`, so callers must pass `null` explicitly to supply args |
-
-### Documentation
-
-| Item | What |
-|---|---|
-| `IRedactionService<T>` is not in the README | It is public. Document it, or decide it is an internal shape the two services happen to share and make it so |
-| `SmartReflectionExtensionMethods` is not in the README | `SmartReflection` is documented but the `this object` wrappers over it are not, so `myObject.GetPropertyValue<string>("Name")` is undiscoverable from the package page |
-| README license badge 404s | It links to `/CSharpExtender/LICENSE`. The file is `LICENSE.txt` and the link needs `/blob/master/` |
 
 ## Open design questions
 
@@ -80,9 +57,17 @@ It is the reason both services have identical member lists. Keeping it public in
 implementations and locks the four-member shape. It also has a latent problem: `Redact(T)` and
 `Redact(string)` are ambiguous if anyone closes it with `T` as `string`.
 
+The README documents it as public, alongside `BaseRedactionService`. Making it internal means
+taking that section back out.
+
 ### Does anything else belong in `tools/`
 
 The folder exists with only a README. `BenchmarkTestBench` is a solution project rather than a
 tool, because it references the library and runs from Visual Studio.
 
 ## Decided against
+
+- **Changing what `IsDigitsOnly` returns for an empty string.** It returns `true`, which was
+  raised as surprising. The null case was the real defect and is fixed: `null` now returns
+  `false`. Empty staying `true` is deliberate, is documented in `RELEASE_NOTES.md`, and changing
+  it now would be a second breaking change to one method in one release for no practical gain.
