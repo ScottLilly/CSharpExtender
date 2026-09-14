@@ -236,4 +236,73 @@ public static class StringExtensionMethods
 
         return text.Length <= maxLength ? text : text.Substring(0, maxLength);
     }
+
+    /// <summary>
+    /// Replaces the middle of a string with a mask character, leaving a number of
+    /// characters visible at each end.
+    /// </summary>
+    /// <param name="text">String to mask. A null or empty string is returned unchanged.</param>
+    /// <param name="maskChar">Character to replace each masked character with.</param>
+    /// <param name="visiblePrefixLength">How many characters to leave visible at the start.</param>
+    /// <param name="visibleSuffixLength">How many characters to leave visible at the end.</param>
+    /// <param name="preserveSeparators">
+    /// When true, characters that are not letters or digits are left visible and are
+    /// not counted towards the visible lengths, so a card or phone number keeps its
+    /// shape. When false, every character is maskable.
+    /// </param>
+    /// <returns>
+    /// The masked string. Everything is masked when the visible lengths would leave
+    /// nothing hidden, so a value shorter than expected is not revealed in full.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if either visible length is negative.</exception>
+    /// <example>
+    /// "1234-5678-9012-5678".Mask('*', 4, 4) returns "1234-****-****-5678"
+    /// </example>
+    public static string Mask(this string text, char maskChar = '*',
+        int visiblePrefixLength = 0, int visibleSuffixLength = 0,
+        bool preserveSeparators = true)
+    {
+        if (visiblePrefixLength < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(visiblePrefixLength), "Must be zero or greater.");
+        }
+
+        if (visibleSuffixLength < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(visibleSuffixLength), "Must be zero or greater.");
+        }
+
+        if (string.IsNullOrEmpty(text))
+        {
+            return text;
+        }
+
+        var characters = text.ToCharArray();
+
+        var maskableIndexes = new List<int>(characters.Length);
+
+        for (int i = 0; i < characters.Length; i++)
+        {
+            if (!preserveSeparators || char.IsLetterOrDigit(characters[i]))
+            {
+                maskableIndexes.Add(i);
+            }
+        }
+
+        // Leaving nothing masked would publish the whole value, so mask all of it
+        bool maskEverything =
+            visiblePrefixLength + visibleSuffixLength >= maskableIndexes.Count;
+
+        int firstMasked = maskEverything ? 0 : visiblePrefixLength;
+        int lastMasked = maskEverything
+            ? maskableIndexes.Count - 1
+            : maskableIndexes.Count - visibleSuffixLength - 1;
+
+        for (int i = firstMasked; i <= lastMasked; i++)
+        {
+            characters[maskableIndexes[i]] = maskChar;
+        }
+
+        return new string(characters);
+    }
 }

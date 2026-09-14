@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CSharpExtender.ExtensionMethods;
 
@@ -94,5 +96,112 @@ public static class NumericExtensionMethods
         float tolerance = Math.Max(max * tolerancePercentage, _minimumAbsoluteTolerance);
 
         return Math.Abs(value - other) <= tolerance;
+    }
+
+    /// <summary>
+    /// Calculates the sample standard deviation, dividing by n-1. Use this when the
+    /// values are a sample drawn from a larger population, which is the usual case.
+    /// </summary>
+    /// <param name="values">The values to measure. Needs at least two.</param>
+    /// <returns>The sample standard deviation.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if values is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if there are fewer than two values.</exception>
+    public static double StandardDeviation(this IEnumerable<double> values) =>
+        CalculateStandardDeviation(values, isSample: true);
+
+    /// <summary>
+    /// Calculates the sample standard deviation, dividing by n-1. Use this when the
+    /// values are a sample drawn from a larger population, which is the usual case.
+    /// </summary>
+    /// <param name="values">The values to measure. Needs at least two.</param>
+    /// <returns>The sample standard deviation.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if values is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if there are fewer than two values.</exception>
+    public static double StandardDeviation(this IEnumerable<int> values) =>
+        CalculateStandardDeviation(AsDoubles(values), isSample: true);
+
+    /// <summary>
+    /// Calculates the sample standard deviation, dividing by n-1. Use this when the
+    /// values are a sample drawn from a larger population, which is the usual case.
+    /// </summary>
+    /// <param name="values">The values to measure. Needs at least two.</param>
+    /// <returns>The sample standard deviation, as a double. Decimal has no square root.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if values is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if there are fewer than two values.</exception>
+    public static double StandardDeviation(this IEnumerable<decimal> values) =>
+        CalculateStandardDeviation(AsDoubles(values), isSample: true);
+
+    /// <summary>
+    /// Calculates the population standard deviation, dividing by n. Use this when the
+    /// values are the complete set, not a sample of it.
+    /// </summary>
+    /// <param name="values">The values to measure. Needs at least one.</param>
+    /// <returns>The population standard deviation.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if values is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if there are no values.</exception>
+    public static double PopulationStandardDeviation(this IEnumerable<double> values) =>
+        CalculateStandardDeviation(values, isSample: false);
+
+    /// <summary>
+    /// Calculates the population standard deviation, dividing by n. Use this when the
+    /// values are the complete set, not a sample of it.
+    /// </summary>
+    /// <param name="values">The values to measure. Needs at least one.</param>
+    /// <returns>The population standard deviation.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if values is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if there are no values.</exception>
+    public static double PopulationStandardDeviation(this IEnumerable<int> values) =>
+        CalculateStandardDeviation(AsDoubles(values), isSample: false);
+
+    /// <summary>
+    /// Calculates the population standard deviation, dividing by n. Use this when the
+    /// values are the complete set, not a sample of it.
+    /// </summary>
+    /// <param name="values">The values to measure. Needs at least one.</param>
+    /// <returns>The population standard deviation, as a double. Decimal has no square root.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if values is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if there are no values.</exception>
+    public static double PopulationStandardDeviation(this IEnumerable<decimal> values) =>
+        CalculateStandardDeviation(AsDoubles(values), isSample: false);
+
+    private static IEnumerable<double> AsDoubles<T>(IEnumerable<T> values) where T : struct =>
+        values?.Select(v => Convert.ToDouble(v));
+
+    private static double CalculateStandardDeviation(IEnumerable<double> values, bool isSample)
+    {
+        if (values == null)
+        {
+            throw new ArgumentNullException(nameof(values));
+        }
+
+        // Materialize once, so a lazy source is not enumerated twice
+        var list = values as IReadOnlyList<double> ?? values.ToList();
+
+        if (list.Count < (isSample ? 2 : 1))
+        {
+            throw new ArgumentException(
+                isSample
+                ? "A sample standard deviation needs at least two values."
+                : "A population standard deviation needs at least one value.",
+                nameof(values));
+        }
+
+        double total = 0;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            total += list[i];
+        }
+
+        double mean = total / list.Count;
+        double sumOfSquaredDeviations = 0;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            double deviation = list[i] - mean;
+            sumOfSquaredDeviations += deviation * deviation;
+        }
+
+        return Math.Sqrt(sumOfSquaredDeviations / (isSample ? list.Count - 1 : list.Count));
     }
 }

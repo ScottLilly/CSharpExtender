@@ -14,9 +14,12 @@ The extension methods are written to make the source code read more like a natur
 
 ## DataAnnotations
 
-Attribute classes to validate properties in models.
+Attribute classes to validate properties in models, and to declare how a property should be displayed.
 
 - **`AlphaOnlyAttribute`**: Check that a string only contains letters.
+- **`ConditionalRequiredAttribute`**: Check that a property has a value when another property on the same object holds a particular value. Set `DependentProperty` and `RequiredWhenValue`.
+- **`IsInListAttribute`**: Check that a property holds one of a fixed list of allowed values. Set `IgnoreCase` to compare strings without regard to case.
+- **`MaskAttribute`**: Declare how a property's value should be masked when displayed or logged. Set `MaskChar`, `VisiblePrefixLength` and `VisibleSuffixLength`. Not a validation attribute: apply it with `ToMaskedString` in `MaskExtensionMethods`.
 - **`UniqueItemsAttribute`**: Check that a collection property does not contain duplicate items.
 
 ## Collections
@@ -55,6 +58,13 @@ This class provides extension methods for `DateTime` in C#.
 - **`StartOfMonth`**: Returns the date for the start of the month, at 00:00:00, for the provided date.
 - **`ToIso8601String`**: Converts the provided date to an ISO 8601 round-trip ("O") string. A `Utc` value ends in "Z", a `Local` value carries its real offset, and an `Unspecified` value carries neither.
 
+### DisplayFormatExtensionMethods
+
+This class applies the `DisplayFormatAttribute` from `System.ComponentModel.DataAnnotations`, which is otherwise only honored by UI frameworks. A bare specifier (`"yyyy-MM-dd"`) and the conventional wrapped form (`"{0:yyyy-MM-dd}"`) are both accepted.
+
+- **`ToDisplayString`**: Returns the named property's value, formatted with its `DisplayFormatAttribute`.
+- **`ToDisplayStrings`**: Returns every property carrying a `DisplayFormatAttribute`, formatted, keyed by property name.
+
 ### EnumExtensionMethods
 
 This class provides extension methods for Enums in C#.
@@ -86,6 +96,13 @@ This class provides LINQ-related extension methods in C#.
 - **`None`**: Checks if none of the elements in the collection satisfy the provided condition. If no condition is provided, it checks if the collection is empty.
 - **`RandomElement`**: Returns a random element from the list.
 
+### MaskExtensionMethods
+
+This class applies the `MaskAttribute` declared on a property, for hiding a value when it is displayed or logged.
+
+- **`ToMaskedString`**: Returns the named property's value with its `MaskAttribute` applied.
+- **`ToMaskedStrings`**: Returns every property carrying a `MaskAttribute`, masked, keyed by property name.
+
 ### NumericExtensionMethods
 
 This class provides extension methods for numerical operations in C#.
@@ -96,6 +113,8 @@ This class provides extension methods for numerical operations in C#.
 - **`IsNegative`**: Checks if the given integer is negative.
 - **`IsOdd`**: Checks if the given integer is odd.
 - **`IsPositive`**: Checks if the given integer is positive.
+- **`PopulationStandardDeviation`**: Calculates the standard deviation of a collection, dividing by n. Use when the values are the complete set. Overloads for `double`, `int` and `decimal`.
+- **`StandardDeviation`**: Calculates the sample standard deviation of a collection, dividing by n-1. Use when the values are a sample of a larger population. Overloads for `double`, `int` and `decimal`.
 
 ### ObjectExtensionMethods
 
@@ -137,6 +156,7 @@ This class provides extension methods for string manipulations in C#.
 - **`HasText`**: Returns 'true' if the string is not null, empty, or only contains whitespace.
 - **`IncludesTheWords`**: Checks if a string contains all the words in the specified array.
 - **`IsDigitsOnly`**: Returns 'true' if the string only contains digits. A null returns 'false'.
+- **`Mask`**: Replaces the middle of a string with a mask character, leaving a number of characters visible at each end. Separators stay visible by default, so `"1234-5678-9012-5678".Mask('*', 4, 4)` returns `"1234-****-****-5678"`.
 - **`Matches`**: Check if strings are equal, using InvariantCultureIgnoreCase.
 - **`NullIfEmpty`**: Returns a null if the string is null, empty, or only contains whitespace.
 - **`RemoveText`**: Removes all instances of the specified text from the string.

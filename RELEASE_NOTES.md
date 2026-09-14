@@ -25,6 +25,11 @@ New classes:
 * `JsonRedactionService` and `XmlRedactionService` - remove sensitive values from JSON and XML, for paths matching a list of regex patterns. Both implement `IRedactionService<T>`.
 * `CompositeRegexMatcher` - checks a string against a list of regex patterns compiled into one.
 * `AlphaOnlyAttribute` - validates that a string property contains only letters.
+* `ConditionalRequiredAttribute` - validates that a property has a value when another property on the same object holds a particular value. Needs a call that supplies the object, such as `Validator.ValidateObject`.
+* `IsInListAttribute` - validates that a property holds one of a fixed list of allowed values, optionally ignoring case for strings.
+* `MaskAttribute` - declares how a property's value should be masked when displayed or logged. Not a `ValidationAttribute`: `MaskExtensionMethods` applies it.
+* `MaskExtensionMethods` - `ToMaskedString` and `ToMaskedStrings` apply a property's `MaskAttribute`.
+* `DisplayFormatExtensionMethods` - `ToDisplayString` and `ToDisplayStrings` apply the `DisplayFormatAttribute` from `System.ComponentModel.DataAnnotations`, which is otherwise only honored by UI frameworks. Accepts both a bare format specifier and the conventional `"{0:...}"` form.
 * `UniqueItemsAttribute` - validates that a collection property contains no duplicates.
 * `StringBuilderOptions` - controls case, indentation, maximum length, prefix and suffix text, HTML escaping, and formatting for the StringBuilder extension methods.
 
@@ -34,6 +39,8 @@ New members:
 * `GenericCache.TryGet` - retrieves a value without returning `default` for a key that is genuinely absent.
 * `NumericExtensionMethods.ApproximatelyEquals` - compares two floats within a percentage tolerance, handling `NaN`, infinity, and values near zero.
 * `StringExtensionMethods.ToMaxLengthOf` - trims a string to a maximum length, leaving a shorter string and a null alone.
+* `StringExtensionMethods.Mask` - replaces the middle of a string with a mask character, leaving a number of characters visible at each end. Separators stay visible by default, so a card or phone number keeps its shape.
+* `NumericExtensionMethods.StandardDeviation` and `PopulationStandardDeviation` - sample (n-1) and population (n) standard deviation of a collection, with overloads for `double`, `int` and `decimal`.
 * `JsonExtensionMethods.AsSerializedJson` accepts an optional `JsonSerializerOptions`.
 
 ### Bug Fixes
