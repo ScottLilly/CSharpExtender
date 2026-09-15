@@ -40,6 +40,13 @@ public class OverloadedMethodClass
     public string Widening(double a) => $"double:{a}";
 }
 
+// Same method name and argument shape as OverloadedMethodClass, to catch a method
+// cache that does not tell the two declaring types apart
+public class SameMethodNameClass
+{
+    public string Go(string a) => $"other:{a}";
+}
+
 [Description("Class description")]
 public class TestClassWithAttribute
 {
@@ -285,6 +292,15 @@ public class Test_SmartReflection
 
         Assert.Throws<ArgumentException>(() =>
             SmartReflection.InvokeMethod<string>(obj, "Go", [null]));
+    }
+
+    [Fact]
+    public void InvokeMethod_SameMethodNameOnTwoTypes_CallsEachType()
+    {
+        Assert.Equal("string:x",
+            SmartReflection.InvokeMethod<string>(new OverloadedMethodClass(), "Go", "x"));
+        Assert.Equal("other:x",
+            SmartReflection.InvokeMethod<string>(new SameMethodNameClass(), "Go", "x"));
     }
 
     [Fact]

@@ -118,7 +118,7 @@ public static class NumericExtensionMethods
     /// <exception cref="ArgumentNullException">Thrown if values is null.</exception>
     /// <exception cref="ArgumentException">Thrown if there are fewer than two values.</exception>
     public static double StandardDeviation(this IEnumerable<int> values) =>
-        CalculateStandardDeviation(AsDoubles(values), isSample: true);
+        CalculateStandardDeviation(values?.Select(v => (double)v), isSample: true);
 
     /// <summary>
     /// Calculates the sample standard deviation, dividing by n-1. Use this when the
@@ -129,7 +129,7 @@ public static class NumericExtensionMethods
     /// <exception cref="ArgumentNullException">Thrown if values is null.</exception>
     /// <exception cref="ArgumentException">Thrown if there are fewer than two values.</exception>
     public static double StandardDeviation(this IEnumerable<decimal> values) =>
-        CalculateStandardDeviation(AsDoubles(values), isSample: true);
+        CalculateStandardDeviation(values?.Select(v => (double)v), isSample: true);
 
     /// <summary>
     /// Calculates the population standard deviation, dividing by n. Use this when the
@@ -151,7 +151,7 @@ public static class NumericExtensionMethods
     /// <exception cref="ArgumentNullException">Thrown if values is null.</exception>
     /// <exception cref="ArgumentException">Thrown if there are no values.</exception>
     public static double PopulationStandardDeviation(this IEnumerable<int> values) =>
-        CalculateStandardDeviation(AsDoubles(values), isSample: false);
+        CalculateStandardDeviation(values?.Select(v => (double)v), isSample: false);
 
     /// <summary>
     /// Calculates the population standard deviation, dividing by n. Use this when the
@@ -162,11 +162,11 @@ public static class NumericExtensionMethods
     /// <exception cref="ArgumentNullException">Thrown if values is null.</exception>
     /// <exception cref="ArgumentException">Thrown if there are no values.</exception>
     public static double PopulationStandardDeviation(this IEnumerable<decimal> values) =>
-        CalculateStandardDeviation(AsDoubles(values), isSample: false);
+        CalculateStandardDeviation(values?.Select(v => (double)v), isSample: false);
 
-    private static IEnumerable<double> AsDoubles<T>(IEnumerable<T> values) where T : struct =>
-        values?.Select(v => Convert.ToDouble(v));
-
+    // The int and decimal overloads each cast in their own Select rather than
+    // sharing a generic one. A generic helper has to convert through
+    // Convert.ToDouble(object), which boxes every element.
     private static double CalculateStandardDeviation(IEnumerable<double> values, bool isSample)
     {
         if (values == null)

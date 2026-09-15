@@ -110,7 +110,7 @@ public static class StringBuilderExtensionMethods
     /// <returns></returns>
     public static StringBuilder AppendJoined<T>(this StringBuilder sb, string separator, IEnumerable<T> items, StringBuilderOptions options = null)
     {
-        if (items?.Any() == true)
+        if (HasItems(ref items))
         {
             sb.Append(ProcessText(string.Join(separator, items), options));
         }
@@ -129,7 +129,7 @@ public static class StringBuilderExtensionMethods
     /// <returns></returns>
     public static StringBuilder AppendLineJoined<T>(this StringBuilder sb, string separator, IEnumerable<T> items, StringBuilderOptions options = null)
     {
-        if (items?.Any() == true)
+        if (HasItems(ref items))
         {
             sb.AppendLine(ProcessText(string.Join(separator, items), options));
         }
@@ -172,6 +172,29 @@ public static class StringBuilderExtensionMethods
     // object just to read defaults off it. Private, never handed to a caller, and
     // never written to, so one shared instance is safe.
     private static readonly StringBuilderOptions s_defaultOptions = new StringBuilderOptions();
+
+    // string.Join walks the items itself, so testing with Any first walks a lazy
+    // source a second time. A source whose count can be read without walking it is
+    // left alone; anything else is materialized, so the caller's sequence is
+    // enumerated exactly once.
+    private static bool HasItems<T>(ref IEnumerable<T> items)
+    {
+        if (items == null)
+        {
+            return false;
+        }
+
+        if (items.TryGetNonEnumeratedCount(out int count))
+        {
+            return count > 0;
+        }
+
+        var materialized = items.ToList();
+
+        items = materialized;
+
+        return materialized.Count > 0;
+    }
 
     private static string ProcessText(string text, StringBuilderOptions options = null)
     {

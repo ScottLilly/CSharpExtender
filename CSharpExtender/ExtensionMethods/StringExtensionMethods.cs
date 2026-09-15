@@ -9,12 +9,17 @@ namespace CSharpExtender.ExtensionMethods;
 /// <summary>
 /// Extension methods for strings
 /// </summary>
-public static class StringExtensionMethods
+public static partial class StringExtensionMethods
 {
     // Inputs at or below this length get a stack buffer instead of a heap array
-    private const int _stackAllocCharLimit = 256;
+    private const int _stackAllocLimit = 256;
 
     private static readonly char[] _pathSeparators = new char[] { '/', '\\' };
+
+    // Source-generated, so the matcher is built at compile time rather than parsed
+    // and looked up in the process-wide regex cache on every call
+    [GeneratedRegex(@"(?<!^)(?<![\W_])(?=[A-Z])")]
+    private static partial Regex PascalCaseBoundary();
 
     /// <summary>
     /// Check if strings are equal, using InvariantCultureIgnoreCase
@@ -78,7 +83,7 @@ public static class StringExtensionMethods
 
         // Sized to the input rather than to the limit, so only what is needed
         // gets zero-initialized
-        Span<char> digits = source.Length <= _stackAllocCharLimit
+        Span<char> digits = source.Length <= _stackAllocLimit
             ? stackalloc char[source.Length]
             : new char[source.Length];
 
@@ -188,7 +193,11 @@ public static class StringExtensionMethods
     /// with CurrentCultureIgnoreCase.
     /// </summary>
     /// <param name="text"></param>
-    /// <param name="requiredWords"></param>
+    /// <param name="requiredWords">
+    /// The words to look for. Each is matched as a substring rather than as a whole
+    /// word, so punctuation around a word in the text does not stop it matching, and
+    /// a word contained in a longer one counts as present.
+    /// </param>
     /// <returns></returns>
     public static bool IncludesTheWords(this string text, params string[] requiredWords) =>
         text.IncludesTheWords(StringComparison.CurrentCultureIgnoreCase, requiredWords);
@@ -202,7 +211,11 @@ public static class StringExtensionMethods
     /// faster than the culture-aware options, and are the right choice whenever the
     /// text is not natural language a person will read.
     /// </param>
-    /// <param name="requiredWords"></param>
+    /// <param name="requiredWords">
+    /// The words to look for. Each is matched as a substring rather than as a whole
+    /// word, so punctuation around a word in the text does not stop it matching, and
+    /// a word contained in a longer one counts as present.
+    /// </param>
     /// <returns></returns>
     public static bool IncludesTheWords(this string text,
         StringComparison stringComparisonMethod, params string[] requiredWords)
@@ -228,7 +241,6 @@ public static class StringExtensionMethods
             return false;
         }
 
-        // TODO: Verifiy this handles punctuation
         var source = text.AsSpan();
 
         for (int i = 0; i < requiredWords.Length; i++)
@@ -309,7 +321,7 @@ public static class StringExtensionMethods
             return new List<string>();
         }
 
-        return Regex.Replace(input, @"(?<!^)(?<![\W_])(?=[A-Z])", " ").Split(' ').ToList();
+        return PascalCaseBoundary().Replace(input, " ").Split(' ').ToList();
     }
 
     /// <summary>
@@ -376,24 +388,30 @@ public static class StringExtensionMethods
 
         var characters = text.ToCharArray();
 
-        var maskableIndexes = new List<int>(characters.Length);
+        // Sized to the input rather than to the limit, so only what is needed
+        // gets zero-initialized
+        Span<int> maskableIndexes = characters.Length <= _stackAllocLimit
+            ? stackalloc int[characters.Length]
+            : new int[characters.Length];
+
+        int maskableCount = 0;
 
         for (int i = 0; i < characters.Length; i++)
         {
             if (!preserveSeparators || char.IsLetterOrDigit(characters[i]))
             {
-                maskableIndexes.Add(i);
+                maskableIndexes[maskableCount++] = i;
             }
         }
 
         // Leaving nothing masked would publish the whole value, so mask all of it
         bool maskEverything =
-            visiblePrefixLength + visibleSuffixLength >= maskableIndexes.Count;
+            visiblePrefixLength + visibleSuffixLength >= maskableCount;
 
         int firstMasked = maskEverything ? 0 : visiblePrefixLength;
         int lastMasked = maskEverything
-            ? maskableIndexes.Count - 1
-            : maskableIndexes.Count - visibleSuffixLength - 1;
+            ? maskableCount - 1
+            : maskableCount - visibleSuffixLength - 1;
 
         for (int i = firstMasked; i <= lastMasked; i++)
         {

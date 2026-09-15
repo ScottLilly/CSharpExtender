@@ -115,6 +115,56 @@ public class Test_StringBuilderExtensionMethods
     }
 
     [Fact]
+    public void AppendJoined_LazySource_IsEnumeratedOnce()
+    {
+        int enumerations = 0;
+
+        IEnumerable<string> Items()
+        {
+            enumerations++;
+            yield return "a";
+            yield return "b";
+        }
+
+        var sb = new StringBuilder();
+
+        sb.AppendJoined(",", Items());
+
+        Assert.Equal("a,b", sb.ToString());
+        Assert.Equal(1, enumerations);
+    }
+
+    [Fact]
+    public void AppendLineJoined_LazySource_IsEnumeratedOnce()
+    {
+        int enumerations = 0;
+
+        IEnumerable<string> Items()
+        {
+            enumerations++;
+            yield return "a";
+            yield return "b";
+        }
+
+        var sb = new StringBuilder();
+
+        sb.AppendLineJoined(",", Items());
+
+        Assert.Equal("a,b" + Environment.NewLine, sb.ToString());
+        Assert.Equal(1, enumerations);
+    }
+
+    [Fact]
+    public void AppendJoined_EmptyLazySource_DoesNotAppend()
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendJoined(",", Enumerable.Empty<string>().Where(s => s.Length > 0));
+
+        Assert.Empty(sb.ToString());
+    }
+
+    [Fact]
     public void AppendLineJoined_WithTabs_AppendsCorrectly()
     {
         var sb = new StringBuilder();

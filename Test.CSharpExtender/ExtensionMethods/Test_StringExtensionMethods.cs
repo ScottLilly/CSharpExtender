@@ -455,6 +455,35 @@ public class Test_StringExtensionMethods
         Assert.Empty("".SplitPascalCase());
     }
 
+    [Theory]
+    // A capital at the start is not a boundary
+    [InlineData("Asd", new[] { "Asd" })]
+    // Nor is one following an underscore or any other non-word character
+    [InlineData("asd_Asd", new[] { "asd_Asd" })]
+    [InlineData("asd-Asd", new[] { "asd-Asd" })]
+    // A run of capitals splits at each one
+    [InlineData("XMLHttpRequest", new[] { "X", "M", "L", "Http", "Request" })]
+    // A digit before a capital is a boundary
+    [InlineData("Address1Line2", new[] { "Address1", "Line2" })]
+    // Text that already has spaces splits on those too
+    [InlineData("first Second", new[] { "first", "Second" })]
+    public void SplitPascalCase_EdgeCases_SplitWhereTheyAlwaysHave(
+        string input, string[] expected)
+    {
+        Assert.Equal(expected, input.SplitPascalCase());
+    }
+
+    [Fact]
+    public void IncludesTheWords_MatchesSubstringsRatherThanWholeWords()
+    {
+        // Each word is looked for as a substring, so punctuation around it in the
+        // text does not stop a match, and a word inside a longer one counts
+        Assert.True("The dog, and the cat.".IncludesTheWords("dog", "cat"));
+        Assert.True("The dog, and the cat.".IncludesTheWords("dog,", "cat."));
+        Assert.True("concatenate".IncludesTheWords("cat"));
+        Assert.True("first-class".IncludesTheWords("t-c"));
+    }
+
     [Fact]
     public void TrimStringToMaximumLength()
     {

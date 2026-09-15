@@ -11,7 +11,7 @@ namespace CSharpExtender.Services;
 public static class SmartReflection
 {
     private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
-    private static readonly ConcurrentDictionary<string, MethodInfo> _methodCache = new();
+    private static readonly ConcurrentDictionary<MethodCacheKey, MethodInfo> _methodCache = new();
 
     private const BindingFlags MethodSearchFlags =
         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
@@ -20,6 +20,24 @@ public static class SmartReflection
     private static PropertyInfo[] GetCachedProperties(Type type)
     {
         return _propertyCache.GetOrAdd(type, t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance));
+    }
+
+    // A loop rather than FirstOrDefault, whose predicate captures propertyName into
+    // a closure and allocates that plus a delegate on every lookup, in the class
+    // that exists to make repeated reflection cheap
+    private static PropertyInfo FindProperty(Type type, string propertyName)
+    {
+        var properties = GetCachedProperties(type);
+
+        for (int i = 0; i < properties.Length; i++)
+        {
+            if (properties[i].Name == propertyName)
+            {
+                return properties[i];
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -43,10 +61,10 @@ public static class SmartReflection
     /// <exception cref="ArgumentException">Thrown when the property does not exist.</exception>
     public static bool HasPropertyAttribute<TAttribute>(Type type, string propertyName) where TAttribute : Attribute
     {
-        var prop = GetCachedProperties(type).FirstOrDefault(p => p.Name == propertyName)
+        var prop = FindProperty(type, propertyName)
             ?? throw new ArgumentException($"Property {propertyName} not found");
 
-        return prop?.GetCustomAttribute<TAttribute>() != null;
+        return prop.GetCustomAttribute<TAttribute>() != null;
     }
 
     /// <summary>
@@ -77,7 +95,7 @@ public static class SmartReflection
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
 
-        var prop = GetCachedProperties(obj.GetType()).FirstOrDefault(p => p.Name == propertyName)
+        var prop = FindProperty(obj.GetType(), propertyName)
             ?? throw new ArgumentException($"Property {propertyName} not found");
 
         if (!typeof(TProperty).IsAssignableFrom(prop.PropertyType))
@@ -103,7 +121,7 @@ public static class SmartReflection
     {
         ArgumentNullException.ThrowIfNull(obj);
 
-        var prop = GetCachedProperties(obj.GetType()).FirstOrDefault(p => p.Name == propertyName)
+        var prop = FindProperty(obj.GetType(), propertyName)
             ?? throw new ArgumentException($"Property {propertyName} not found");
 
         if (!prop.CanWrite)
@@ -126,7 +144,7 @@ public static class SmartReflection
     /// <returns>An array of property names.</returns>
     public static string[] GetPropertyNames(Type type)
     {
-        return GetCachedProperties(type).Select(p => p.Name).ToArray();
+        return Array.ConvertAll(GetCachedProperties(type), p => p.Name);
     }
 
     /// <summary>
@@ -137,7 +155,7 @@ public static class SmartReflection
     /// <returns>True if the property exists; otherwise, false.</returns>
     public static bool HasProperty(Type type, string propertyName)
     {
-        return GetCachedProperties(type).Any(p => p.Name == propertyName);
+        return FindProperty(type, propertyName) != null;
     }
 
     /// <summary>
@@ -149,7 +167,7 @@ public static class SmartReflection
     /// <exception cref="ArgumentException">Thrown when the property does not exist.</exception>
     public static Type GetPropertyType(Type type, string propertyName)
     {
-        var prop = GetCachedProperties(type).FirstOrDefault(p => p.Name == propertyName)
+        var prop = FindProperty(type, propertyName)
             ?? throw new ArgumentException($"Property {propertyName} not found");
 
         return prop.PropertyType;
@@ -193,17 +211,39 @@ public static class SmartReflection
 
         // A null argument has no runtime type, so overloads cannot be told apart
         // by it. Those calls fall back to matching on name and argument count.
-        Type[] argumentTypes =
-            arguments.Length > 0 && arguments.All(p => p != null)
-            ? arguments.Select(p => p.GetType()).ToArray()
-            : null;
+        Type[] argumentTypes = GetArgumentTypes(arguments);
 
-        string cacheKey =
-            $"{type.FullName}|{methodName}|{arguments.Length}|" +
-            (argumentTypes == null ? "?" : string.Join(",", argumentTypes.Select(t => t.FullName)));
+        var cacheKey = new MethodCacheKey(type, methodName, arguments.Length, argumentTypes);
 
+        // The overload taking a factory argument, so the lookup does not capture
+        // anything into a closure
         return _methodCache.GetOrAdd(cacheKey,
-            _ => FindMethod(type, methodName, argumentTypes, arguments.Length));
+            static (_, state) =>
+                FindMethod(state.type, state.methodName, state.argumentTypes, state.argumentCount),
+            (type, methodName, argumentTypes, argumentCount: arguments.Length));
+    }
+
+    // Null if any argument is null, because that call cannot be resolved by type
+    private static Type[] GetArgumentTypes(object[] arguments)
+    {
+        if (arguments.Length == 0)
+        {
+            return null;
+        }
+
+        var argumentTypes = new Type[arguments.Length];
+
+        for (int i = 0; i < arguments.Length; i++)
+        {
+            if (arguments[i] == null)
+            {
+                return null;
+            }
+
+            argumentTypes[i] = arguments[i].GetType();
+        }
+
+        return argumentTypes;
     }
 
     private static MethodInfo FindMethod(Type type, string methodName, Type[] argumentTypes, int argumentCount)

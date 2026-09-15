@@ -64,6 +64,25 @@ public class Test_MaskExtensionMethods
         Assert.Equal("12##56", "123456".Mask('#', 2, 2));
     }
 
+    [Theory]
+    [InlineData(255)]
+    [InlineData(256)]
+    [InlineData(257)]
+    [InlineData(1000)]
+    public void Mask_LongStringPastTheStackBuffer_MasksTheMiddle(int length)
+    {
+        // 256 characters is where the implementation switches from a stack buffer
+        // to a heap array, so cover both sides of it
+        string value = new string('a', length);
+
+        string result = value.Mask('*', 4, 4);
+
+        Assert.Equal(length, result.Length);
+        Assert.Equal("aaaa", result.Substring(0, 4));
+        Assert.Equal("aaaa", result.Substring(length - 4));
+        Assert.Equal(new string('*', length - 8), result.Substring(4, length - 8));
+    }
+
     [Fact]
     public void Mask_NegativeVisibleLength_Throws()
     {
