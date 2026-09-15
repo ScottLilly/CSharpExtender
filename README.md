@@ -36,6 +36,18 @@ This class creates a cache object with a generic key and generic value.
 
 ## Extension Methods
 
+### DataReaderExtensionMethods
+
+This class provides extension methods for reading a column out of an `IDataReader` by name instead of by ordinal, which is the forward-only path used for anything too large to pull into a `DataSet`.
+
+Every method returns `default` when the column holds `DBNull`, and a nullable type is converted to its underlying type, so a null column read as `int?` returns null. A column name that is not in the result set throws `IndexOutOfRangeException` naming the column and listing the ones that are there. A value that will not convert throws `InvalidCastException` naming the column, which is the whole point of reading by name.
+
+- **`GetValue<T>`**: Gets a typed value from a column, by name.
+- **`GetBoolean`**, **`GetDateTime`**, **`GetDecimal`**, **`GetDouble`**, **`GetFloat`**, **`GetGuid`**, **`GetInt32`**, **`GetString`**: Typed wrappers around `GetValue<T>`.
+- **`GetByteArray`**: Gets a column as a `byte[]`. Named for the type because `IDataReader` already declares a `GetBytes` that copies into a caller's buffer.
+
+These share their names with the ordinal-based methods `IDataReader` declares itself. Overload resolution separates them by argument type, so `reader.GetString("Name")` reaches this class and `reader.GetString(0)` reaches the reader's own.
+
 ### DataSetExtensionMethods
 
 This class provides extension methods for DataTables and DataSets
