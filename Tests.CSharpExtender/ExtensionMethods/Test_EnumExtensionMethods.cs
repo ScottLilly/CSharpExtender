@@ -1,5 +1,6 @@
 ﻿using CSharpExtender.ExtensionMethods;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Tests.CSharpExtender.ExtensionMethods;
 
@@ -10,6 +11,40 @@ public enum TestEnum
     [Description("Test Description 2")]
     TestValue2,
     TestValue3
+}
+
+public enum DisplayEnum
+{
+    [Display(Name = "First Display Name")]
+    FirstValue,
+    [Display(Name = "Second Display Name")]
+    SecondValue,
+    NoAttribute,
+
+    // Carries a DisplayAttribute that sets everything but Name, so GetName returns null
+    [Display(Description = "Has a description but no name")]
+    NoNameOnAttribute,
+
+    // Both attributes on one member, to prove the two caches are read independently
+    [Display(Name = "Display Wins Here")]
+    [Description("Description Wins Here")]
+    BothAttributes
+}
+
+public enum SecondDisplayEnum
+{
+    [Display(Name = "Other Enum First Value")]
+    FirstValue
+}
+
+[Flags]
+public enum DisplayFlagsEnum
+{
+    None = 0,
+    [Display(Name = "Read access")]
+    Read = 1,
+    [Display(Name = "Write access")]
+    Write = 2
 }
 
 public enum SecondEnum
@@ -140,6 +175,115 @@ public class Test_EnumExtensionMethods
         Assert.Contains("Test Description", descriptions);
         Assert.Contains("Test Description 2", descriptions);
         Assert.Contains("TestValue3", descriptions);
+    }
+
+    [Fact]
+    public void GetEnumDisplayName_ReturnsCorrectDisplayName()
+    {
+        Assert.Equal("First Display Name", DisplayEnum.FirstValue.GetEnumDisplayName());
+        Assert.Equal("Second Display Name", DisplayEnum.SecondValue.GetEnumDisplayName());
+
+        // Test caching
+        Assert.Equal("Other Enum First Value", SecondDisplayEnum.FirstValue.GetEnumDisplayName());
+    }
+
+    [Fact]
+    public void GetEnumDisplayName_ReturnsEnumNameIfNoDisplayAttribute()
+    {
+        Assert.Equal("NoAttribute", DisplayEnum.NoAttribute.GetEnumDisplayName());
+    }
+
+    [Fact]
+    public void GetEnumDisplayName_ReturnsEnumNameIfAttributeSetsNoName()
+    {
+        // A DisplayAttribute that sets Description but not Name falls back the same
+        // way a missing attribute does, rather than returning null
+        Assert.Equal("NoNameOnAttribute", DisplayEnum.NoNameOnAttribute.GetEnumDisplayName());
+    }
+
+    [Fact]
+    public void GetEnumDisplayName_ReturnsValueForUndefinedEnumValue()
+    {
+        var undefined = (DisplayEnum)999;
+
+        Assert.Equal("999", undefined.GetEnumDisplayName());
+    }
+
+    [Fact]
+    public void GetEnumDisplayName_ReturnsCombinedNamesForCombinedFlags()
+    {
+        var combined = DisplayFlagsEnum.Read | DisplayFlagsEnum.Write;
+
+        Assert.Equal("Read, Write", combined.GetEnumDisplayName());
+    }
+
+    [Fact]
+    public void GetEnumDisplayName_ReturnsDisplayNameForSingleFlag()
+    {
+        Assert.Equal("Read access", DisplayFlagsEnum.Read.GetEnumDisplayName());
+    }
+
+    [Fact]
+    public void GetEnumDisplayName_TwoEnumsSharingAnUnderlyingValue_DoNotShareACacheEntry()
+    {
+        // The cache is held per closed enum type rather than keyed on a boxed
+        // Enum, so two types whose members are both 0 must not collide
+        Assert.Equal(0, (int)DisplayEnum.FirstValue);
+        Assert.Equal(0, (int)SecondDisplayEnum.FirstValue);
+
+        Assert.Equal("First Display Name", DisplayEnum.FirstValue.GetEnumDisplayName());
+        Assert.Equal("Other Enum First Value", SecondDisplayEnum.FirstValue.GetEnumDisplayName());
+        Assert.Equal("First Display Name", DisplayEnum.FirstValue.GetEnumDisplayName());
+    }
+
+    [Fact]
+    public void GetEnumDisplayName_RepeatedCalls_ReturnTheSameAnswer()
+    {
+        // Second and later calls come from the cache rather than reflection
+        for (int i = 0; i < 3; i++)
+        {
+            Assert.Equal("Second Display Name", DisplayEnum.SecondValue.GetEnumDisplayName());
+            Assert.Equal("NoAttribute", DisplayEnum.NoAttribute.GetEnumDisplayName());
+            Assert.Equal("999", ((DisplayEnum)999).GetEnumDisplayName());
+        }
+    }
+
+    [Fact]
+    public void GetEnumDisplayName_DoesNotReadTheDescriptionAttribute()
+    {
+        // The two caches are separate, so a member carrying both attributes gets
+        // the right one from each method
+        Assert.Equal("Display Wins Here", DisplayEnum.BothAttributes.GetEnumDisplayName());
+        Assert.Equal("Description Wins Here", DisplayEnum.BothAttributes.GetEnumDescription());
+    }
+
+    [Fact]
+    public void GetEnumDescription_DoesNotReadTheDisplayAttribute()
+    {
+        // A member with only a DisplayAttribute has no description, so it falls
+        // back to its name rather than borrowing the display name
+        Assert.Equal("FirstValue", DisplayEnum.FirstValue.GetEnumDescription());
+    }
+
+    [Fact]
+    public void GetEnumDisplayNames_ReturnsAllDisplayNames()
+    {
+        var displayNames = EnumExtensionMethods.GetEnumDisplayNames<DisplayEnum>();
+
+        Assert.Contains("First Display Name", displayNames);
+        Assert.Contains("Second Display Name", displayNames);
+        Assert.Contains("NoAttribute", displayNames);
+        Assert.Contains("NoNameOnAttribute", displayNames);
+        Assert.Contains("Display Wins Here", displayNames);
+    }
+
+    [Fact]
+    public void GetEnumDisplayNames_ReturnsOneEntryPerMember()
+    {
+        var displayNames = EnumExtensionMethods.GetEnumDisplayNames<DisplayEnum>().ToList();
+
+        Assert.Equal(EnumExtensionMethods.GetEnumValues<DisplayEnum>().Count(),
+            displayNames.Count);
     }
 
     [Fact]

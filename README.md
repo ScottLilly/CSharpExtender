@@ -69,8 +69,10 @@ This class applies the `DisplayFormatAttribute` from `System.ComponentModel.Data
 
 This class provides extension methods for Enums in C#.
 
-- **`GetEnumDescription`**: Gets the description of an enum value.
+- **`GetEnumDescription`**: Gets the description of an enum value, from its `[Description]` attribute.
 - **`GetEnumDescriptions`**: Gets all descriptions of a specific enum type.
+- **`GetEnumDisplayName`**: Gets the display name of an enum value, from the `Name` on its `[Display]` attribute. Falls back to the value's string representation when there is no attribute, or the attribute sets no `Name`.
+- **`GetEnumDisplayNames`**: Gets all display names of a specific enum type.
 - **`GetEnumValues`**: Gets all values of a specific enum type, as a read-only collection. The same instance is returned to every caller.
 - **`ParseEnum`**: Parses a string to an enum value.
 
