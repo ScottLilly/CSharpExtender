@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>ScottLilly.$(AssemblyName)</PackageId>
     <Title>ScottLilly.CSharpExtender</Title>
@@ -16,7 +15,9 @@
     <RepositoryUrl>https://github.com/scottlilly/csharpextender</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csharp;extensions</PackageTags>
-    <PackageReleaseNotes>Release notes for every version: https://github.com/ScottLilly/CSharpExtender/blob/master/RELEASE_NOTES.md</PackageReleaseNotes>
+    <!-- The release workflow tags each release v$(Version), so this pins the notes to the
+         state they were in for this package rather than to whatever master says later. -->
+    <PackageReleaseNotes>Release notes for this version: https://github.com/ScottLilly/CSharpExtender/blob/v$(Version)/RELEASE_NOTES.md</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
   </PropertyGroup>

@@ -64,6 +64,19 @@ jobs:
         echo "version=$VERSION" >> "$GITHUB_OUTPUT"
         echo "Packed $PACKAGE as version $VERSION"
 
+    # PackageReleaseNotes builds a link to RELEASE_NOTES.md at the v$(Version) tag, while the tag
+    # itself is cut from the version NuGet wrote. If <Version> is ever put back into a form NuGet
+    # normalizes, the two disagree and the link on nuget.org resolves to nothing.
+    - name: Check the csproj version matches the packed version
+      run: |
+        DECLARED=$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' CSharpExtender/CSharpExtender.csproj)
+        if [ "$DECLARED" != "${{ steps.package.outputs.version }}" ]; then
+          echo "<Version> is $DECLARED but NuGet packed ${{ steps.package.outputs.version }}."
+          echo "Write <Version> the way NuGet publishes it, so the release notes link resolves."
+          exit 1
+        fi
+        echo "<Version> and the packed version agree at $DECLARED."
+
     - name: Check the tag is not already used
       run: |
         TAG="v${{ steps.package.outputs.version }}"

@@ -1,0 +1,13 @@
+<Project>
+
+  <!--
+    Solution-wide policy only. Target frameworks, the package version and everything else
+    about packaging stay in CSharpExtender.csproj, which is imported after this file and
+    would win anyway.
+  -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+</Project>
