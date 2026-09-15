@@ -52,12 +52,17 @@ All markdown except this file, `README.md` and `RELEASE_NOTES.md` lives in `docs
 - If a document has grown unwieldy, say so and offer to consolidate rather than adding to it.
 - No em dashes, no en dashes, no smart quotes.
 
+## Unbuilt work lives in GitHub issues
+
+This repo has no `docs/BACKLOG.md`. Everything not built yet is a GitHub issue, and an idea worth
+keeping is raised as one rather than written into a document.
+
 ## Settled work leaves no trace
 
-When something is **built**, delete it from `docs/BACKLOG.md` and do not write it up anywhere else.
-No superseded sections, no struck-through questions, no "amended on such a date" banners. The
-documents describe the project as it is now. Git holds the history.
+When something is **built**, do not write it up anywhere. No superseded sections, no struck-through
+questions, no "amended on such a date" banners. The documents describe the project as it is now.
+Git holds the history, and the commit that closes an issue holds the reasoning.
 
-When something is **decided against**, delete it from Proposed and leave one brief line under
-`## Decided against` saying why, so it does not get re-proposed. A GitHub issue that is dropped
-is closed as not planned and taken off its milestone, so it does not count as that milestone's work.
+When something is **decided against**, the reason goes where someone would hit the question again,
+which is usually the XML doc comment on the member it concerns. A GitHub issue that is dropped is
+closed as not planned and taken off its milestone, so it does not count as that milestone's work.

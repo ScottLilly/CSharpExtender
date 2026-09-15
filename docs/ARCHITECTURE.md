@@ -1,7 +1,7 @@
 # Architecture
 
-What exists and why it is built this way. Work that is not built yet lives in
-[BACKLOG.md](BACKLOG.md) and in the repo's GitHub issues.
+What exists and why it is built this way. Work that is not built yet lives in the repo's
+[GitHub issues](https://github.com/ScottLilly/CSharpExtender/issues).
 
 ## Shape
 

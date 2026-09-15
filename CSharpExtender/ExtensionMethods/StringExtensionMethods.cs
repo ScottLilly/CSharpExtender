@@ -110,6 +110,12 @@ public static partial class StringExtensionMethods
     /// </summary>
     /// <param name="s">String to check. A null returns false.</param>
     /// <returns>True, if the string is not null and contains no non-digit characters.</returns>
+    /// <remarks>
+    /// An empty string returns true, because it contains no character that is not a
+    /// digit. That reads as surprising and has been raised as such, but it is
+    /// deliberate and is not going to change: the null case was the real defect and
+    /// was fixed for 3.0.0. Test for emptiness separately if it matters to you.
+    /// </remarks>
     public static bool IsDigitsOnly(this string s)
     {
         if (s == null)
