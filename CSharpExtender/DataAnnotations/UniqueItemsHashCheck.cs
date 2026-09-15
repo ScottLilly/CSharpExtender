@@ -18,11 +18,10 @@ namespace CSharpExtender.DataAnnotations;
 /// </remarks>
 internal static class UniqueItemsHashCheck
 {
-    // Building the set costs more than the comparisons it saves on a short list.
-    // Measured on strings: the set is 3.1x slower at 4 items, 1.25x slower at 8,
-    // level at 12, and 1.35x faster at 16, which is also where the saving starts
-    // to be worth the set's own allocation. It goes on widening from there, to
-    // 6.6x at 64. See UniqueItemsHashThresholdBenchmarks.
+    // Where the set starts to cost less than comparing every pair, and where the
+    // saving starts to be worth the set's own allocation. Measured on strings: the
+    // two are level at 12 items, the set is 1.35x ahead at 16, and 6.6x at 64.
+    // See UniqueItemsHashThresholdBenchmarks.
     private const int _minimumItemCount = 16;
 
     private static readonly ConcurrentDictionary<Type, bool> s_dependableHashCode =

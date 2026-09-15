@@ -83,8 +83,7 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
         // Recursively process child nodes (objects or arrays)
         if (node is JsonObject jObject)
         {
-            // Left null until something matches, because most objects have nothing
-            // to redact and would otherwise allocate a list to say so
+            // Left null until something matches, which for most objects is never
             List<string> keysToRedact = null;
 
             foreach (var property in jObject)

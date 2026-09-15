@@ -7,12 +7,9 @@ namespace CSharpExtender.Services;
 /// that is reused for the whole document.
 /// </summary>
 /// <remarks>
-/// The services used to interpolate a new string at every level, for every node,
-/// whether or not anything matched. A document's nodes each got their own string,
-/// and that was most of what redacting one cost.
-/// Walking back up is a matter of setting the length, because a path is only ever
-/// extended at its end. The buffer is handed to the regex as a span, which is why
-/// nothing has to be turned back into a string.
+/// A path is only ever extended at its end, so walking back up to a parent is a
+/// matter of setting the length. The buffer is handed to the regex as a span, so
+/// no part of a path is ever turned into a string.
 /// Holds the state of a single document walk, so an instance is not shared and is
 /// not thread-safe.
 /// </remarks>

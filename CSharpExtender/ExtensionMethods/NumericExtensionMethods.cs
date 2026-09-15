@@ -164,9 +164,8 @@ public static class NumericExtensionMethods
     public static double PopulationStandardDeviation(this IEnumerable<decimal> values) =>
         CalculateStandardDeviation(values?.Select(v => (double)v), isSample: false);
 
-    // The int and decimal overloads each cast in their own Select rather than
-    // sharing a generic one. A generic helper has to convert through
-    // Convert.ToDouble(object), which boxes every element.
+    // The int and decimal overloads each cast in their own Select, so their values
+    // reach here as doubles without being boxed
     private static double CalculateStandardDeviation(IEnumerable<double> values, bool isSample)
     {
         if (values == null)

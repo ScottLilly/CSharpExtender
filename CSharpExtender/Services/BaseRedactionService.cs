@@ -7,9 +7,7 @@ namespace CSharpExtender.Services;
 /// paths get redacted.
 /// </summary>
 /// <remarks>
-/// The matching itself is <see cref="CompositeRegexMatcher"/>'s job. This class
-/// used to repeat that class's constructor rather than use it, so the same fifteen
-/// lines of pattern-combining existed twice.
+/// The matching itself is <see cref="CompositeRegexMatcher"/>'s job.
 /// </remarks>
 public abstract class BaseRedactionService
 {

@@ -16,8 +16,7 @@ public static partial class StringExtensionMethods
 
     private static readonly char[] _pathSeparators = new char[] { '/', '\\' };
 
-    // Source-generated, so the matcher is built at compile time rather than parsed
-    // and looked up in the process-wide regex cache on every call
+    // Source-generated, so the matcher is built at compile time
     [GeneratedRegex(@"(?<!^)(?<![\W_])(?=[A-Z])")]
     private static partial Regex PascalCaseBoundary();
 

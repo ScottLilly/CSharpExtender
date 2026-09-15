@@ -12,8 +12,7 @@ namespace CSharpExtender.Services;
 /// </summary>
 /// <typeparam name="TAttribute">The attribute being looked for.</typeparam>
 /// <remarks>
-/// Held per closed attribute type rather than in one dictionary keyed on both the
-/// type and the attribute, so a lookup is a single dictionary hit.
+/// Held per closed attribute type, so a lookup is a single dictionary hit.
 /// </remarks>
 internal static class AttributedPropertyCache<TAttribute> where TAttribute : Attribute
 {

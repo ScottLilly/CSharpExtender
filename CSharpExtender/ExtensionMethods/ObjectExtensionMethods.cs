@@ -16,9 +16,9 @@ public static class ObjectExtensionMethods
     /// <typeparam name="T">The type of the source object.</typeparam>
     /// <param name="source">The source object to clone.</param>
     /// <returns>A deep clone of the source object.</returns>
-    // Shared, because System.Text.Json caches the converter and type metadata it
-    // builds on the options instance. A new instance per call throws that away.
-    // Nothing hands this out or mutates it, and it is read-only after first use.
+    // Shared, so System.Text.Json keeps the converter and type metadata it builds
+    // on the instance. Nothing hands this out or mutates it, and it is read-only
+    // after first use.
     private static readonly JsonSerializerOptions s_deepCloneOptions =
         new JsonSerializerOptions
         {
@@ -33,8 +33,7 @@ public static class ObjectExtensionMethods
             return default;
         }
 
-        // UTF-8 bytes rather than a string, so the JSON is not transcoded to
-        // UTF-16 on the way out and back again on the way in
+        // UTF-8 bytes, so the JSON is never transcoded to UTF-16 and back
         byte[] json = JsonSerializer.SerializeToUtf8Bytes(source, s_deepCloneOptions);
 
         return JsonSerializer.Deserialize<T>(json, s_deepCloneOptions);

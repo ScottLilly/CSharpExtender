@@ -10,14 +10,11 @@ namespace CSharpExtender.DataAnnotations;
 /// remembering each item's property values as it reads them.
 /// </summary>
 /// <remarks>
-/// Every item is compared against every other one, and reading an item's properties
-/// again for each of those comparisons is what made the attribute expensive. A
-/// property is read the first time a comparison reaches it and remembered after
-/// that, so a list costs one read per property actually compared rather than one
-/// per pair.
-/// A comparison stops at the first property that differs, so reading all of an
-/// item's properties up front would do work nobody asked for. That is why the
-/// values are filled in only as deep as they are asked for.
+/// Every item is compared against every other one. A property is read the first
+/// time a comparison reaches it and remembered after that, so a list costs one read
+/// per property actually compared, not one per pair.
+/// A comparison stops at the first property that differs, so the values are filled
+/// in only as deep as they are asked for.
 /// An instance holds the state of a single validation call. It is not shared and
 /// not thread-safe. The PropertyInfo cache is static, and is.
 /// </remarks>

@@ -47,8 +47,7 @@ public class IsInListAttribute : ValidationAttribute
                 "The IsInListAttribute must be given at least one allowed value.");
         }
 
-        // A loop rather than Any, whose predicate captures the value and the
-        // attribute, so every validation allocated a closure and a delegate
+        // A loop, so a validation allocates no closure and no delegate
         for (int i = 0; i < _allowedValues.Length; i++)
         {
             if (AnnotationValueComparer.AreEqual(value, _allowedValues[i], IgnoreCase))

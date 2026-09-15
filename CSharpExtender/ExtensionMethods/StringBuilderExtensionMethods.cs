@@ -61,8 +61,7 @@ public static class StringBuilderExtensionMethods
     /// <param name="options"></param>
     public static void AppendLineIfNotEmpty(this StringBuilder sb, string text, StringBuilderOptions options = null)
     {
-        // Tested directly rather than through AppendLineIf, whose Func<bool> would
-        // capture text and allocate a closure and a delegate on every call
+        // Tested directly, so a call allocates no closure and no delegate
         if (!string.IsNullOrWhiteSpace(text))
         {
             sb.AppendLine(ProcessText(text, options));
@@ -167,14 +166,12 @@ public static class StringBuilderExtensionMethods
 
     #region Private Methods
 
-    // Every method in this class routes through ProcessText, and options is
-    // optional on all of them, so the common call would otherwise allocate an
-    // object just to read defaults off it. Private, never handed to a caller, and
-    // never written to, so one shared instance is safe.
+    // Stands in for the options a caller did not pass. Private, never handed to a
+    // caller, and never written to, so one shared instance is safe.
     private static readonly StringBuilderOptions s_defaultOptions = new StringBuilderOptions();
 
-    // string.Join walks the items itself, so testing with Any first walks a lazy
-    // source a second time. A source whose count can be read without walking it is
+    // string.Join walks the items itself, so this has to answer without walking
+    // them a second time. A source whose count can be read without walking it is
     // left alone; anything else is materialized, so the caller's sequence is
     // enumerated exactly once.
     private static bool HasItems<T>(ref IEnumerable<T> items)

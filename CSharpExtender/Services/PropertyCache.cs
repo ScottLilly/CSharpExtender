@@ -10,9 +10,7 @@ namespace CSharpExtender.Services;
 /// </summary>
 /// <remarks>
 /// A type's properties cannot change while the process runs, so the answer is the
-/// same every time it is worked out. Shared rather than held per caller: three
-/// classes were keeping their own copy of this cache, which meant three copies of
-/// the same arrays.
+/// same every time it is worked out. One cache serves the whole library.
 /// </remarks>
 internal static class PropertyCache
 {
@@ -32,10 +30,10 @@ internal static class PropertyCache
     /// what a missing property means.
     /// </summary>
     /// <remarks>
-    /// A walk of the cached array rather than Type.GetProperty, which throws
-    /// AmbiguousMatchException when a derived type hides a base property with
-    /// "new". The first match wins instead, which is what the reflection helpers
-    /// here have always done.
+    /// When a derived type hides a base property with "new", the type has two
+    /// properties of that name and the first one found wins. Which of the two that
+    /// is depends on the order Type.GetProperties returns them in, and .NET does
+    /// not guarantee one.
     /// </remarks>
     internal static PropertyInfo GetProperty(Type type, string propertyName) =>
         s_byName.GetOrAdd((type, propertyName), static key =>

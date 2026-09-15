@@ -8,9 +8,9 @@ namespace CSharpExtender.ExtensionMethods;
 /// </summary>
 public static class JsonExtensionMethods
 {
-    // Shared, because System.Text.Json caches the converter and type metadata it
-    // builds on the options instance. A new instance per call throws that away.
-    // Nothing hands this out or mutates it, and it is read-only after first use.
+    // Shared, so System.Text.Json keeps the converter and type metadata it builds
+    // on the instance. Nothing hands this out or mutates it, and it is read-only
+    // after first use.
     private static readonly JsonSerializerOptions s_indentedOptions =
         new JsonSerializerOptions { WriteIndented = true };
 
@@ -146,9 +146,8 @@ public static class JsonExtensionMethods
     public static string PrettyPrintJson(this object obj,
         JsonSerializerOptions jsonSerializerOptions = null)
     {
-        // Copy rather than set WriteIndented on the caller's instance. A
-        // JsonSerializerOptions becomes read-only once it has been used to
-        // serialize, so writing to it would throw for any cached instance.
+        // A JsonSerializerOptions becomes read-only once it has been used to
+        // serialize, so the caller's instance is copied and left untouched
         JsonSerializerOptions options =
             jsonSerializerOptions == null
             ? s_indentedOptions

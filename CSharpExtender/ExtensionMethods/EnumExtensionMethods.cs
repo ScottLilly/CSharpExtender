@@ -50,11 +50,10 @@ public static class EnumExtensionMethods
         });
     }
 
-    // Held per closed enum type. An enum's members are fixed when it is compiled,
-    // so this is worked out once rather than on every call. Read-only because every
-    // caller is handed this same instance: a cached array could be cast back to
-    // T[] through the IEnumerable<T> and written to, which would change what every
-    // later caller sees.
+    // Held per closed enum type, because an enum's members are fixed when it is
+    // compiled. Read-only because every caller is handed this same instance, and an
+    // array could be cast back to T[] through the IEnumerable<T> and written to,
+    // which would change what every later caller sees.
     private static class ValueCache<TEnum> where TEnum : Enum
     {
         internal static readonly ReadOnlyCollection<TEnum> Values =

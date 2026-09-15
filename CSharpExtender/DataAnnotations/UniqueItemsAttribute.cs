@@ -71,8 +71,8 @@ public class UniqueItemsAttribute : ValidationAttribute
     /// </summary>
     /// <remarks>
     /// The non-generic ICollection is what a List, an array, and anything else with
-    /// a known size implements. Cast&lt;object&gt; hid that: its iterator cannot
-    /// report a count, so ToList grew by doubling and copied as it went.
+    /// a known size implements, so the list is built at its final size and never
+    /// has to grow.
     /// </remarks>
     private static List<object> Materialize(IEnumerable collection)
     {

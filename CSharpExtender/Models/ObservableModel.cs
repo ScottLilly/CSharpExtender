@@ -14,9 +14,7 @@ public abstract class ObservableModel : INotifyPropertyChanged
     protected virtual bool SetProperty<T>(ref T backingField, T value,
         [CallerMemberName] string propertyName = null)
     {
-        // EqualityComparer rather than the static object.Equals, which boxed both
-        // sides for a value-typed property on every set, including the sets that
-        // turn out to change nothing
+        // EqualityComparer compares a value-typed property without boxing either side
         if (EqualityComparer<T>.Default.Equals(backingField, value))
         {
             return false;
@@ -31,12 +29,8 @@ public abstract class ObservableModel : INotifyPropertyChanged
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
-        // The event args are built here rather than held per property name. Holding
-        // them was measured and rejected: a dictionary lookup cost more than the
-        // small allocation it saved, and a caller passing a name it had computed
-        // would have grown the cache without limit.
-        // Nothing is built at all when there is no subscriber, because the
-        // null-conditional skips the argument along with the call.
+        // The null-conditional skips the argument along with the call, so nothing is
+        // built at all when there is no subscriber
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
