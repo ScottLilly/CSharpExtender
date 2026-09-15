@@ -56,6 +56,23 @@ NuGet, so a fix to a member introduced in the version being written up is a bug 
 Work that never reaches the package stays out: the test project, the benchmark bench, the build
 and CI, and the repo's own documents.
 
+## Default to UTC
+
+Anything that reads the clock uses `DateTime.UtcNow` or `DateTimeOffset.UtcNow`, never
+`DateTime.Now` or `DateTime.Today`, and anything that stores or compares a time keeps it in UTC.
+
+This is a library, so it does not know what time zone the consumer's user is in. Local time is a
+presentation concern and converting on the way out is the consumer's call, which they can only
+make if what they were handed is unambiguous. A local timestamp is not: for the hour that repeats
+every autumn, two values an hour apart read the same, and neither ordering nor elapsed time
+survives. `DateTime.Now` is also markedly slower, because it converts through the local time zone.
+
+Another offset, or a deliberately offset-free value, is fine when it is asked for. Say which it is
+and why in the member's XML doc comment, so the next reader does not "correct" it back.
+
+Say so when a change moves an existing member from local time to UTC. The value a consumer reads
+shifts by their offset, so it belongs under `### Breaking Changes` in `RELEASE_NOTES.md`.
+
 ## Where this repo differs from the C# rules
 
 | Rule | What this repo does |

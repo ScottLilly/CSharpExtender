@@ -245,7 +245,7 @@ Base class that inherits from ObservableModel (to handle property change notific
 
 One entry in a `PropertyChangeTrackingModel`'s log. Inherit from it to record more about a change, such as the user who made it.
 
--**`ChangeDateTime`**: When the property was changed.  
+-**`ChangeDateTime`**: When the property was changed, in UTC. `Kind` is `DateTimeKind.Utc`, so call `ToLocalTime()` to display it.  
 -**`NewValue`**: The value the property was changed to.  
 -**`PropertyName`**: The name of the property that changed.
 

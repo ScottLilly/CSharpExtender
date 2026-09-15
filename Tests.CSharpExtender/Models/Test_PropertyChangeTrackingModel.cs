@@ -118,6 +118,37 @@ public class Test_PropertyChangeTrackingModel
         Assert.Equal(2, model.PropertyChangeLog[1].NewValue);
         Assert.Equal("Test", model.PropertyChangeLog[2].NewValue);
     }
+
+    [Fact]
+    public void Test_ChangeDateTime_IsUtc()
+    {
+        var before = DateTime.UtcNow;
+
+        var model = new TestModel();
+        model.Id = 1;
+
+        var after = DateTime.UtcNow;
+        var stamped = model.PropertyChangeLog[0].ChangeDateTime;
+
+        Assert.Equal(DateTimeKind.Utc, stamped.Kind);
+        Assert.InRange(stamped, before, after);
+    }
+
+    [Fact]
+    public void Test_ChangeDateTime_OrdersEntriesByWhenTheyWereWritten()
+    {
+        // The point of UTC here: a local timestamp cannot order two entries written
+        // in the hour that repeats every autumn
+        var model = new TestModel();
+
+        model.Id = 1;
+        model.Name = "Test";
+
+        var first = model.PropertyChangeLog[0].ChangeDateTime;
+        var second = model.PropertyChangeLog[1].ChangeDateTime;
+
+        Assert.True(second >= first);
+    }
 }
 
 #region Class for unit tests
