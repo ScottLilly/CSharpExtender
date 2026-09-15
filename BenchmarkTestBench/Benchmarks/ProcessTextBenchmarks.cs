@@ -1,6 +1,5 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
-using CSharpExtender.Common;
 using CSharpExtender.ExtensionMethods;
 using CSharpExtender.Options;
 using System.Text;

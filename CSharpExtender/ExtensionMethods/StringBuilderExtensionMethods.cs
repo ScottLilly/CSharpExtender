@@ -1,5 +1,4 @@
-﻿using CSharpExtender.Common;
-using CSharpExtender.Options;
+﻿using CSharpExtender.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;

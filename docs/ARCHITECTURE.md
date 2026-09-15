@@ -23,11 +23,10 @@ Inside `CSharpExtender/`:
 | Folder | Holds |
 |---|---|
 | `Collections/` | `GenericCache<TKey, TValue>` |
-| `Common/` | Shared enums |
 | `DataAnnotations/` | `ValidationAttribute` subclasses |
 | `ExtensionMethods/` | One static class per extended type |
 | `Models/` | `ObservableModel`, `PropertyChangeTrackingModel` and their support types |
-| `Options/` | Option objects passed into extension methods |
+| `Options/` | Option objects passed into extension methods, and the types they are built from |
 | `Services/` | Classes that are not extension methods: RNG, regex matching, redaction, reflection |
 
 ## Decisions already made

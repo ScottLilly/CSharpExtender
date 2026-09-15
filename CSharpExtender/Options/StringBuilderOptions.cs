@@ -1,6 +1,4 @@
-﻿using CSharpExtender.Common;
-
-namespace CSharpExtender.Options;
+﻿namespace CSharpExtender.Options;
 
 /// <summary>
 /// Options for StringBuilder append operations

@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using CSharpExtender.ExtensionMethods;
-using CSharpExtender.Common;
 using CSharpExtender.Options;
 
 namespace Tests.CSharpExtender.ExtensionMethods;
