@@ -149,6 +149,29 @@ public class Test_PropertyChangeTrackingModel
 
         Assert.True(second >= first);
     }
+
+    [Fact]
+    public void Test_PropertyChangedLog_NullPropertyName_Throws()
+    {
+        Assert.Throws<ArgumentNullException>(() => new PropertyChangedLog(null!, "value"));
+    }
+
+    [Fact]
+    public void Test_SetProperty_NullPropertyName_NotifiesButLogsNothing()
+    {
+        // A null name is INotifyPropertyChanged's "every property changed", which the
+        // log has no single property to record it against
+        var model = new TestModel();
+        var raised = new List<string?>();
+
+        model.PropertyChanged += (_, args) => raised.Add(args.PropertyName);
+
+        Assert.True(model.SetNameWithNoPropertyName("Test"));
+        Assert.Equal("Test", model.Name);
+        Assert.Contains(null, raised);
+        Assert.Empty(model.PropertyChangeLog);
+        Assert.False(model.IsChanged);
+    }
 }
 
 #region Class for unit tests
@@ -175,6 +198,11 @@ public class TestModel : PropertyChangeTrackingModel
             SetProperty(ref _name, value);
         }
     }
+
+    // SetProperty is protected, and [CallerMemberName] fills the name in for every
+    // normal call, so reaching the null case takes a deliberate one
+    public bool SetNameWithNoPropertyName(string value) =>
+        SetProperty(ref _name, value, null);
 }
 
 #endregion

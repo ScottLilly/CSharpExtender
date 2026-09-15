@@ -27,7 +27,10 @@ public class PropertyChangeTrackingModel : ObservableModel, IChangeTracking
     {
         bool propertyChanged = base.SetProperty(ref field, value, propertyName);
 
-        if (propertyChanged)
+        // A null name is INotifyPropertyChanged's "every property changed", which a log
+        // of individual property changes has no way to record. The notification still
+        // goes out; there is just no one property to write down.
+        if (propertyChanged && propertyName != null)
         {
             PropertyChangeLog.Add(new PropertyChangedLog(propertyName, value));
         }

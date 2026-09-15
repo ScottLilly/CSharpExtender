@@ -9,7 +9,12 @@ namespace CSharpExtender.Models;
 /// </summary>
 public class PropertyChangedLog
 {
-    public string? PropertyName { get; }
+    /// <summary>
+    /// The name of the property that changed. Never null: an entry that cannot say
+    /// which property it is about records nothing.
+    /// </summary>
+    public string PropertyName { get; }
+
     public object? NewValue { get; }
 
     /// <summary>
@@ -24,8 +29,13 @@ public class PropertyChangedLog
     /// </remarks>
     public DateTime ChangeDateTime { get; }
 
-    public PropertyChangedLog(string? propertyName, object? newValue)
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="propertyName"/> is null.
+    /// </exception>
+    public PropertyChangedLog(string propertyName, object? newValue)
     {
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         PropertyName = propertyName;
         NewValue = newValue;
         ChangeDateTime = DateTime.UtcNow;
