@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Reflection;
 
 namespace CSharpExtender.DataAnnotations;
 
@@ -18,9 +16,6 @@ namespace CSharpExtender.DataAnnotations;
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public class UniqueItemsAttribute : ValidationAttribute
 {
-    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_propertyCache =
-        new ConcurrentDictionary<Type, PropertyInfo[]>();
-
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
         // If the value is null, let [Required] handle it if needed
@@ -42,12 +37,22 @@ public class UniqueItemsAttribute : ValidationAttribute
             return ValidationResult.Success;
         }
 
+        // Answers "are these all different" in one pass, for the shapes it can
+        // judge. It cannot say where a duplicate is, so a false answer still
+        // needs the walk below to name the two indexes.
+        if (UniqueItemsHashCheck.IsProvablyUnique(items))
+        {
+            return ValidationResult.Success;
+        }
+
+        var comparer = new UniqueItemsComparer(items);
+
         // Check for duplicates based on type
         for (int i = 0; i < items.Count - 1; i++)
         {
             for (int j = i + 1; j < items.Count; j++)
             {
-                if (AreItemsEqual(items[i], items[j]))
+                if (comparer.AreItemsEqual(i, j))
                 {
                     // Use ErrorMessage if provided; otherwise, use default
                     string errorMessage = ErrorMessage ??
@@ -58,57 +63,5 @@ public class UniqueItemsAttribute : ValidationAttribute
         }
 
         return ValidationResult.Success;
-    }
-
-    private static bool AreItemsEqual(object item1, object item2)
-    {
-        if (item1 == null && item2 == null)
-        {
-            return true;
-        }
-        if (item1 == null || item2 == null)
-        {
-            return false;
-        }
-
-        // Items of different types are never duplicates. This also keeps the
-        // property walk below from reading item1's PropertyInfo off an item2
-        // that does not have that property, which throws TargetException.
-        var itemType = item1.GetType();
-        if (itemType != item2.GetType())
-        {
-            return false;
-        }
-
-        // Handle simple types (e.g., string, int)
-        if (itemType.IsValueType || item1 is string)
-        {
-            return item1.Equals(item2);
-        }
-
-        // Handle complex objects by comparing all properties
-        var properties = s_propertyCache.GetOrAdd(itemType,
-            t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance));
-
-        foreach (var prop in properties)
-        {
-            var value1 = prop.GetValue(item1);
-            var value2 = prop.GetValue(item2);
-
-            if (value1 == null && value2 == null)
-            {
-                continue;
-            }
-            if (value1 == null || value2 == null)
-            {
-                return false;
-            }
-            if (!value1.Equals(value2))
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
