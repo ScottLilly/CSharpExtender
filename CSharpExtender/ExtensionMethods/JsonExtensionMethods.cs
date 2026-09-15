@@ -8,6 +8,12 @@ namespace CSharpExtender.ExtensionMethods;
 /// </summary>
 public static class JsonExtensionMethods
 {
+    // Shared, because System.Text.Json caches the converter and type metadata it
+    // builds on the options instance. A new instance per call throws that away.
+    // Nothing hands this out or mutates it, and it is read-only after first use.
+    private static readonly JsonSerializerOptions s_indentedOptions =
+        new JsonSerializerOptions { WriteIndented = true };
+
     /// <summary>
     /// Retrieves a value from a JSON element using a JSON path.
     /// </summary>
@@ -128,10 +134,7 @@ public static class JsonExtensionMethods
     {
         using JsonDocument doc = JsonDocument.Parse(json);
 
-        JsonSerializerOptions options = 
-            new JsonSerializerOptions { WriteIndented = true };
-
-        return JsonSerializer.Serialize(doc, options);
+        return JsonSerializer.Serialize(doc, s_indentedOptions);
     }
 
     /// <summary>
@@ -148,7 +151,7 @@ public static class JsonExtensionMethods
         // serialize, so writing to it would throw for any cached instance.
         JsonSerializerOptions options =
             jsonSerializerOptions == null
-            ? new JsonSerializerOptions { WriteIndented = true }
+            ? s_indentedOptions
             : new JsonSerializerOptions(jsonSerializerOptions) { WriteIndented = true };
 
         return JsonSerializer.Serialize(obj, options);
