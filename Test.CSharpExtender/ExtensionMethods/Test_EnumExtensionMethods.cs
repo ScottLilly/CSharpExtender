@@ -102,6 +102,27 @@ public class Test_EnumExtensionMethods
     }
 
     [Fact]
+    public void GetEnumValues_CannotBeWrittenThrough()
+    {
+        // Every caller gets the same instance, so it has to refuse to be changed
+        var values = EnumExtensionMethods.GetEnumValues<TestEnum>();
+
+        Assert.Throws<NotSupportedException>(() => ((IList<TestEnum>)values).Add(default));
+        Assert.Throws<NotSupportedException>(() => ((IList<TestEnum>)values)[0] = default);
+        Assert.Throws<InvalidCastException>(() => (TestEnum[])values);
+    }
+
+    [Fact]
+    public void GetEnumValues_ReturnsTheSameInstanceEveryCall()
+    {
+        Assert.Same(EnumExtensionMethods.GetEnumValues<TestEnum>(),
+            EnumExtensionMethods.GetEnumValues<TestEnum>());
+
+        Assert.NotSame(EnumExtensionMethods.GetEnumValues<TestEnum>(),
+            EnumExtensionMethods.GetEnumValues<SecondEnum>());
+    }
+
+    [Fact]
     public void GetEnumValues_ReturnsAllValues()
     {
         var values = EnumExtensionMethods.GetEnumValues<TestEnum>();

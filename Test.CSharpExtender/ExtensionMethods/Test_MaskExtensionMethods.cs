@@ -83,6 +83,32 @@ public class Test_MaskExtensionMethods
         Assert.Equal(new string('*', length - 8), result.Substring(4, length - 8));
     }
 
+    private class BaseModel
+    {
+        [Mask(VisibleSuffixLength = 2)]
+        public string Value { get; set; } = "base-value";
+    }
+
+    private class DerivedModel : BaseModel
+    {
+        [Mask(VisibleSuffixLength = 2)]
+        public new string Value { get; set; } = "derived-value";
+    }
+
+    [Fact]
+    public void ToMaskedString_PropertyHiddenByANewOne_DoesNotThrow()
+    {
+        // Type.GetProperty throws AmbiguousMatchException here. The lookup walks
+        // the type's properties and takes the first match instead, which is what
+        // the reflection helpers in this library have always done. Which of the
+        // two it finds is not guaranteed, because GetProperties does not promise
+        // an order, so this pins only that it answers rather than throws.
+        string result = new DerivedModel().ToMaskedString(nameof(BaseModel.Value));
+
+        Assert.EndsWith("ue", result);
+        Assert.Contains('*', result);
+    }
+
     [Fact]
     public void Mask_NegativeVisibleLength_Throws()
     {

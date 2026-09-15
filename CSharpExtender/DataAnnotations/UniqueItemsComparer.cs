@@ -1,5 +1,5 @@
+using CSharpExtender.Services;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -23,9 +23,6 @@ namespace CSharpExtender.DataAnnotations;
 /// </remarks>
 internal sealed class UniqueItemsComparer
 {
-    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_propertyCache =
-        new ConcurrentDictionary<Type, PropertyInfo[]>();
-
     private readonly List<object> _items;
 
     // Both allocated on the first comparison that walks properties, so a collection
@@ -73,7 +70,7 @@ internal sealed class UniqueItemsComparer
             return item1.Equals(item2);
         }
 
-        var properties = PropertiesOf(itemType);
+        var properties = PropertyCache.GetProperties(itemType);
 
         if (properties.Length == 0)
         {
@@ -131,8 +128,4 @@ internal sealed class UniqueItemsComparer
 
         return cached[propertyIndex];
     }
-
-    private static PropertyInfo[] PropertiesOf(Type type) =>
-        s_propertyCache.GetOrAdd(type,
-            t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance));
 }

@@ -1,8 +1,8 @@
+using CSharpExtender.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using System.Reflection;
 
 namespace CSharpExtender.ExtensionMethods;
 
@@ -34,11 +34,15 @@ public static class DisplayFormatExtensionMethods
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
 
-        var property = obj.GetType().GetProperty(propertyName)
-            ?? throw new ArgumentException($"Property {propertyName} not found");
+        var entry = AttributedPropertyCache<DisplayFormatAttribute>
+            .ForProperty(obj.GetType(), propertyName);
 
-        return FormatValue(property.GetValue(obj),
-            property.GetCustomAttribute<DisplayFormatAttribute>(), formatProvider);
+        if (entry.Property == null)
+        {
+            throw new ArgumentException($"Property {propertyName} not found");
+        }
+
+        return FormatValue(entry.Property.GetValue(obj), entry.Attribute, formatProvider);
     }
 
     /// <summary>
@@ -56,18 +60,11 @@ public static class DisplayFormatExtensionMethods
 
         var formatted = new Dictionary<string, string>();
 
-        foreach (var property in obj.GetType()
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        foreach (var entry in
+            AttributedPropertyCache<DisplayFormatAttribute>.ForType(obj.GetType()))
         {
-            var attribute = property.GetCustomAttribute<DisplayFormatAttribute>();
-
-            if (attribute == null)
-            {
-                continue;
-            }
-
-            formatted[property.Name] =
-                FormatValue(property.GetValue(obj), attribute, formatProvider);
+            formatted[entry.Property.Name] =
+                FormatValue(entry.Property.GetValue(obj), entry.Attribute, formatProvider);
         }
 
         return formatted;

@@ -1,3 +1,4 @@
+using CSharpExtender.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -61,7 +62,7 @@ public class ConditionalRequiredAttribute : ValidationAttribute
         }
 
         object instance = validationContext.ObjectInstance;
-        var dependentProperty = instance.GetType().GetProperty(DependentProperty);
+        var dependentProperty = PropertyCache.GetProperty(instance.GetType(), DependentProperty);
 
         if (dependentProperty == null)
         {

@@ -1,7 +1,7 @@
 using CSharpExtender.DataAnnotations;
+using CSharpExtender.Services;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace CSharpExtender.ExtensionMethods;
 
@@ -26,10 +26,14 @@ public static class MaskExtensionMethods
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
 
-        var property = obj.GetType().GetProperty(propertyName)
-            ?? throw new ArgumentException($"Property {propertyName} not found");
+        var entry = AttributedPropertyCache<MaskAttribute>.ForProperty(obj.GetType(), propertyName);
 
-        return MaskValue(property.GetValue(obj), property.GetCustomAttribute<MaskAttribute>());
+        if (entry.Property == null)
+        {
+            throw new ArgumentException($"Property {propertyName} not found");
+        }
+
+        return MaskValue(entry.Property.GetValue(obj), entry.Attribute);
     }
 
     /// <summary>
@@ -45,17 +49,10 @@ public static class MaskExtensionMethods
 
         var masked = new Dictionary<string, string>();
 
-        foreach (var property in obj.GetType()
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        foreach (var entry in AttributedPropertyCache<MaskAttribute>.ForType(obj.GetType()))
         {
-            var attribute = property.GetCustomAttribute<MaskAttribute>();
-
-            if (attribute == null)
-            {
-                continue;
-            }
-
-            masked[property.Name] = MaskValue(property.GetValue(obj), attribute);
+            masked[entry.Property.Name] =
+                MaskValue(entry.Property.GetValue(obj), entry.Attribute);
         }
 
         return masked;

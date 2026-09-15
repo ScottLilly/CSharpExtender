@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace CSharpExtender.ExtensionMethods;
@@ -49,14 +50,29 @@ public static class EnumExtensionMethods
         });
     }
 
+    // Held per closed enum type. An enum's members are fixed when it is compiled,
+    // so this is worked out once rather than on every call. Read-only because every
+    // caller is handed this same instance: a cached array could be cast back to
+    // T[] through the IEnumerable<T> and written to, which would change what every
+    // later caller sees.
+    private static class ValueCache<TEnum> where TEnum : Enum
+    {
+        internal static readonly ReadOnlyCollection<TEnum> Values =
+            Array.AsReadOnly((TEnum[])Enum.GetValues(typeof(TEnum)));
+    }
+
     /// <summary>
     /// Gets all values of a specific enum type.
     /// </summary>
     /// <typeparam name="T">The enum type.</typeparam>
-    /// <returns>An IEnumerable of all values of the enum type.</returns>
+    /// <returns>
+    /// A read-only collection of all values of the enum type. The same instance is
+    /// returned to every caller, so it cannot be added to, removed from, or written
+    /// through.
+    /// </returns>
     public static IEnumerable<T> GetEnumValues<T>() where T : Enum
     {
-        return (T[])Enum.GetValues(typeof(T));
+        return ValueCache<T>.Values;
     }
 
     /// <summary>

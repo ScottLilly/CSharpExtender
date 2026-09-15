@@ -10,35 +10,17 @@ namespace CSharpExtender.Services;
 /// </summary>
 public static class SmartReflection
 {
-    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
     private static readonly ConcurrentDictionary<MethodCacheKey, MethodInfo> _methodCache = new();
 
     private const BindingFlags MethodSearchFlags =
         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
     // Get cached PropertyInfo for a type, or fetch and cache if not present
-    private static PropertyInfo[] GetCachedProperties(Type type)
-    {
-        return _propertyCache.GetOrAdd(type, t => t.GetProperties(BindingFlags.Public | BindingFlags.Instance));
-    }
+    private static PropertyInfo[] GetCachedProperties(Type type) =>
+        PropertyCache.GetProperties(type);
 
-    // A loop rather than FirstOrDefault, whose predicate captures propertyName into
-    // a closure and allocates that plus a delegate on every lookup, in the class
-    // that exists to make repeated reflection cheap
-    private static PropertyInfo FindProperty(Type type, string propertyName)
-    {
-        var properties = GetCachedProperties(type);
-
-        for (int i = 0; i < properties.Length; i++)
-        {
-            if (properties[i].Name == propertyName)
-            {
-                return properties[i];
-            }
-        }
-
-        return null;
-    }
+    private static PropertyInfo FindProperty(Type type, string propertyName) =>
+        PropertyCache.GetProperty(type, propertyName);
 
     /// <summary>
     /// Checks if a type has a specific attribute.

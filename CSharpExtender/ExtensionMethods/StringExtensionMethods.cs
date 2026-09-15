@@ -21,6 +21,11 @@ public static partial class StringExtensionMethods
     [GeneratedRegex(@"(?<!^)(?<![\W_])(?=[A-Z])")]
     private static partial Regex PascalCaseBoundary();
 
+    private static class ConverterFor<T>
+    {
+        internal static readonly TypeConverter Value = TypeDescriptor.GetConverter(typeof(T));
+    }
+
     /// <summary>
     /// Check if strings are equal, using InvariantCultureIgnoreCase
     /// </summary>
@@ -297,7 +302,9 @@ public static partial class StringExtensionMethods
     /// <exception cref="FormatException">Thrown if the string is not in a format compliant with the type.</exception>
     public static T ConvertFromString<T>(this string input)
     {
-        TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
+        // Held per closed T, because the converter for a type never changes and
+        // asking TypeDescriptor for it again is most of what this method costs
+        TypeConverter converter = ConverterFor<T>.Value;
 
         if (converter != null && converter.CanConvertFrom(typeof(string)))
         {

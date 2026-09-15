@@ -60,10 +60,21 @@ public static class LinqExtensionMethods
     /// Ignores default values.
     /// </summary>
     /// <typeparam name="T">Data type</typeparam>
+    /// <typeparam name="TProperty">Data type of the property being compared</typeparam>
     /// <param name="source">List of items</param>
     /// <param name="propertySelector">Function to get the property value</param>
-    /// <param name="ignoreCase">Boolean to specify whether to ignore case</param>
+    /// <param name="comparer">
+    /// How to compare two property values. Defaults to the type's own equality.
+    /// </param>
     /// <returns>Whether or not any element in the collection has a duplicate property value</returns>
+    /// <remarks>
+    /// A property holding the type's default value, such as null or zero, is
+    /// skipped rather than compared, so two items that both leave it unset are not
+    /// duplicates. Whether a value is the default is decided by the type's own
+    /// equality rather than by the comparer, because a comparer describes which
+    /// values count as the same, not which value counts as unset.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown if source or propertySelector is null.</exception>
     public static bool HasDuplicatePropertyValue<T, TProperty>(
         this IEnumerable<T> source,
         Func<T, TProperty> propertySelector,
@@ -111,6 +122,7 @@ public static class LinqExtensionMethods
     /// <param name="propertySelector">Function to get the property value</param>
     /// <param name="ignoreCase">Boolean to specify whether to ignore case</param>
     /// <returns>Whether or not any element in the collection has a duplicate property value</returns>
+    /// <exception cref="ArgumentNullException">Thrown if source or propertySelector is null.</exception>
     public static bool HasDuplicatePropertyValue<T>(
         this IEnumerable<T> source,
         Func<T, string> propertySelector,
