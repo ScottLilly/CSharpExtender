@@ -83,23 +83,36 @@ public class XmlRedactionService(List<string> redactedPaths, bool ignoreCase = f
             return;
         }
 
-        RedactElement(document.DocumentElement, document.DocumentElement.Name);
+        var path = new RedactionPathBuilder();
+
+        path.Append(document.DocumentElement.Name);
+
+        RedactElement(document.DocumentElement, path);
     }
 
     /// <summary>
     /// Walks the element tree once, redacting any element or attribute whose path matches.
     /// </summary>
-    private void RedactElement(XmlElement element, string currentPath)
+    private void RedactElement(XmlElement element, RedactionPathBuilder path)
     {
+        int elementLength = path.Length;
+
         foreach (XmlAttribute attribute in element.Attributes)
         {
-            if (_redactedPathRegex.IsMatch($"{currentPath}.@{attribute.Name}"))
+            path.Append(".@");
+            path.Append(attribute.Name);
+
+            bool matches = _redactedPathRegex.IsMatch(path.AsSpan());
+
+            path.TruncateTo(elementLength);
+
+            if (matches)
             {
                 attribute.Value = string.Empty;
             }
         }
 
-        if (_redactedPathRegex.IsMatch(currentPath))
+        if (_redactedPathRegex.IsMatch(path.AsSpan()))
         {
             // Removing the content also removes the children, so there is nothing left to walk.
             element.IsEmpty = true;
@@ -108,19 +121,31 @@ public class XmlRedactionService(List<string> redactedPaths, bool ignoreCase = f
         }
 
         // Copy the child elements first, because redacting one can remove nodes from the collection.
-        var childElements = new List<XmlElement>();
+        // Left null until there is one, because a leaf element is the common case.
+        List<XmlElement> childElements = null;
 
         foreach (XmlNode child in element.ChildNodes)
         {
             if (child is XmlElement childElement)
             {
+                childElements ??= new List<XmlElement>();
                 childElements.Add(childElement);
             }
         }
 
+        if (childElements == null)
+        {
+            return;
+        }
+
         foreach (var childElement in childElements)
         {
-            RedactElement(childElement, $"{currentPath}.{childElement.Name}");
+            path.Append('.');
+            path.Append(childElement.Name);
+
+            RedactElement(childElement, path);
+
+            path.TruncateTo(elementLength);
         }
     }
 

@@ -221,4 +221,61 @@ public class Test_JsonRedactionService
         // Assert
         Assert.Equal("value", result["secret"]!.ToString());
     }
+
+    [Fact]
+    public void Redact_PatternMatchingOneArrayIndex_RedactsOnlyThatElement()
+    {
+        // Pins the indexed part of the path, "people[1].ssn", which the walk builds
+        // as it goes rather than holding as a string
+
+        // Arrange
+        var service = new JsonRedactionService([@"people\[1\]\.ssn"]);
+        var input = new JsonObject
+        {
+            ["people"] = new JsonArray(
+                new JsonObject { ["ssn"] = "first" },
+                new JsonObject { ["ssn"] = "second" },
+                new JsonObject { ["ssn"] = "third" })
+        };
+
+        // Act
+        var result = service.Redact(input);
+
+        // Assert
+        Assert.Equal("first", result["people"]![0]!["ssn"]!.ToString());
+        Assert.Equal("", result["people"]![1]!["ssn"]!.ToString());
+        Assert.Equal("third", result["people"]![2]!["ssn"]!.ToString());
+    }
+
+    [Fact]
+    public void Redact_PathLongerThanTheStartingBuffer_StillMatches()
+    {
+        // The path is built in a buffer that starts at 256 characters, so nesting
+        // deep enough to outgrow it has to keep working
+
+        // Arrange
+        string segment = new string('a', 40);
+        var service = new JsonRedactionService(["secret"]);
+
+        var leaf = new JsonObject { ["secret"] = "hide me" };
+        var node = leaf;
+
+        for (int i = 0; i < 10; i++)
+        {
+            node = new JsonObject { [segment] = node };
+        }
+
+        // Act
+        var result = service.Redact(node);
+
+        // Assert
+        JsonNode walked = result;
+
+        for (int i = 0; i < 10; i++)
+        {
+            walked = walked[segment]!;
+        }
+
+        Assert.Equal("", walked["secret"]!.ToString());
+    }
 }

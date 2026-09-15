@@ -64,7 +64,10 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
     /// <summary>
     /// Walks through the JSON nodes once and applies the redaction based on regex matching.
     /// </summary>
-    private void RedactJsonNode(JsonNode node, string currentPath = "")
+    private void RedactJsonNode(JsonNode node) =>
+        RedactJsonNode(node, new RedactionPathBuilder());
+
+    private void RedactJsonNode(JsonNode node, RedactionPathBuilder path)
     {
         // The current node is null or the pattern is empty, no need to process further
         if (node == null || _isEmptyPattern)
@@ -80,24 +83,39 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
         // Recursively process child nodes (objects or arrays)
         if (node is JsonObject jObject)
         {
-            var keysToRedact = new List<string>();
+            // Left null until something matches, because most objects have nothing
+            // to redact and would otherwise allocate a list to say so
+            List<string> keysToRedact = null;
 
             foreach (var property in jObject)
             {
-                var newPath = string.IsNullOrEmpty(currentPath) 
-                    ? property.Key 
-                    : $"{currentPath}.{property.Key}";
+                int parentLength = path.Length;
 
-                if (_redactedPathRegex.IsMatch(newPath))
+                if (parentLength > 0)
+                {
+                    path.Append('.');
+                }
+
+                path.Append(property.Key);
+
+                if (_redactedPathRegex.IsMatch(path.AsSpan()))
                 {
                     // If the property key matches, add it to the list of keys to redact
+                    keysToRedact ??= new List<string>();
                     keysToRedact.Add(property.Key);
                 }
                 else
                 {
                     // Recursively redact child nodes
-                    RedactJsonNode(property.Value, newPath);
+                    RedactJsonNode(property.Value, path);
                 }
+
+                path.TruncateTo(parentLength);
+            }
+
+            if (keysToRedact == null)
+            {
+                return;
             }
 
             // Redact the properties after iterating to avoid modifying the collection during iteration
@@ -110,8 +128,14 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
         {
             for (int i = 0; i < jArray.Count; i++)
             {
+                int parentLength = path.Length;
+
+                path.AppendIndex(i);
+
                 // Recursively redact array items
-                RedactJsonNode(jArray[i], $"{currentPath}[{i}]");
+                RedactJsonNode(jArray[i], path);
+
+                path.TruncateTo(parentLength);
             }
         }
     }
