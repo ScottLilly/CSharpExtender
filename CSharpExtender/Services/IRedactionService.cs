@@ -11,7 +11,7 @@ namespace CSharpExtender.Services;
 /// Every member rejects a null argument with an <see cref="ArgumentNullException"/>, so a caller
 /// holding the interface gets the same answer whichever implementation is behind it.
 /// </remarks>
-public interface IRedactionService<T>
+internal interface IRedactionService<T>
 {
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="obj"/> is null.</exception>
     T Redact(T obj);

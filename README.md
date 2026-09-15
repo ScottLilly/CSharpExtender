@@ -310,16 +310,11 @@ One entry in a `PropertyChangeTrackingModel`'s log. Inherit from it to record mo
 
 Classes to handle common tasks.
 
-### BaseRedactionService and IRedactionService&lt;T&gt;
+### BaseRedactionService
 
-The shared shape behind `JsonRedactionService` and `XmlRedactionService`. `BaseRedactionService` holds the supplied patterns as a `CompositeRegexMatcher`, which its subclasses reach through the protected `_matcher` field, and `IRedactionService<T>` declares the four members both services expose, where `T` is the document type being redacted.
+The shared base behind `JsonRedactionService` and `XmlRedactionService`. It holds the supplied patterns as a `CompositeRegexMatcher`, which its subclasses reach through the protected `_matcher` field.
 
-- **`Redact` (T)**: Redacts the document in place and returns it.
-- **`Redact` (string)**: Parses the text, redacts it, and returns the document.
-- **`RedactToString` (T)**: Redacts the document in place and returns the result as text.
-- **`RedactToString` (string)**: Parses the text, redacts it, and returns the result as text.
-
-Every member throws `ArgumentNullException` for a null argument, so a caller holding the interface gets the same answer whichever implementation is behind it.
+Both services expose the same four members, `Redact` and `RedactToString` over the document type and over text, and every one of them throws `ArgumentNullException` for a null argument.
 
 ### CompositeRegexMatcher
 
@@ -331,7 +326,7 @@ Accepts a list of regex patterns and checks if a string matches any of them. Thi
 
 ### JsonRedactionService
 
-Removes sensitive values from JSON, for paths matching any of a list of regex patterns. Implements `IRedactionService<JsonObject>`.
+Removes sensitive values from JSON, for paths matching any of a list of regex patterns.
 
 Paths are property names from the root, separated by `.`, with array entries indexed: the `ssn` property in `{"user": {"ssn": "..."}}` has the path `user.ssn`, and the first entry of an `items` array has the path `items[0]`. Patterns are matched anywhere in a path rather than against the whole of it, so a pattern matching an object also matches everything below it.
 
@@ -364,7 +359,7 @@ This class provides efficient, type-safe reflection utilities with property cach
 
 ### XmlRedactionService
 
-Removes sensitive values from XML, for paths matching any of a list of regex patterns. Implements `IRedactionService<XmlDocument>`.
+Removes sensitive values from XML, for paths matching any of a list of regex patterns.
 
 Paths are element names from the root, separated by `.`, so the `ssn` element in `<person><ssn/></person>` has the path `person.ssn`. An attribute is its element's path plus `.@` and the attribute name, so `person.@id`. Repeated sibling elements are not indexed, so one pattern redacts every element sharing a path. Patterns are matched anywhere in a path rather than against the whole of it, so a pattern matching an element also matches everything below it, including its attributes.
 

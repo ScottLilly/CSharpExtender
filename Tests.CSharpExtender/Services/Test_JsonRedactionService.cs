@@ -323,8 +323,8 @@ public class Test_JsonRedactionService
     [Fact]
     public void Redact_NullArgument_ThrowsTheSameAsTheXmlService()
     {
-        // The two services are reached through IRedactionService<T>, so a caller holding the
-        // interface has to get the same answer from either one
+        // The two services expose the same members, so a caller switching between them has to
+        // get the same answer from either one
         var json = new JsonRedactionService(["name"]);
         var xml = new XmlRedactionService(["name"]);
 
