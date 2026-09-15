@@ -36,8 +36,6 @@ issue. None of it is decided.
 
 | Item | What |
 |---|---|
-| `BaseRedactionService` and `CompositeRegexMatcher` | The same 15 lines of regex-combining constructor logic, twice. The base class could hold a matcher |
-| `BaseRedactionService` | `public` constructor on an `abstract` class. Should be `protected` |
 | `Common/Enums.cs` | Holds `IndentType`. The filename should match the type |
 | `StringBuilderExtensionMethods.ProcessText` | Applies `MaxLength` before prefix, suffix, format and indent, so the result can exceed `MaxLength` |
 | `StringBuilderExtensionMethods.AppendFormatted` | An optional parameter sits before `params object[] args`, so callers must pass `null` explicitly to supply args |
