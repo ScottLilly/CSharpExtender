@@ -26,7 +26,7 @@ New classes:
 
 * `SmartReflection` and `SmartReflectionExtensionMethods` - reflection helpers that cache each type's properties, so repeated lookups do not re-enter `Type.GetProperties`.
 * `JsonRedactionService` and `XmlRedactionService` - remove sensitive values from JSON and XML, for paths matching a list of regex patterns. Both implement `IRedactionService<T>`.
-* `CompositeRegexMatcher` - checks a string against a list of regex patterns compiled into one.
+* `CompositeRegexMatcher` - checks a string, or a span, against a list of regex patterns compiled into one. `HasPatterns` says whether there is anything to match at all. `BaseRedactionService` holds one of these and exposes it to its subclasses as the protected `_matcher` field, rather than repeating the pattern-combining logic.
 * `AlphaOnlyAttribute` - validates that a string property contains only letters.
 * `ConditionalRequiredAttribute` - validates that a property has a value when another property on the same object holds a particular value. Needs a call that supplies the object, such as `Validator.ValidateObject`.
 * `IsInListAttribute` - validates that a property holds one of a fixed list of allowed values, optionally ignoring case for strings.
@@ -80,6 +80,10 @@ Measured with BenchmarkDotNet. No behavior changes: every method below returns w
 * `SmartReflection` and `UniqueItemsAttribute` share that one property cache rather than keeping a copy each.
 * `XmlExtensionMethods.ElementAsString` and `ElementAsInt` find a plain element name by walking the node's children instead of going through `SelectSingleNode`, which parses the name as an XPath expression on every call. 11.2x faster, and it no longer allocates. An argument that is not a plain element name, such as `"contact/email"`, still goes to `SelectSingleNode`, so an expression that works today keeps working.
 * `JsonRedactionService` and `XmlRedactionService` build the path to the node they are looking at in one buffer that is reused for the whole document, and match it as a span, instead of interpolating a new string at every level for every node. They also hold off allocating their working lists until there is something to put in them. Redacting a 100 record document allocates 16% less for JSON and 20% less for XML. The walk itself, measured against the same document with no patterns to match, is 1.16x faster for JSON and 1.30x for XML, allocating 23% and 44% less. Parsing and re-serializing the document is most of what is left.
+* `JsonExtensionMethods.GetValueFromJsonPath` walks the path as spans rather than splitting it into an array of strings first. `JsonElement` can be asked for a property by span, so the segments never have to exist. Allocates 104 bytes where it allocated 256, and is around 1.1x faster.
+* `StringBuilderExtensionMethods` apply indentation, prefix and suffix in one pass. They were three separate concatenations, each building another string, plus a fourth for the indent itself. With all three set, 1.9x faster and allocating a third as much. Text with none of them set is unaffected.
+* `UniqueItemsAttribute` copies the collection it is validating into a list of the right size, rather than through `Cast<object>().ToList()`, whose iterator cannot report a count so the list grew by doubling and copied as it went. Between 1.6x and 2.0x faster for strings and 2.4x to 3.1x for numbers, allocating about half as much.
+* `IsInListAttribute` tests its allowed values with a loop rather than `Any`, whose predicate captured both the value being validated and the attribute, so every validation allocated a closure and a delegate. 3.6x faster and no longer allocates when the value is in the list.
 * `StringBuilderExtensionMethods.AppendJoined` and `AppendLineJoined` walk a lazy source once. They tested it with `Any()` and then handed the same sequence to `string.Join`, so a source that can only be enumerated once was read twice.
 
 ### Dependencies

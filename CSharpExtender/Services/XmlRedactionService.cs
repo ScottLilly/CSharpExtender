@@ -78,7 +78,7 @@ public class XmlRedactionService(List<string> redactedPaths, bool ignoreCase = f
 
     private void RedactDocument(XmlDocument document)
     {
-        if (_isEmptyPattern || document.DocumentElement == null)
+        if (!_matcher.HasPatterns || document.DocumentElement == null)
         {
             return;
         }
@@ -102,7 +102,7 @@ public class XmlRedactionService(List<string> redactedPaths, bool ignoreCase = f
             path.Append(".@");
             path.Append(attribute.Name);
 
-            bool matches = _redactedPathRegex.IsMatch(path.AsSpan());
+            bool matches = _matcher.MatchesAny(path.AsSpan());
 
             path.TruncateTo(elementLength);
 
@@ -112,7 +112,7 @@ public class XmlRedactionService(List<string> redactedPaths, bool ignoreCase = f
             }
         }
 
-        if (_redactedPathRegex.IsMatch(path.AsSpan()))
+        if (_matcher.MatchesAny(path.AsSpan()))
         {
             // Removing the content also removes the children, so there is nothing left to walk.
             element.IsEmpty = true;

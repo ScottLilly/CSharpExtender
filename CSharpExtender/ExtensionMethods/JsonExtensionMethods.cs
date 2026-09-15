@@ -35,17 +35,35 @@ public static class JsonExtensionMethods
             using JsonDocument doc = JsonDocument.Parse(json);
             JsonElement root = doc.RootElement;
 
-            foreach (var element in path.Split('.'))
+            // Walked as spans. JsonElement can be asked for a property by span, so
+            // splitting the path first would allocate an array and a string per
+            // segment that nothing else ever reads.
+            ReadOnlySpan<char> remaining = path.AsSpan();
+
+            while (true)
             {
-                if (root.ValueKind == JsonValueKind.Object && 
+                int separator = remaining.IndexOf('.');
+
+                ReadOnlySpan<char> element =
+                    separator < 0 ? remaining : remaining.Slice(0, separator);
+
+                if (root.ValueKind == JsonValueKind.Object &&
                     root.TryGetProperty(element, out var value))
                 {
                     root = value;
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Property '{element}' not found in JSON path '{path}'.");
+                    throw new InvalidOperationException(
+                        $"Property '{new string(element)}' not found in JSON path '{path}'.");
                 }
+
+                if (separator < 0)
+                {
+                    break;
+                }
+
+                remaining = remaining.Slice(separator + 1);
             }
 
             return root.ToString().ConvertFromString<T>();

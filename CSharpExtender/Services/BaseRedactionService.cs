@@ -1,37 +1,25 @@
-﻿using CSharpExtender.ExtensionMethods;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
 
 namespace CSharpExtender.Services;
 
+/// <summary>
+/// Shared base for the redaction services: holds the patterns that decide which
+/// paths get redacted.
+/// </summary>
+/// <remarks>
+/// The matching itself is <see cref="CompositeRegexMatcher"/>'s job. This class
+/// used to repeat that class's constructor rather than use it, so the same fifteen
+/// lines of pattern-combining existed twice.
+/// </remarks>
 public abstract class BaseRedactionService
 {
-    protected readonly Regex _redactedPathRegex;
-    protected readonly bool _isEmptyPattern;
+    /// <summary>
+    /// The paths to redact, combined into one matcher.
+    /// </summary>
+    protected readonly CompositeRegexMatcher _matcher;
 
-    public BaseRedactionService(IEnumerable<string> redactedPaths, bool ignoreCase = false)
+    protected BaseRedactionService(IEnumerable<string> redactedPaths, bool ignoreCase = false)
     {
-        redactedPaths = redactedPaths?.Where(p => !string.IsNullOrEmpty(p)).Distinct() ?? [];
-
-        _isEmptyPattern = redactedPaths.None() || redactedPaths.All(string.IsNullOrEmpty);
-
-        if (_isEmptyPattern)
-        {
-            _redactedPathRegex = null; // No regex needed
-            return;
-        }
-
-        var combinedPattern = string.Join("|", redactedPaths.Select(p => $"(?:{p})"));
-
-        var options = RegexOptions.Compiled | RegexOptions.CultureInvariant;
-
-        if (ignoreCase)
-        {
-            options |= RegexOptions.IgnoreCase;
-        }
-
-        _redactedPathRegex = new Regex(combinedPattern, options, TimeSpan.FromSeconds(2));
+        _matcher = new CompositeRegexMatcher(redactedPaths, ignoreCase);
     }
 }

@@ -255,7 +255,7 @@ Classes to handle common tasks.
 
 ### BaseRedactionService and IRedactionService&lt;T&gt;
 
-The shared shape behind `JsonRedactionService` and `XmlRedactionService`. `BaseRedactionService` compiles the supplied patterns into one regex, and `IRedactionService<T>` declares the four members both services expose, where `T` is the document type being redacted.
+The shared shape behind `JsonRedactionService` and `XmlRedactionService`. `BaseRedactionService` holds the supplied patterns as a `CompositeRegexMatcher`, which its subclasses reach through the protected `_matcher` field, and `IRedactionService<T>` declares the four members both services expose, where `T` is the document type being redacted.
 
 - **`Redact` (T)**: Redacts the document in place and returns it.
 - **`Redact` (string)**: Parses the text, redacts it, and returns the document.
@@ -264,9 +264,11 @@ The shared shape behind `JsonRedactionService` and `XmlRedactionService`. `BaseR
 
 ### CompositeRegexMatcher
 
-Accepts a list of regex patterns and checks if a string matches any of them.
+Accepts a list of regex patterns and checks if a string matches any of them. This is what `BaseRedactionService` uses to decide which paths get redacted.
 
--**`MatchesAny`**: Checks if the string matches any of the regex patterns.
+-**`MatchesAny` (string)**: Checks if the string matches any of the regex patterns.
+-**`MatchesAny` (ReadOnlySpan&lt;char&gt;)**: The same check, for text a caller has built and does not need as a string.
+-**`HasPatterns`**: Whether any pattern was supplied. False means nothing can ever match, so a caller can skip work it would only do to find that out.
 
 ### JsonRedactionService
 

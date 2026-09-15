@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace CSharpExtender.DataAnnotations;
 
@@ -31,7 +31,7 @@ public class UniqueItemsAttribute : ValidationAttribute
             return new ValidationResult("The UniqueItemsAttribute must be applied to a collection.");
         }
 
-        var items = collection.Cast<object>().ToList();
+        var items = Materialize(collection);
         if (items.Count == 0)
         {
             return ValidationResult.Success;
@@ -63,5 +63,28 @@ public class UniqueItemsAttribute : ValidationAttribute
         }
 
         return ValidationResult.Success;
+    }
+
+    /// <summary>
+    /// Copies the collection into a list that can be indexed, at its final size
+    /// when the collection knows how big it is.
+    /// </summary>
+    /// <remarks>
+    /// The non-generic ICollection is what a List, an array, and anything else with
+    /// a known size implements. Cast&lt;object&gt; hid that: its iterator cannot
+    /// report a count, so ToList grew by doubling and copied as it went.
+    /// </remarks>
+    private static List<object> Materialize(IEnumerable collection)
+    {
+        var items = collection is ICollection sized
+            ? new List<object>(sized.Count)
+            : new List<object>();
+
+        foreach (object item in collection)
+        {
+            items.Add(item);
+        }
+
+        return items;
     }
 }

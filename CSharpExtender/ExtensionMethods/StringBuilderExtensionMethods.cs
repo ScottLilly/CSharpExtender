@@ -235,27 +235,45 @@ public static class StringBuilderExtensionMethods
             result = string.Format(options.Format, result);
         }
 
-        // Add prefix and suffix
-        if (!string.IsNullOrEmpty(options.PrefixText))
-        {
-            result = options.PrefixText + result;
-        }
-        if (!string.IsNullOrEmpty(options.SuffixText))
-        {
-            result += options.SuffixText;
-        }
+        // Indentation, prefix and suffix were three separate concatenations, each
+        // building another string, plus a fourth for the indent itself. They only
+        // wrap what is already there, so they go on in one pass.
+        int indentWidth = options.IndentLevel <= 0
+            ? 0
+            : options.IndentType == IndentType.Tabs
+                ? options.IndentLevel
+                : options.IndentLevel * options.IndentDepth;
 
-        // Apply indentation
-        if (options.IndentLevel > 0)
-        {
-            string indent = options.IndentType == IndentType.Tabs
-                ? new string('\t', options.IndentLevel)
-                : new string(' ', options.IndentLevel * options.IndentDepth);
+        string prefix = options.PrefixText ?? string.Empty;
+        string suffix = options.SuffixText ?? string.Empty;
 
-            result = indent + result;
+        if (indentWidth == 0 && prefix.Length == 0 && suffix.Length == 0)
+        {
+            return result;
         }
 
-        return result;
+        char indentCharacter = options.IndentType == IndentType.Tabs ? '\t' : ' ';
+
+        return string.Create(
+            indentWidth + prefix.Length + result.Length + suffix.Length,
+            (result, prefix, suffix, indentWidth, indentCharacter),
+            static (destination, state) =>
+            {
+                int position = 0;
+
+                for (int i = 0; i < state.indentWidth; i++)
+                {
+                    destination[position++] = state.indentCharacter;
+                }
+
+                state.prefix.AsSpan().CopyTo(destination.Slice(position));
+                position += state.prefix.Length;
+
+                state.result.AsSpan().CopyTo(destination.Slice(position));
+                position += state.result.Length;
+
+                state.suffix.AsSpan().CopyTo(destination.Slice(position));
+            });
     }
 
     #endregion

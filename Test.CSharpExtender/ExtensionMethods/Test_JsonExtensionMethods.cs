@@ -51,8 +51,44 @@ public class Test_JsonExtensionMethods
     {
         string path = "invalid";
 
-        Assert.Throws<InvalidOperationException>(() => 
+        Assert.Throws<InvalidOperationException>(() =>
             _personJsonString.GetValueFromJsonPath(path));
+    }
+
+    [Theory]
+    // An empty segment, from a doubled, leading or trailing separator. None of
+    // these name a property, so each one is a path that cannot be followed.
+    [InlineData("Name..First")]
+    [InlineData(".Name")]
+    [InlineData("Name.")]
+    // A segment that is not an object cannot have children
+    [InlineData("Name.First.Deeper")]
+    public void GetValueFromJsonPath_MalformedPath_ThrowsInvalidOperationException(string path)
+    {
+        string json = "{ \"Name\": { \"First\": \"John\" } }";
+
+        Assert.Throws<InvalidOperationException>(() => json.GetValueFromJsonPath(path));
+    }
+
+    [Fact]
+    public void GetValueFromJsonPath_MissingSegment_NamesItInTheMessage()
+    {
+        string json = "{ \"Name\": { \"First\": \"John\" } }";
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            json.GetValueFromJsonPath("Name.Middle"));
+
+        Assert.Contains("'Middle'", exception.Message);
+        Assert.Contains("Name.Middle", exception.Message);
+    }
+
+    [Fact]
+    public void GetValueFromJsonPath_DeeplyNestedPath_ReturnsValue()
+    {
+        string json =
+            "{ \"a\": { \"b\": { \"c\": { \"d\": { \"e\": \"found\" } } } } }";
+
+        Assert.Equal("found", json.GetValueFromJsonPath("a.b.c.d.e"));
     }
 
     [Fact]

@@ -70,7 +70,7 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
     private void RedactJsonNode(JsonNode node, RedactionPathBuilder path)
     {
         // The current node is null or the pattern is empty, no need to process further
-        if (node == null || _isEmptyPattern)
+        if (node == null || !_matcher.HasPatterns)
         {
             return;
         }
@@ -98,7 +98,7 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
 
                 path.Append(property.Key);
 
-                if (_redactedPathRegex.IsMatch(path.AsSpan()))
+                if (_matcher.MatchesAny(path.AsSpan()))
                 {
                     // If the property key matches, add it to the list of keys to redact
                     keysToRedact ??= new List<string>();

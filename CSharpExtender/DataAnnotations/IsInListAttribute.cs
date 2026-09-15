@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace CSharpExtender.DataAnnotations;
 
@@ -48,10 +47,14 @@ public class IsInListAttribute : ValidationAttribute
                 "The IsInListAttribute must be given at least one allowed value.");
         }
 
-        if (_allowedValues.Any(allowed =>
-                AnnotationValueComparer.AreEqual(value, allowed, IgnoreCase)))
+        // A loop rather than Any, whose predicate captures the value and the
+        // attribute, so every validation allocated a closure and a delegate
+        for (int i = 0; i < _allowedValues.Length; i++)
         {
-            return ValidationResult.Success;
+            if (AnnotationValueComparer.AreEqual(value, _allowedValues[i], IgnoreCase))
+            {
+                return ValidationResult.Success;
+            }
         }
 
         return new ValidationResult(ErrorMessage ??
