@@ -502,6 +502,61 @@ public class Test_StringExtensionMethods
         Assert.Contains("Must be zero or greater.", exception.Message);
     }
 
+    [Theory]
+    [InlineData("the quick brown fox", "the quick brown fox")]
+    [InlineData("  the quick brown fox  ", "the quick brown fox")]
+    [InlineData("the   quick    brown fox", "the quick brown fox")]
+    [InlineData("  the   quick\tbrown\r\n fox  ", "the quick brown fox")]
+    [InlineData("\t\r\n the \t quick \r\n", "the quick")]
+    [InlineData("one", "one")]
+    [InlineData("", "")]
+    [InlineData("   ", "")]
+    [InlineData("\t\r\n", "")]
+    [InlineData(" a ", "a")]
+    [InlineData("a  b", "a b")]
+    public void CollapseWhitespace_TrimsAndCollapsesRuns(string text, string expected)
+    {
+        Assert.Equal(expected, text.CollapseWhitespace());
+    }
+
+    [Fact]
+    public void CollapseWhitespace_Null_ReturnsNull()
+    {
+        string text = null;
+
+        Assert.Null(text.CollapseWhitespace());
+    }
+
+    [Fact]
+    public void CollapseWhitespace_NothingToChange_ReturnsTheSameInstance()
+    {
+        // The scan in front of the collapse exists to make this true, so it is worth
+        // asserting rather than just checking the value
+        var text = new string("the quick brown fox".ToCharArray());
+
+        Assert.Same(text, text.CollapseWhitespace());
+    }
+
+    [Fact]
+    public void CollapseWhitespace_CollapsesNonSpaceWhitespaceRunToASingleSpace()
+    {
+        // A run is replaced by a space, not by the first character of the run
+        Assert.Equal("a b", "a\t\t\tb".CollapseWhitespace());
+        Assert.Equal("a b", "a\r\nb".CollapseWhitespace());
+        Assert.Equal("a b", "a\tb".CollapseWhitespace());
+    }
+
+    [Fact]
+    public void CollapseWhitespace_LongerThanTheStackBuffer_CollapsesTheSame()
+    {
+        // Past 256 characters the method builds on the heap instead of the stack
+        var text = string.Concat(Enumerable.Repeat("word   ", 100));
+
+        var expected = string.Join(" ", Enumerable.Repeat("word", 100));
+
+        Assert.Equal(expected, text.CollapseWhitespace());
+    }
+
     // Define a custom type that does not support string conversion for testing
     private class MyUnsupportedType
     {

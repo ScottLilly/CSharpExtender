@@ -166,6 +166,7 @@ Lookups use the object's runtime type, so an object held in a base-class or `obj
 
 This class provides extension methods for string manipulations in C#.
 
+- **`CollapseWhitespace`**: Trims the text and reduces every run of whitespace inside it to a single space, tabs and line breaks included. A null returns null, and text that needs nothing changed is returned as the same instance.
 - **`ConvertFromString<T>`**: Converts a string to the specified type, if possible.
 - **`DoesNotHaveText`**: Returns 'true' if the string is null, empty, or only contains whitespace.
 - **`DoesNotMatch`**: Check if strings are not equal, using InvariantCultureIgnoreCase.
