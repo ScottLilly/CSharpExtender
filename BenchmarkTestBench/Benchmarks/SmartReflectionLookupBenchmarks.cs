@@ -19,7 +19,7 @@ public class SmartReflectionLookupBenchmarks
     private readonly Person _person = new() { FirstName = "Scott", LastName = "Lilly", Age = 50 };
 
     [Benchmark(Baseline = true)]
-    public string Current() => SmartReflection.GetPropertyValue<string>(_person, "LastName");
+    public string? Current() => SmartReflection.GetPropertyValue<string>(_person, "LastName");
 
     [Benchmark]
     public PropertyInfo? FirstOrDefaultLookup()

@@ -5,14 +5,14 @@ namespace CSharpExtender.DataAnnotations;
 
 public class AlphaOnlyAttribute : ValidationAttribute
 {
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         if (value == null)
         {
             return ValidationResult.Success;
         }
 
-        string input = value.ToString();
+        string? input = value.ToString();
         
         if (string.IsNullOrEmpty(input))
         {

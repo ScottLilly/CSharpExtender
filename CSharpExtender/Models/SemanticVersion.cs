@@ -36,13 +36,13 @@ public sealed record SemanticVersion : IComparable<SemanticVersion>, IComparable
     /// The prerelease label, without its leading "-", or null when there is none.
     /// "1.2.3-beta.1" gives "beta.1".
     /// </summary>
-    public string PrereleaseLabel { get; init; }
+    public string? PrereleaseLabel { get; init; }
 
     /// <summary>
     /// The build metadata, without its leading "+", or null when there is none.
     /// "3.1.0+build7" gives "build7".
     /// </summary>
-    public string BuildMetadata { get; init; }
+    public string? BuildMetadata { get; init; }
 
     /// <summary>
     /// Whether this is a prerelease, which is to say whether it carries a label.
@@ -101,7 +101,7 @@ public sealed record SemanticVersion : IComparable<SemanticVersion>, IComparable
     /// identifier matches, the label with more of them wins, so "beta" is less than
     /// "beta.1". Build metadata takes no part in this.
     /// </remarks>
-    public int CompareTo(SemanticVersion other)
+    public int CompareTo(SemanticVersion? other)
     {
         if (other is null)
         {
@@ -139,7 +139,7 @@ public sealed record SemanticVersion : IComparable<SemanticVersion>, IComparable
         return ComparePrereleaseLabels(PrereleaseLabel, other.PrereleaseLabel);
     }
 
-    int IComparable.CompareTo(object obj)
+    int IComparable.CompareTo(object? obj)
     {
         if (obj is null)
         {
@@ -155,24 +155,24 @@ public sealed record SemanticVersion : IComparable<SemanticVersion>, IComparable
             $"Object must be of type {nameof(SemanticVersion)}.", nameof(obj));
     }
 
-    public static bool operator <(SemanticVersion left, SemanticVersion right) =>
+    public static bool operator <(SemanticVersion? left, SemanticVersion? right) =>
         Compare(left, right) < 0;
 
-    public static bool operator >(SemanticVersion left, SemanticVersion right) =>
+    public static bool operator >(SemanticVersion? left, SemanticVersion? right) =>
         Compare(left, right) > 0;
 
-    public static bool operator <=(SemanticVersion left, SemanticVersion right) =>
+    public static bool operator <=(SemanticVersion? left, SemanticVersion? right) =>
         Compare(left, right) <= 0;
 
-    public static bool operator >=(SemanticVersion left, SemanticVersion right) =>
+    public static bool operator >=(SemanticVersion? left, SemanticVersion? right) =>
         Compare(left, right) >= 0;
 
     #region Private Methods
 
-    private static int Compare(SemanticVersion left, SemanticVersion right) =>
+    private static int Compare(SemanticVersion? left, SemanticVersion? right) =>
         left is null ? (right is null ? 0 : -1) : left.CompareTo(right);
 
-    private static int ComparePrereleaseLabels(string left, string right)
+    private static int ComparePrereleaseLabels(string? left, string? right)
     {
         if (left == null)
         {

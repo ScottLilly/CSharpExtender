@@ -20,14 +20,15 @@ namespace CSharpExtender.DataAnnotations;
 /// </remarks>
 internal sealed class UniqueItemsComparer
 {
-    private readonly List<object> _items;
+    private readonly List<object?> _items;
 
-    // Both allocated on the first comparison that walks properties, so a collection
-    // of strings or numbers never pays for them
-    private object[][] _values;
-    private int[] _readCount;
+    // Both filled in on the first comparison that walks properties, so a collection
+    // of strings or numbers never pays for them. Empty means "not allocated yet",
+    // which is unambiguous because a comparison needs at least two items.
+    private object?[]?[] _values = Array.Empty<object?[]?>();
+    private int[] _readCount = Array.Empty<int>();
 
-    internal UniqueItemsComparer(List<object> items)
+    internal UniqueItemsComparer(List<object?> items)
     {
         _items = items;
     }
@@ -38,8 +39,8 @@ internal sealed class UniqueItemsComparer
     /// </summary>
     internal bool AreItemsEqual(int first, int second)
     {
-        object item1 = _items[first];
-        object item2 = _items[second];
+        object? item1 = _items[first];
+        object? item2 = _items[second];
 
         if (item1 == null && item2 == null)
         {
@@ -74,13 +75,16 @@ internal sealed class UniqueItemsComparer
             return true;
         }
 
-        _values = _values ?? new object[_items.Count][];
-        _readCount = _readCount ?? new int[_items.Count];
+        if (_values.Length == 0)
+        {
+            _values = new object?[_items.Count][];
+            _readCount = new int[_items.Count];
+        }
 
         for (int i = 0; i < properties.Length; i++)
         {
-            object value1 = ValueAt(properties, first, i);
-            object value2 = ValueAt(properties, second, i);
+            object? value1 = ValueAt(properties, first, i);
+            object? value2 = ValueAt(properties, second, i);
 
             if (value1 == null && value2 == null)
             {
@@ -101,13 +105,13 @@ internal sealed class UniqueItemsComparer
         return true;
     }
 
-    private object ValueAt(PropertyInfo[] properties, int index, int propertyIndex)
+    private object? ValueAt(PropertyInfo[] properties, int index, int propertyIndex)
     {
-        object[] cached = _values[index];
+        object?[]? cached = _values[index];
 
         if (cached == null)
         {
-            cached = new object[properties.Length];
+            cached = new object?[properties.Length];
             _values[index] = cached;
         }
 

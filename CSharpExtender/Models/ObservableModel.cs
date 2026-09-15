@@ -9,10 +9,10 @@ namespace CSharpExtender.Models;
 /// </summary>
 public abstract class ObservableModel : INotifyPropertyChanged
 {
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     protected virtual bool SetProperty<T>(ref T backingField, T value,
-        [CallerMemberName] string propertyName = null)
+        [CallerMemberName] string? propertyName = null)
     {
         // EqualityComparer compares a value-typed property without boxing either side
         if (EqualityComparer<T>.Default.Equals(backingField, value))
@@ -27,7 +27,7 @@ public abstract class ObservableModel : INotifyPropertyChanged
         return true;
     }
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         // The null-conditional skips the argument along with the call, so nothing is
         // built at all when there is no subscriber

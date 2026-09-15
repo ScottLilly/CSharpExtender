@@ -63,7 +63,7 @@ public static class SmartReflectionExtensionMethods
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="obj"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when the property does not exist.</exception>
     /// <exception cref="InvalidCastException">Thrown when the property type is not assignable to <typeparamref name="TProperty"/>.</exception>
-    public static TProperty GetPropertyValue<TProperty>(this object obj, string propertyName)
+    public static TProperty? GetPropertyValue<TProperty>(this object obj, string propertyName)
     {
         ArgumentNullException.ThrowIfNull(obj);
 
@@ -141,7 +141,7 @@ public static class SmartReflectionExtensionMethods
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="obj"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when the method does not exist.</exception>
     /// <exception cref="InvalidCastException">Thrown when the method's return type is not assignable to <typeparamref name="TResult"/>.</exception>
-    public static TResult InvokeMethod<TResult>(this object obj, string methodName, params object[] parameters)
+    public static TResult? InvokeMethod<TResult>(this object obj, string methodName, params object[] parameters)
     {
         ArgumentNullException.ThrowIfNull(obj);
 

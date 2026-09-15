@@ -13,7 +13,7 @@ public class Test_JsonExtensionMethods
     {
         string path = "Name";
 
-        string result = _personJsonString.GetValueFromJsonPath(path);
+        string? result = _personJsonString.GetValueFromJsonPath(path);
 
         Assert.Equal("John", result);
     }
@@ -41,7 +41,7 @@ public class Test_JsonExtensionMethods
         string json = "{ \"keys\": { \"apiKey\": \"YOUR_KEY_HERE\" } }";
         string path = "keys.apiKey";
 
-        string result = json.GetValueFromJsonPath(path);
+        string? result = json.GetValueFromJsonPath(path);
 
         Assert.Equal("YOUR_KEY_HERE", result);
     }
@@ -104,7 +104,7 @@ public class Test_JsonExtensionMethods
     {
         var person = _personJsonString.AsDeserializedJson<Person>();
 
-        Assert.Equal("John", person.Name);
+        Assert.Equal("John", person!.Name);
         Assert.Equal(30, person.Age);
     }
 

@@ -53,7 +53,7 @@ public class Test_SmartReflectionExtensionMethods
     [Fact]
     public void HasAttribute_Throws_WhenObjectIsNull()
     {
-        TestClassWithAttribute nullObj = null;
+        TestClassWithAttribute nullObj = null!;
         Assert.Throws<ArgumentNullException>(() => nullObj.HasAttribute<DescriptionAttribute>());
     }
 
@@ -81,7 +81,7 @@ public class Test_SmartReflectionExtensionMethods
     [Fact]
     public void HasPropertyAttribute_Throws_WhenObjectIsNull()
     {
-        TestClass nullObj = null;
+        TestClass nullObj = null!;
         Assert.Throws<ArgumentNullException>(() =>
             nullObj.HasPropertyAttribute<DescriptionAttribute>("Name"));
     }
@@ -104,7 +104,7 @@ public class Test_SmartReflectionExtensionMethods
     [Fact]
     public void GetPropertiesWithAttribute_Throws_WhenObjectIsNull()
     {
-        TestClass nullObj = null;
+        TestClass nullObj = null!;
         Assert.Throws<ArgumentNullException>(() =>
             nullObj.GetPropertiesWithAttribute<DescriptionAttribute>());
     }
@@ -112,7 +112,7 @@ public class Test_SmartReflectionExtensionMethods
     [Fact]
     public void GetPropertyValue_ReturnsValue_WhenPropertyExists()
     {
-        string value = _testObj.GetPropertyValue<string>("Name");
+        string? value = _testObj.GetPropertyValue<string>("Name");
         Assert.Equal("TestName", value);
     }
 
@@ -133,7 +133,7 @@ public class Test_SmartReflectionExtensionMethods
     [Fact]
     public void GetPropertyValue_Throws_WhenObjectIsNull()
     {
-        TestClass nullObj = null;
+        TestClass nullObj = null!;
         Assert.Throws<ArgumentNullException>(() =>
             nullObj.GetPropertyValue<string>("Name"));
     }
@@ -169,7 +169,7 @@ public class Test_SmartReflectionExtensionMethods
     [Fact]
     public void SetPropertyValue_Throws_WhenObjectIsNull()
     {
-        TestClass nullObj = null;
+        TestClass nullObj = null!;
         Assert.Throws<ArgumentNullException>(() =>
             nullObj.SetPropertyValue("Name", "Value"));
     }
@@ -184,7 +184,7 @@ public class Test_SmartReflectionExtensionMethods
     [Fact]
     public void GetPropertyNames_Throws_WhenObjectIsNull()
     {
-        TestClass nullObj = null;
+        TestClass nullObj = null!;
         Assert.Throws<ArgumentNullException>(() =>
             nullObj.GetPropertyNames());
     }
@@ -206,7 +206,7 @@ public class Test_SmartReflectionExtensionMethods
     [Fact]
     public void HasProperty_Throws_WhenObjectIsNull()
     {
-        TestClass nullObj = null;
+        TestClass nullObj = null!;
         Assert.Throws<ArgumentNullException>(() =>
             nullObj.HasProperty("Name"));
     }
@@ -228,7 +228,7 @@ public class Test_SmartReflectionExtensionMethods
     [Fact]
     public void GetPropertyType_Throws_WhenObjectIsNull()
     {
-        TestClass nullObj = null;
+        TestClass nullObj = null!;
         Assert.Throws<ArgumentNullException>(() =>
             nullObj.GetPropertyType("Name"));
     }
@@ -236,7 +236,7 @@ public class Test_SmartReflectionExtensionMethods
     [Fact]
     public void InvokeMethod_ReturnsResult_WhenMethodExists()
     {
-        string result = _testObj.InvokeMethod<string>("GetGreeting");
+        string? result = _testObj.InvokeMethod<string>("GetGreeting");
         Assert.Equal("Hello", result);
     }
 
@@ -264,7 +264,7 @@ public class Test_SmartReflectionExtensionMethods
     [Fact]
     public void InvokeMethod_Throws_WhenObjectIsNull()
     {
-        TestClass nullObj = null;
+        TestClass nullObj = null!;
         Assert.Throws<ArgumentNullException>(() =>
             nullObj.InvokeMethod<string>("GetGreeting"));
     }

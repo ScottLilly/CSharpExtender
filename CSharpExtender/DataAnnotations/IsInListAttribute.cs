@@ -33,7 +33,7 @@ public class IsInListAttribute : ValidationAttribute
         _allowedValues = allowedValues ?? Array.Empty<object>();
     }
 
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         // Whether a value has to be present is [Required]'s business, not this attribute's
         if (value == null)

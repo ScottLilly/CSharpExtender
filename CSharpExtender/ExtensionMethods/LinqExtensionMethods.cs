@@ -18,7 +18,7 @@ public static class LinqExtensionMethods
     /// <param name="elements">The collection to check.</param>
     /// <param name="func">The condition to check each element against.</param>
     /// <returns>True if none of the elements satisfy the condition, false otherwise.</returns>
-    public static bool None<T>(this IEnumerable<T> elements, Func<T, bool> func = null)
+    public static bool None<T>(this IEnumerable<T> elements, Func<T, bool>? func = null)
     {
         if (func == null)
         {
@@ -48,7 +48,7 @@ public static class LinqExtensionMethods
     /// <typeparam name="T">The type of elements in the list.</typeparam>
     /// <param name="options">The list to pick a random element from.</param>
     /// <returns>A random element from the list, or default(T) if the list is empty.</returns>
-    public static T RandomElement<T>(this List<T> options)
+    public static T? RandomElement<T>(this List<T> options)
     {
         return options.Count == 0
             ? default
@@ -78,7 +78,7 @@ public static class LinqExtensionMethods
     public static bool HasDuplicatePropertyValue<T, TProperty>(
         this IEnumerable<T> source,
         Func<T, TProperty> propertySelector,
-        IEqualityComparer<TProperty> comparer = null)
+        IEqualityComparer<TProperty>? comparer = null)
     {
 
         if (source == null)

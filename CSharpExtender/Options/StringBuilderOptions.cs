@@ -21,9 +21,9 @@ public class StringBuilderOptions
     /// returns four characters.
     /// </remarks>
     public int? MaxLength { get; set; }
-    public string PrefixText { get; set; }
-    public string SuffixText { get; set; }
+    public string? PrefixText { get; set; }
+    public string? SuffixText { get; set; }
     public bool ToUpper { get; set; }
     public bool ToLower { get; set; }
-    public string Format { get; set; }
+    public string? Format { get; set; }
 }

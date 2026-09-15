@@ -89,7 +89,7 @@ public class Test_DisplayFormatExtensionMethods
     [Fact]
     public void ToDisplayString_NullObject_Throws()
     {
-        object nullObject = null;
+        object nullObject = null!;
 
         Assert.Throws<ArgumentNullException>(() => nullObject.ToDisplayString("Anything"));
     }

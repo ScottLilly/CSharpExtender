@@ -26,7 +26,7 @@ public static class ObjectExtensionMethods
             ReferenceHandler = ReferenceHandler.Preserve
         };
 
-    public static T DeepClone<T>(this T source) where T : class
+    public static T? DeepClone<T>(this T? source) where T : class
     {
         if (source == null)
         {
@@ -126,7 +126,7 @@ public static class ObjectExtensionMethods
     /// </summary>
     /// <param name="obj">The object to check.</param>
     /// <returns>True if the object is null, false otherwise.</returns>
-    public static bool IsNull(this object obj)
+    public static bool IsNull(this object? obj)
     {
         return obj == null;
     }
@@ -136,7 +136,7 @@ public static class ObjectExtensionMethods
     /// </summary>
     /// <param name="obj">The object to check.</param>
     /// <returns>True if the object is not null, false otherwise.</returns>
-    public static bool IsNotNull(this object obj)
+    public static bool IsNotNull(this object? obj)
     {
         return obj != null;
     }

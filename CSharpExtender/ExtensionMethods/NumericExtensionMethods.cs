@@ -166,7 +166,7 @@ public static class NumericExtensionMethods
 
     // The int and decimal overloads each cast in their own Select, so their values
     // reach here as doubles without being boxed
-    private static double CalculateStandardDeviation(IEnumerable<double> values, bool isSample)
+    private static double CalculateStandardDeviation(IEnumerable<double>? values, bool isSample)
     {
         if (values == null)
         {

@@ -287,7 +287,7 @@ public class Test_JsonRedactionService
         var service = new JsonRedactionService(["name"]);
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => service.Redact((JsonObject)null));
+        Assert.Throws<ArgumentNullException>(() => service.Redact((JsonObject)null!));
     }
 
     [Fact]
@@ -297,7 +297,7 @@ public class Test_JsonRedactionService
         var service = new JsonRedactionService(["name"]);
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => service.RedactToString((JsonObject)null));
+        Assert.Throws<ArgumentNullException>(() => service.RedactToString((JsonObject)null!));
     }
 
     [Fact]
@@ -307,7 +307,7 @@ public class Test_JsonRedactionService
         var service = new JsonRedactionService(["name"]);
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => service.Redact((string)null));
+        Assert.Throws<ArgumentNullException>(() => service.Redact((string)null!));
     }
 
     [Fact]
@@ -317,7 +317,7 @@ public class Test_JsonRedactionService
         var service = new JsonRedactionService(["name"]);
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => service.RedactToString((string)null));
+        Assert.Throws<ArgumentNullException>(() => service.RedactToString((string)null!));
     }
 
     [Fact]
@@ -328,10 +328,10 @@ public class Test_JsonRedactionService
         var json = new JsonRedactionService(["name"]);
         var xml = new XmlRedactionService(["name"]);
 
-        Assert.Throws<ArgumentNullException>(() => json.Redact((JsonObject)null));
-        Assert.Throws<ArgumentNullException>(() => xml.Redact((XmlDocument)null));
+        Assert.Throws<ArgumentNullException>(() => json.Redact((JsonObject)null!));
+        Assert.Throws<ArgumentNullException>(() => xml.Redact((XmlDocument)null!));
 
-        Assert.Throws<ArgumentNullException>(() => json.RedactToString((JsonObject)null));
-        Assert.Throws<ArgumentNullException>(() => xml.RedactToString((XmlDocument)null));
+        Assert.Throws<ArgumentNullException>(() => json.RedactToString((JsonObject)null!));
+        Assert.Throws<ArgumentNullException>(() => xml.RedactToString((XmlDocument)null!));
     }
 }

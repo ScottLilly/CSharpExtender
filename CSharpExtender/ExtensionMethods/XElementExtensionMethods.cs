@@ -26,7 +26,7 @@ public static class XElementExtensionMethods
     /// <param name="attributeName">The name of the attribute.</param>
     /// <returns>The value of the attribute as a string, or null if the attribute does not exist.</returns>
     /// <exception cref="ArgumentNullException">Thrown when either argument is null.</exception>
-    public static string AttributeAsString(this XElement element, string attributeName)
+    public static string? AttributeAsString(this XElement element, string attributeName)
     {
         ArgumentNullException.ThrowIfNull(element);
         ArgumentNullException.ThrowIfNull(attributeName);
@@ -43,7 +43,7 @@ public static class XElementExtensionMethods
     /// <exception cref="ArgumentNullException">Thrown when either argument is null.</exception>
     public static int AttributeAsInt(this XElement element, string attributeName)
     {
-        string value = element.AttributeAsString(attributeName);
+        string? value = element.AttributeAsString(attributeName);
 
         if (value != null && XmlValueParser.TryParseInt(value, out int result))
         {
@@ -62,7 +62,7 @@ public static class XElementExtensionMethods
     /// <exception cref="ArgumentNullException">Thrown when either argument is null.</exception>
     public static bool AttributeAsBool(this XElement element, string attributeName)
     {
-        string value = element.AttributeAsString(attributeName);
+        string? value = element.AttributeAsString(attributeName);
 
         if (value != null && XmlValueParser.TryParseBoolean(value, out bool result))
         {
@@ -81,7 +81,7 @@ public static class XElementExtensionMethods
     /// <exception cref="ArgumentNullException">Thrown when either argument is null.</exception>
     public static DateTime AttributeAsDateTime(this XElement element, string attributeName)
     {
-        string value = element.AttributeAsString(attributeName);
+        string? value = element.AttributeAsString(attributeName);
 
         if (value != null && XmlValueParser.TryParseDateTime(value, out DateTime result))
         {
@@ -98,7 +98,7 @@ public static class XElementExtensionMethods
     /// <param name="elementName">The name of the child element.</param>
     /// <returns>The text of the child element as a string, or null if the child element does not exist.</returns>
     /// <exception cref="ArgumentNullException">Thrown when either argument is null.</exception>
-    public static string ElementAsString(this XElement element, string elementName)
+    public static string? ElementAsString(this XElement element, string elementName)
     {
         ArgumentNullException.ThrowIfNull(element);
         ArgumentNullException.ThrowIfNull(elementName);
@@ -118,7 +118,7 @@ public static class XElementExtensionMethods
     /// <exception cref="ArgumentNullException">Thrown when either argument is null.</exception>
     public static int ElementAsInt(this XElement element, string elementName)
     {
-        string value = element.ElementAsString(elementName);
+        string? value = element.ElementAsString(elementName);
 
         if (value != null && XmlValueParser.TryParseInt(value, out int result))
         {
@@ -144,7 +144,7 @@ public static class XElementExtensionMethods
     /// null for a miss rather than an empty string, the way every other member here does.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when either argument is null.</exception>
-    public static string GetValue(this XElement element, string name)
+    public static string? GetValue(this XElement element, string name)
     {
         return element.AttributeAsString(name) ?? element.ElementAsString(name);
     }

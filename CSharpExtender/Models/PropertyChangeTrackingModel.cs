@@ -23,7 +23,7 @@ public class PropertyChangeTrackingModel : ObservableModel, IChangeTracking
     }
 
     protected override bool SetProperty<T>(ref T field, T value, 
-        [CallerMemberName] string propertyName = null)
+        [CallerMemberName] string? propertyName = null)
     {
         bool propertyChanged = base.SetProperty(ref field, value, propertyName);
 

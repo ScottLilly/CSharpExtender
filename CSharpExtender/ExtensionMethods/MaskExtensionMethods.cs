@@ -58,7 +58,7 @@ public static class MaskExtensionMethods
         return masked;
     }
 
-    private static string MaskValue(object value, MaskAttribute attribute)
+    private static string MaskValue(object? value, MaskAttribute? attribute)
     {
         string text = value?.ToString() ?? string.Empty;
 

@@ -19,8 +19,8 @@ internal static class PropertyCache
     private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_properties =
         new ConcurrentDictionary<Type, PropertyInfo[]>();
 
-    private static readonly ConcurrentDictionary<(Type, string), PropertyInfo> s_byName =
-        new ConcurrentDictionary<(Type, string), PropertyInfo>();
+    private static readonly ConcurrentDictionary<(Type, string), PropertyInfo?> s_byName =
+        new ConcurrentDictionary<(Type, string), PropertyInfo?>();
 
     internal static PropertyInfo[] GetProperties(Type type) =>
         s_properties.GetOrAdd(type, static t => t.GetProperties(_searchFlags));
@@ -35,7 +35,7 @@ internal static class PropertyCache
     /// is depends on the order Type.GetProperties returns them in, and .NET does
     /// not guarantee one.
     /// </remarks>
-    internal static PropertyInfo GetProperty(Type type, string propertyName) =>
+    internal static PropertyInfo? GetProperty(Type type, string propertyName) =>
         s_byName.GetOrAdd((type, propertyName), static key =>
         {
             var properties = GetProperties(key.Item1);

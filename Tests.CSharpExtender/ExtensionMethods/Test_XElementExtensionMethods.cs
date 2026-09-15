@@ -20,7 +20,7 @@ public class Test_XElementExtensionMethods
 
     private static XElement Root()
     {
-        return XDocument.Parse(_xml).Root;
+        return XDocument.Parse(_xml).Root!;
     }
 
     private static XmlNode XmlRoot()
@@ -29,7 +29,7 @@ public class Test_XElementExtensionMethods
 
         document.LoadXml(_xml);
 
-        return document.DocumentElement;
+        return document.DocumentElement!;
     }
 
     [Fact]
@@ -232,7 +232,7 @@ public class Test_XElementExtensionMethods
     [Fact]
     public void AllMethods_NullElement_ThrowArgumentNullException()
     {
-        XElement element = null;
+        XElement element = null!;
 
         Assert.Throws<ArgumentNullException>(() => element.AttributeAsString("id"));
         Assert.Throws<ArgumentNullException>(() => element.AttributeAsInt("id"));
@@ -248,12 +248,12 @@ public class Test_XElementExtensionMethods
     {
         var element = Root();
 
-        Assert.Throws<ArgumentNullException>(() => element.AttributeAsString(null));
-        Assert.Throws<ArgumentNullException>(() => element.AttributeAsInt(null));
-        Assert.Throws<ArgumentNullException>(() => element.AttributeAsBool(null));
-        Assert.Throws<ArgumentNullException>(() => element.AttributeAsDateTime(null));
-        Assert.Throws<ArgumentNullException>(() => element.ElementAsString(null));
-        Assert.Throws<ArgumentNullException>(() => element.ElementAsInt(null));
-        Assert.Throws<ArgumentNullException>(() => element.GetValue(null));
+        Assert.Throws<ArgumentNullException>(() => element.AttributeAsString(null!));
+        Assert.Throws<ArgumentNullException>(() => element.AttributeAsInt(null!));
+        Assert.Throws<ArgumentNullException>(() => element.AttributeAsBool(null!));
+        Assert.Throws<ArgumentNullException>(() => element.AttributeAsDateTime(null!));
+        Assert.Throws<ArgumentNullException>(() => element.ElementAsString(null!));
+        Assert.Throws<ArgumentNullException>(() => element.ElementAsInt(null!));
+        Assert.Throws<ArgumentNullException>(() => element.GetValue(null!));
     }
 }

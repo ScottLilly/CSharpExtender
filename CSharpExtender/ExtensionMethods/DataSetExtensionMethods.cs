@@ -10,7 +10,7 @@ public static class DataSetExtensionMethods
     /// </summary>
     /// <param name="dataSet">DataSet to check</param>
     /// <returns>Whether the DataSet has rows</returns>
-    public static bool HasRows(this DataSet dataSet)
+    public static bool HasRows(this DataSet? dataSet)
     {
         return dataSet != null && 
             dataSet.Tables.Count > 0 && 
@@ -24,7 +24,7 @@ public static class DataSetExtensionMethods
     /// <param name="row">DataRow being read from</param>
     /// <param name="columnName">Name of the column</param>
     /// <returns>Value of the column</returns>
-    public static T Get<T>(this DataRow row, string columnName)
+    public static T? Get<T>(this DataRow? row, string columnName)
     {
         if (row == null || !row.Table.Columns.Contains(columnName))
         {
@@ -52,7 +52,7 @@ public static class DataSetExtensionMethods
     /// <param name="dataSet">DataSet to check</param>
     /// <param name="columnName">Name of the column</param>
     /// <returns>Whether the DataSet has a column with the passed name</returns>
-    public static bool HasColumn(this DataSet dataSet, string columnName)
+    public static bool HasColumn(this DataSet? dataSet, string columnName)
     {
         return dataSet != null && 
             dataSet.Tables.Count > 0 && 

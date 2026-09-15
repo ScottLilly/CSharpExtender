@@ -38,7 +38,7 @@ public static class DataReaderExtensionMethods
     /// Thrown when the column's value cannot be converted to <typeparamref name="T"/>. The
     /// message names the column, which is the whole point of reading by name.
     /// </exception>
-    public static T GetValue<T>(this IDataReader reader, string columnName)
+    public static T? GetValue<T>(this IDataReader reader, string columnName)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(columnName);
@@ -67,7 +67,7 @@ public static class DataReaderExtensionMethods
             // fail ChangeType even though the conversion is obvious
             if (targetType == typeof(Guid))
             {
-                return (T)(object)Guid.Parse(value.ToString());
+                return (T)(object)Guid.Parse(value.ToString() ?? string.Empty);
             }
 
             // ChangeType covers the numeric, string, bool and DateTime conversions.
@@ -94,7 +94,7 @@ public static class DataReaderExtensionMethods
     /// <param name="reader">IDataReader being read from.</param>
     /// <param name="columnName">Name of the column.</param>
     /// <returns>The value of the column, or null when it holds DBNull.</returns>
-    public static string GetString(this IDataReader reader, string columnName) =>
+    public static string? GetString(this IDataReader reader, string columnName) =>
         reader.GetValue<string>(columnName);
 
     /// <summary>
@@ -173,7 +173,7 @@ public static class DataReaderExtensionMethods
     /// Named for the type rather than GetBytes, because IDataReader already declares a
     /// GetBytes that copies into a caller's buffer and returns how many bytes it read.
     /// </remarks>
-    public static byte[] GetByteArray(this IDataReader reader, string columnName) =>
+    public static byte[]? GetByteArray(this IDataReader reader, string columnName) =>
         reader.GetValue<byte[]>(columnName);
 
     #region Private Methods

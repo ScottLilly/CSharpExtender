@@ -20,9 +20,9 @@ internal readonly struct MethodCacheKey : IEquatable<MethodCacheKey>
 
     // Null when the arguments could not all be typed, which is a different key from
     // any list of types
-    private readonly Type[] _argumentTypes;
+    private readonly Type[]? _argumentTypes;
 
-    internal MethodCacheKey(Type type, string methodName, int argumentCount, Type[] argumentTypes)
+    internal MethodCacheKey(Type type, string methodName, int argumentCount, Type[]? argumentTypes)
     {
         _type = type;
         _methodName = methodName;
@@ -55,7 +55,7 @@ internal readonly struct MethodCacheKey : IEquatable<MethodCacheKey>
         return true;
     }
 
-    public override bool Equals(object obj) =>
+    public override bool Equals(object? obj) =>
         obj is MethodCacheKey other && Equals(other);
 
     public override int GetHashCode()

@@ -9,8 +9,8 @@ namespace CSharpExtender.Models;
 /// </summary>
 public class PropertyChangedLog
 {
-    public string PropertyName { get; }
-    public object NewValue { get; }
+    public string? PropertyName { get; }
+    public object? NewValue { get; }
 
     /// <summary>
     /// When the property was changed, in UTC. <see cref="DateTime.Kind"/> is
@@ -24,7 +24,7 @@ public class PropertyChangedLog
     /// </remarks>
     public DateTime ChangeDateTime { get; }
 
-    public PropertyChangedLog(string propertyName, object newValue)
+    public PropertyChangedLog(string? propertyName, object? newValue)
     {
         PropertyName = propertyName;
         NewValue = newValue;

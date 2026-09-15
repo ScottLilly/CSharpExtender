@@ -1,5 +1,6 @@
 using CSharpExtender.Models;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -39,7 +40,7 @@ public static partial class VersionExtensionMethods
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        if (TryParseSemanticVersion(text, out SemanticVersion version))
+        if (TryParseSemanticVersion(text, out var version))
         {
             return version;
         }
@@ -53,7 +54,8 @@ public static partial class VersionExtensionMethods
     /// <param name="text">The version string. A null or unreadable value returns false.</param>
     /// <param name="version">The parsed version, or null when this returns false.</param>
     /// <returns>Whether the text was read.</returns>
-    public static bool TryParseSemanticVersion(this string text, out SemanticVersion version)
+    public static bool TryParseSemanticVersion(this string? text,
+        [NotNullWhen(true)] out SemanticVersion? version)
     {
         version = null;
 
@@ -102,8 +104,8 @@ public static partial class VersionExtensionMethods
     /// The numeric part, such as "1.2.3" from "1.2.3-beta.1", or null when the text is not a
     /// version string.
     /// </returns>
-    public static string NumericPartOfVersion(this string text) =>
-        text.TryParseSemanticVersion(out SemanticVersion version)
+    public static string? NumericPartOfVersion(this string? text) =>
+        text.TryParseSemanticVersion(out var version)
             ? version.NumericPart
             : null;
 
@@ -115,8 +117,8 @@ public static partial class VersionExtensionMethods
     /// The label, such as "beta.1" from "1.2.3-beta.1", or null when the version carries no
     /// label or the text is not a version string.
     /// </returns>
-    public static string PrereleaseLabelOf(this string text) =>
-        text.TryParseSemanticVersion(out SemanticVersion version)
+    public static string? PrereleaseLabelOf(this string? text) =>
+        text.TryParseSemanticVersion(out var version)
             ? version.PrereleaseLabel
             : null;
 
@@ -135,7 +137,7 @@ public static partial class VersionExtensionMethods
             CultureInfo.InvariantCulture, out value);
     }
 
-    private static string GroupOrNull(Match match, string groupName)
+    private static string? GroupOrNull(Match match, string groupName)
     {
         Group group = match.Groups[groupName];
 

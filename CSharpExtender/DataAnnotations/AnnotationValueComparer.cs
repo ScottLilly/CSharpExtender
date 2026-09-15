@@ -15,7 +15,7 @@ namespace CSharpExtender.DataAnnotations;
 /// </remarks>
 internal static class AnnotationValueComparer
 {
-    internal static bool AreEqual(object runtimeValue, object attributeValue, bool ignoreCase)
+    internal static bool AreEqual(object? runtimeValue, object? attributeValue, bool ignoreCase)
     {
         if (runtimeValue == null || attributeValue == null)
         {

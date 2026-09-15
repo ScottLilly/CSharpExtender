@@ -113,7 +113,7 @@ public class Test_SmartReflection
     [Fact]
     public void GetPropertyValue_ReturnsValue_WhenPropertyExists()
     {
-        string value = SmartReflection.GetPropertyValue<string>(_testObject, nameof(TestClass.Name));
+        string? value = SmartReflection.GetPropertyValue<string>(_testObject, nameof(TestClass.Name));
         Assert.Equal("TestName", value);
     }
 
@@ -135,7 +135,7 @@ public class Test_SmartReflection
     public void GetPropertyValue_Throws_WhenObjectIsNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            SmartReflection.GetPropertyValue<string>(null, nameof(TestClass.Name)));
+            SmartReflection.GetPropertyValue<string>(null!, nameof(TestClass.Name)));
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public class Test_SmartReflection
     public void SetPropertyValue_Throws_WhenObjectIsNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            SmartReflection.SetPropertyValue<string>(null, nameof(TestClass.Name), "Value"));
+            SmartReflection.SetPropertyValue<string>(null!, nameof(TestClass.Name), "Value"));
     }
 
     [Fact]
@@ -217,7 +217,7 @@ public class Test_SmartReflection
     [Fact]
     public void InvokeMethod_ReturnsResult_WhenMethodExists()
     {
-        string result = SmartReflection.InvokeMethod<string>(_testObject, "GetGreeting");
+        string? result = SmartReflection.InvokeMethod<string>(_testObject, "GetGreeting");
         Assert.Equal("Hello", result);
     }
 
@@ -246,7 +246,7 @@ public class Test_SmartReflection
     public void InvokeMethod_Throws_WhenObjectIsNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            SmartReflection.InvokeMethod<string>(null, "GetGreeting"));
+            SmartReflection.InvokeMethod<string>(null!, "GetGreeting"));
     }
 
     [Fact]
@@ -291,7 +291,7 @@ public class Test_SmartReflection
         var obj = new OverloadedMethodClass();
 
         Assert.Throws<ArgumentException>(() =>
-            SmartReflection.InvokeMethod<string>(obj, "Go", [null]));
+            SmartReflection.InvokeMethod<string>(obj, "Go", [null!]));
     }
 
     [Fact]

@@ -19,8 +19,8 @@ internal static class AttributedPropertyCache<TAttribute> where TAttribute : Att
     private static readonly ConcurrentDictionary<Type, List<(PropertyInfo Property, TAttribute Attribute)>> s_carryingTheAttribute =
         new ConcurrentDictionary<Type, List<(PropertyInfo, TAttribute)>>();
 
-    private static readonly ConcurrentDictionary<(Type, string), (PropertyInfo Property, TAttribute Attribute)> s_byName =
-        new ConcurrentDictionary<(Type, string), (PropertyInfo, TAttribute)>();
+    private static readonly ConcurrentDictionary<(Type, string), (PropertyInfo? Property, TAttribute? Attribute)> s_byName =
+        new ConcurrentDictionary<(Type, string), (PropertyInfo?, TAttribute?)>();
 
     /// <summary>
     /// Every property on the type that carries the attribute, in declaration order.
@@ -47,7 +47,7 @@ internal static class AttributedPropertyCache<TAttribute> where TAttribute : Att
     /// The named property and its attribute. Property is null when the type does
     /// not have that property, and Attribute is null when it does not carry one.
     /// </summary>
-    internal static (PropertyInfo Property, TAttribute Attribute) ForProperty(
+    internal static (PropertyInfo? Property, TAttribute? Attribute) ForProperty(
         Type type, string propertyName) =>
         s_byName.GetOrAdd((type, propertyName), static key =>
         {

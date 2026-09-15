@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CSharpExtender.Collections;
 
@@ -34,19 +35,18 @@ public class GenericCache<TKey, TValue> where TKey : IEquatable<TKey>
     public void Set(TKey key, TValue value, TimeSpan? expiration = null)
     {
         var expirationTime = DateTime.UtcNow.Add(expiration ?? _defaultExpiration);
-        var newItem = new CacheItem<TValue>
-        {
-            Value = value,
-            ExpirationTime = expirationTime
-        };
+        var newItem = new CacheItem<TValue>(value, expirationTime);
 
         // The indexer overwrites whatever is there, and captures nothing
         _cache[key] = newItem;
     }
 
-    public TValue Get(TKey key)
+    /// <summary>
+    /// The cached value, or the default for TValue when the key is absent or expired.
+    /// </summary>
+    public TValue? Get(TKey key)
     {
-        if (_cache.TryGetValue(key, out CacheItem<TValue> item))
+        if (_cache.TryGetValue(key, out var item))
         {
             if (DateTime.UtcNow < item.ExpirationTime)
             {
@@ -62,7 +62,7 @@ public class GenericCache<TKey, TValue> where TKey : IEquatable<TKey>
         return default;
     }
 
-    public bool TryGet(TKey key, out TValue value)
+    public bool TryGet(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
         if (_cache.TryGetValue(key, out var item))
         {
@@ -104,7 +104,13 @@ public class GenericCache<TKey, TValue> where TKey : IEquatable<TKey>
 
     private class CacheItem<T>
     {
-        public T Value { get; set; }
-        public DateTime ExpirationTime { get; set; }
+        public T Value { get; }
+        public DateTime ExpirationTime { get; }
+
+        public CacheItem(T value, DateTime expirationTime)
+        {
+            Value = value;
+            ExpirationTime = expirationTime;
+        }
     }
 }

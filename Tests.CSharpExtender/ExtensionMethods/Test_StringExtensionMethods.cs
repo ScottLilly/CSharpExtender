@@ -62,7 +62,7 @@ public class Test_StringExtensionMethods
     public void NullIfEmpty_WithNonEmptyString_ReturnsOriginalString()
     {
         string value = "Hello, World!";
-        string result = value.NullIfEmpty();
+        string? result = value.NullIfEmpty();
         Assert.Equal(value, result);
     }
 
@@ -70,7 +70,7 @@ public class Test_StringExtensionMethods
     public void NullIfEmpty_WithEmptyString_ReturnsNull()
     {
         string value = string.Empty;
-        string result = value.NullIfEmpty();
+        string? result = value.NullIfEmpty();
         Assert.Null(result);
     }
 
@@ -78,7 +78,7 @@ public class Test_StringExtensionMethods
     public void NullIfEmpty_WithWhitespaceString_ReturnsNull()
     {
         string value = "   ";
-        string result = value.NullIfEmpty();
+        string? result = value.NullIfEmpty();
         Assert.Null(result);
     }
 
@@ -86,7 +86,7 @@ public class Test_StringExtensionMethods
     public void ToDigitsOnly_WithNonEmptyStringContainingDigits_ReturnsDigitsOnly()
     {
         string value = "abc123xyz456";
-        string result = value.ToDigitsOnly();
+        string? result = value.ToDigitsOnly();
         Assert.Equal("123456", result);
     }
 
@@ -94,7 +94,7 @@ public class Test_StringExtensionMethods
     public void ToDigitsOnly_WithEmptyString_ReturnsNull()
     {
         string value = string.Empty;
-        string result = value.ToDigitsOnly();
+        string? result = value.ToDigitsOnly();
         Assert.Null(result);
     }
 
@@ -102,7 +102,7 @@ public class Test_StringExtensionMethods
     public void ToDigitsOnly_WithWhitespaceString_ReturnsNull()
     {
         string value = "   ";
-        string result = value.ToDigitsOnly();
+        string? result = value.ToDigitsOnly();
         Assert.Null(result);
     }
 
@@ -110,7 +110,7 @@ public class Test_StringExtensionMethods
     public void ToDigitsOnly_WithNonEmptyStringWithoutDigits_ReturnsEmptyString()
     {
         string value = "abcXYZ";
-        string result = value.ToDigitsOnly();
+        string? result = value.ToDigitsOnly();
         Assert.Equal(string.Empty, result);
     }
 
@@ -124,7 +124,7 @@ public class Test_StringExtensionMethods
     [Fact]
     public void IsDigitsOnly_NullString_ReturnsFalse()
     {
-        Assert.False(((string)null).IsDigitsOnly());
+        Assert.False(((string)null!).IsDigitsOnly());
     }
 
     [Fact]
@@ -161,7 +161,7 @@ public class Test_StringExtensionMethods
     public void ToStringWithLineFeeds_WithNullEnumerable_ThrowsArgumentNullException()
     {
         IEnumerable<string>? lines = null;
-        Assert.Throws<ArgumentNullException>(lines.ToStringWithLineFeeds);
+        Assert.Throws<ArgumentNullException>(lines!.ToStringWithLineFeeds);
     }
 
     [Fact]
@@ -335,9 +335,9 @@ public class Test_StringExtensionMethods
     [Fact]
     public void Test_Repeat_NullOrEmptyText_ReturnsEmptyString()
     {
-        Assert.Equal("", ((string)null).Repeat(3));
+        Assert.Equal("", ((string)null!).Repeat(3));
         Assert.Equal("", "".Repeat(3));
-        Assert.Equal("", ((string)null).Repeat(0));
+        Assert.Equal("", ((string)null!).Repeat(0));
     }
 
     [Fact]
@@ -357,7 +357,7 @@ public class Test_StringExtensionMethods
         {
             string value = string.Concat(Enumerable.Repeat("a1", length / 2));
 
-            string result = value.ToDigitsOnly();
+            string result = value.ToDigitsOnly()!;
 
             Assert.Equal(length / 2, result.Length);
             Assert.True(result.IsDigitsOnly());
@@ -413,7 +413,7 @@ public class Test_StringExtensionMethods
     {
         string? input = null;
 
-        Assert.Throws<NotSupportedException>(() => input.ConvertFromString<int>());
+        Assert.Throws<NotSupportedException>(() => input!.ConvertFromString<int>());
     }
 
     [Fact]
@@ -421,7 +421,7 @@ public class Test_StringExtensionMethods
     {
         string? input = null;
 
-        Assert.Null(input.ConvertFromString<int?>());
+        Assert.Null(input!.ConvertFromString<int?>());
     }
 
     [Fact]
@@ -446,7 +446,7 @@ public class Test_StringExtensionMethods
     [Fact]
     public void SplitPascalCase_NullString_ReturnsEmptyList()
     {
-        Assert.Empty(((string)null).SplitPascalCase());
+        Assert.Empty(((string)null!).SplitPascalCase());
     }
 
     [Fact]
@@ -522,7 +522,7 @@ public class Test_StringExtensionMethods
     [Fact]
     public void CollapseWhitespace_Null_ReturnsNull()
     {
-        string text = null;
+        string? text = null;
 
         Assert.Null(text.CollapseWhitespace());
     }

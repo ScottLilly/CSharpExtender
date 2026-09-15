@@ -20,7 +20,7 @@ public static class StringBuilderExtensionMethods
     /// <param name="value"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static StringBuilder AppendIf(this StringBuilder sb, Func<bool> condition, string value, StringBuilderOptions options = null)
+    public static StringBuilder AppendIf(this StringBuilder sb, Func<bool> condition, string? value, StringBuilderOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(condition);
 
@@ -40,7 +40,7 @@ public static class StringBuilderExtensionMethods
     /// <param name="value"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static StringBuilder AppendLineIf(this StringBuilder sb, Func<bool> condition, string value, StringBuilderOptions options = null)
+    public static StringBuilder AppendLineIf(this StringBuilder sb, Func<bool> condition, string? value, StringBuilderOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(condition);
 
@@ -58,7 +58,7 @@ public static class StringBuilderExtensionMethods
     /// <param name="sb">StringBuilder object</param>
     /// <param name="text"></param>
     /// <param name="options"></param>
-    public static void AppendLineIfNotEmpty(this StringBuilder sb, string text, StringBuilderOptions options = null)
+    public static void AppendLineIfNotEmpty(this StringBuilder sb, string? text, StringBuilderOptions? options = null)
     {
         // Tested directly, so a call allocates no closure and no delegate
         if (!string.IsNullOrWhiteSpace(text))
@@ -75,7 +75,7 @@ public static class StringBuilderExtensionMethods
     /// <param name="options"></param>
     /// <param name="args"></param>
     /// <returns></returns>
-    public static StringBuilder AppendFormatted(this StringBuilder sb, string format, StringBuilderOptions options = null, params object[] args)
+    public static StringBuilder AppendFormatted(this StringBuilder sb, string format, StringBuilderOptions? options = null, params object[] args)
     {
         sb.Append(ProcessText(string.Format(format, args), options));
 
@@ -90,7 +90,7 @@ public static class StringBuilderExtensionMethods
     /// <param name="options"></param>
     /// <param name="args"></param>
     /// <returns></returns>
-    public static StringBuilder AppendLineFormatted(this StringBuilder sb, string format, StringBuilderOptions options = null, params object[] args)
+    public static StringBuilder AppendLineFormatted(this StringBuilder sb, string format, StringBuilderOptions? options = null, params object[] args)
     {
         sb.AppendLine(ProcessText(string.Format(format, args), options));
 
@@ -106,7 +106,7 @@ public static class StringBuilderExtensionMethods
     /// <param name="items"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static StringBuilder AppendJoined<T>(this StringBuilder sb, string separator, IEnumerable<T> items, StringBuilderOptions options = null)
+    public static StringBuilder AppendJoined<T>(this StringBuilder sb, string separator, IEnumerable<T> items, StringBuilderOptions? options = null)
     {
         if (HasItems(ref items))
         {
@@ -125,7 +125,7 @@ public static class StringBuilderExtensionMethods
     /// <param name="items"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static StringBuilder AppendLineJoined<T>(this StringBuilder sb, string separator, IEnumerable<T> items, StringBuilderOptions options = null)
+    public static StringBuilder AppendLineJoined<T>(this StringBuilder sb, string separator, IEnumerable<T> items, StringBuilderOptions? options = null)
     {
         if (HasItems(ref items))
         {
@@ -142,7 +142,7 @@ public static class StringBuilderExtensionMethods
     /// <param name="value"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static StringBuilder Append(this StringBuilder sb, string value, StringBuilderOptions options = null)
+    public static StringBuilder Append(this StringBuilder sb, string? value, StringBuilderOptions? options = null)
     {
         sb.Append(ProcessText(value, options));
 
@@ -156,7 +156,7 @@ public static class StringBuilderExtensionMethods
     /// <param name="value"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static StringBuilder AppendLine(this StringBuilder sb, string value, StringBuilderOptions options = null)
+    public static StringBuilder AppendLine(this StringBuilder sb, string? value, StringBuilderOptions? options = null)
     {
         sb.AppendLine(ProcessText(value, options));
 
@@ -192,7 +192,7 @@ public static class StringBuilderExtensionMethods
         return materialized.Count > 0;
     }
 
-    private static string ProcessText(string text, StringBuilderOptions options = null)
+    private static string? ProcessText(string? text, StringBuilderOptions? options = null)
     {
         if (string.IsNullOrEmpty(text))
         {

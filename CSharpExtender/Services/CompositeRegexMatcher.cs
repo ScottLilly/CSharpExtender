@@ -15,9 +15,9 @@ namespace CSharpExtender.Services;
 public class CompositeRegexMatcher
 {
     // Null when there was nothing to match, which is how HasPatterns answers
-    private readonly Regex _combinedRegex;
+    private readonly Regex? _combinedRegex;
 
-    public CompositeRegexMatcher(IEnumerable<string> patterns, bool ignoreCase = false)
+    public CompositeRegexMatcher(IEnumerable<string>? patterns, bool ignoreCase = false)
     {
         // Materialized once. Left lazy, Where and Distinct would run again for
         // every pass over the sequence.

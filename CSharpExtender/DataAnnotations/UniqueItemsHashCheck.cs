@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace CSharpExtender.DataAnnotations;
@@ -32,7 +33,7 @@ internal static class UniqueItemsHashCheck
     /// are equal. False means "walk the pairs": either there is a duplicate, or
     /// the collection holds something this cannot rule on.
     /// </summary>
-    internal static bool IsProvablyUnique(List<object> items)
+    internal static bool IsProvablyUnique(List<object?> items)
     {
         if (items.Count < _minimumItemCount)
         {
@@ -43,12 +44,14 @@ internal static class UniqueItemsHashCheck
 
         for (int i = 0; i < items.Count; i++)
         {
-            if (!CanBeJudgedByHashCode(items[i]))
+            object? item = items[i];
+
+            if (!CanBeJudgedByHashCode(item))
             {
                 return false;
             }
 
-            if (!seen.Add(items[i]))
+            if (!seen.Add(item))
             {
                 return false;
             }
@@ -73,7 +76,7 @@ internal static class UniqueItemsHashCheck
     /// A null is excluded for tidiness rather than any real risk: it keeps the one
     /// value a set treats specially out of the fast path.
     /// </remarks>
-    private static bool CanBeJudgedByHashCode(object item)
+    private static bool CanBeJudgedByHashCode([NotNullWhen(true)] object? item)
     {
         if (item == null)
         {

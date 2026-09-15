@@ -11,7 +11,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root attr='123'></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.AttributeAsInt("attr");
 
@@ -23,7 +23,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root attr='abc'></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.AttributeAsInt("attr");
 
@@ -35,7 +35,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root attr='abc'></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.AttributeAsString("attr");
 
@@ -47,7 +47,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.AttributeAsString("attr");
 
@@ -59,7 +59,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root attr='true'></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.AttributeAsBool("attr");
 
@@ -71,7 +71,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root attr='abc'></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.AttributeAsBool("attr");
 
@@ -83,7 +83,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root attr='2022-01-01'></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.AttributeAsDateTime("attr");
 
@@ -95,7 +95,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root attr='abc'></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.AttributeAsDateTime("attr");
 
@@ -107,7 +107,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root><child>abc</child></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.ElementAsString("child");
 
@@ -119,7 +119,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.ElementAsString("child");
 
@@ -131,7 +131,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root><child>123</child></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.ElementAsInt("child");
 
@@ -143,7 +143,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root><child>abc</child></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         var result = node.ElementAsInt("child");
 
@@ -157,7 +157,7 @@ public class Test_XmlExtensionMethods
         // expression a caller already passes keeps behaving the way it always has
         var doc = new XmlDocument();
         doc.LoadXml("<root><contact><email>a@example.com</email></contact></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         Assert.Equal("a@example.com", node.ElementAsString("contact/email"));
         Assert.Equal("a@example.com", node.ElementAsString("*/email"));
@@ -170,7 +170,7 @@ public class Test_XmlExtensionMethods
         // the walk has to answer the same way
         var doc = new XmlDocument();
         doc.LoadXml("<root xmlns='urn:example'><child>value</child></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         Assert.Null(node.ElementAsString("child"));
     }
@@ -180,7 +180,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root><first-name>Scott</first-name><a.b>value</a.b></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         Assert.Equal("Scott", node.ElementAsString("first-name"));
         Assert.Equal("value", node.ElementAsString("a.b"));
@@ -191,7 +191,7 @@ public class Test_XmlExtensionMethods
     {
         var doc = new XmlDocument();
         doc.LoadXml("<root><child>first</child><child>second</child></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         Assert.Equal("first", node.ElementAsString("child"));
     }
@@ -203,7 +203,7 @@ public class Test_XmlExtensionMethods
         // of a plain name means
         var doc = new XmlDocument();
         doc.LoadXml("<root><wrapper><child>value</child></wrapper></root>");
-        var node = doc.DocumentElement;
+        var node = doc.DocumentElement!;
 
         Assert.Null(node.ElementAsString("child"));
     }

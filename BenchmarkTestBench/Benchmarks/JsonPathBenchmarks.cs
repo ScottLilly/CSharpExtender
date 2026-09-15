@@ -26,10 +26,10 @@ public class JsonPathBenchmarks
     public string Path = "";
 
     [Benchmark(Baseline = true)]
-    public string Current() => JSON.GetValueFromJsonPath(Path);
+    public string? Current() => JSON.GetValueFromJsonPath(Path);
 
     [Benchmark]
-    public string SpanWalk()
+    public string? SpanWalk()
     {
         using JsonDocument document = JsonDocument.Parse(JSON);
 

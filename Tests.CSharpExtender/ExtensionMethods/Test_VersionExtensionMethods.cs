@@ -53,15 +53,15 @@ public class Test_VersionExtensionMethods
     [InlineData("99999999999999999999")]
     public void ToSemanticVersion_UnreadableText_ThrowsFormatException(string text)
     {
-        Assert.Throws<FormatException>(() => text.ToSemanticVersion());
+        Assert.Throws<FormatException>(() => text!.ToSemanticVersion());
     }
 
     [Fact]
     public void ToSemanticVersion_Null_ThrowsArgumentNullException()
     {
-        string text = null;
+        string? text = null;
 
-        Assert.Throws<ArgumentNullException>(() => text.ToSemanticVersion());
+        Assert.Throws<ArgumentNullException>(() => text!.ToSemanticVersion());
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class Test_VersionExtensionMethods
     {
         // Pinax returned 0.0.0.0 from a swallowed catch, so a typo sailed through looking
         // like a valid version and stayed wrong forever
-        Assert.False("not a version".TryParseSemanticVersion(out SemanticVersion version));
+        Assert.False("not a version".TryParseSemanticVersion(out var version));
         Assert.Null(version);
     }
 

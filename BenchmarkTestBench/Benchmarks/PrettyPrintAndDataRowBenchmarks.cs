@@ -47,13 +47,13 @@ public class PrettyPrintAndDataRowBenchmarks
     }
 
     [Benchmark]
-    public string DataRowGet_Current() => _row.Get<string>("Name");
+    public string? DataRowGet_Current() => _row.Get<string>("Name");
 
     [Benchmark]
     public string DataRowGet_SingleLookup() => GetByIndex<string>(_row, "Name");
 
     [Benchmark]
-    public string DataRowGet_MissingColumn_Current() => _row.Get<string>("Nothing");
+    public string? DataRowGet_MissingColumn_Current() => _row.Get<string>("Nothing");
 
     [Benchmark]
     public string DataRowGet_MissingColumn_SingleLookup() => GetByIndex<string>(_row, "Nothing");

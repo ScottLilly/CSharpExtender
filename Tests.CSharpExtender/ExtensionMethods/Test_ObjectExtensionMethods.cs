@@ -8,7 +8,7 @@ public class Test_ObjectExtensionMethods
     public void TestDeepClone()
     {
         var original = new TestClass { Value = 1 };
-        var clone = original.DeepClone();
+        var clone = original.DeepClone()!;
 
         Assert.NotSame(original, clone);
         Assert.Equal(original.Value, clone.Value);
@@ -19,7 +19,7 @@ public class Test_ObjectExtensionMethods
     {
         var original = new NestedOwner { Child = new TestClass { Value = 7 } };
 
-        var clone = original.DeepClone();
+        var clone = original.DeepClone()!;
 
         Assert.NotSame(original, clone);
         Assert.NotSame(original.Child, clone.Child);
@@ -35,7 +35,7 @@ public class Test_ObjectExtensionMethods
         var child = new CircularNode { Name = "child", Parent = parent };
         parent.Child = child;
 
-        var clone = parent.DeepClone();
+        var clone = parent.DeepClone()!;
 
         Assert.NotSame(parent, clone);
         Assert.Equal("parent", clone.Name);
@@ -50,9 +50,9 @@ public class Test_ObjectExtensionMethods
         // cannot affect the next
         var original = new TestClass { Value = 1 };
 
-        var first = original.DeepClone();
+        var first = original.DeepClone()!;
         first.Value = 99;
-        var second = original.DeepClone();
+        var second = original.DeepClone()!;
 
         Assert.Equal(1, second.Value);
         Assert.NotSame(first, second);

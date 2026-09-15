@@ -30,7 +30,7 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
     /// <returns>The redacted JsonObject.</returns>
     public JsonObject Redact(string text)
     {
-        var jsonObject = JsonSerializer.Deserialize<JsonObject>(text);
+        var jsonObject = ParseObject(text);
 
         RedactJsonNode(jsonObject);
 
@@ -55,7 +55,7 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
     /// <returns>The redacted JSON string.</returns>
     public string RedactToString(string text)
     {
-        var jsonObject = JsonSerializer.Deserialize<JsonObject>(text);
+        var jsonObject = ParseObject(text);
 
         RedactJsonNode(jsonObject);
 
@@ -64,13 +64,19 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
 
     #region Private Methods
 
+    // Deserialize hands back a null for the literal "null", which is valid JSON but
+    // not a document there is anything to redact in
+    private static JsonObject ParseObject(string text) =>
+        JsonSerializer.Deserialize<JsonObject>(text)
+        ?? throw new ArgumentException("The JSON is null rather than an object.", nameof(text));
+
     /// <summary>
     /// Walks through the JSON nodes once and applies the redaction based on regex matching.
     /// </summary>
-    private void RedactJsonNode(JsonNode node) =>
+    private void RedactJsonNode(JsonNode? node) =>
         RedactJsonNode(node, new RedactionPathBuilder());
 
-    private void RedactJsonNode(JsonNode node, RedactionPathBuilder path)
+    private void RedactJsonNode(JsonNode? node, RedactionPathBuilder path)
     {
         // The current node is null or the pattern is empty, no need to process further
         if (node == null || !_matcher.HasPatterns)
@@ -87,7 +93,7 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
         if (node is JsonObject jObject)
         {
             // Left null until something matches, which for most objects is never
-            List<string> keysToRedact = null;
+            List<string>? keysToRedact = null;
 
             foreach (var property in jObject)
             {
@@ -143,12 +149,12 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
     }
 
 
-    private static JsonNode GetDefaultValue(JsonNode node)
+    private static JsonNode? GetDefaultValue(JsonNode? node)
     {
         // Default to null, empty string, or zero based on the node type
         return node switch
         {
-            JsonValue jValue when jValue.TryGetValue(out string _) => string.Empty,
+            JsonValue jValue when jValue.TryGetValue(out string? _) => string.Empty,
             JsonValue jValue when jValue.TryGetValue(out int _) => 0,
             JsonValue jValue when jValue.TryGetValue(out bool _) => false,
             _ => null

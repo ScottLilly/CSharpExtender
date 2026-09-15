@@ -29,7 +29,7 @@ public static class DisplayFormatExtensionMethods
     /// <exception cref="ArgumentNullException">Thrown if obj is null.</exception>
     /// <exception cref="ArgumentException">Thrown if the property does not exist.</exception>
     public static string ToDisplayString(this object obj, string propertyName,
-        IFormatProvider formatProvider = null)
+        IFormatProvider? formatProvider = null)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
@@ -54,7 +54,7 @@ public static class DisplayFormatExtensionMethods
     /// <returns>A dictionary of property name to formatted value.</returns>
     /// <exception cref="ArgumentNullException">Thrown if obj is null.</exception>
     public static IDictionary<string, string> ToDisplayStrings(this object obj,
-        IFormatProvider formatProvider = null)
+        IFormatProvider? formatProvider = null)
     {
         ArgumentNullException.ThrowIfNull(obj);
 
@@ -70,8 +70,8 @@ public static class DisplayFormatExtensionMethods
         return formatted;
     }
 
-    private static string FormatValue(object value, DisplayFormatAttribute attribute,
-        IFormatProvider formatProvider)
+    private static string FormatValue(object? value, DisplayFormatAttribute? attribute,
+        IFormatProvider? formatProvider)
     {
         var culture = formatProvider ?? CultureInfo.CurrentCulture;
 
@@ -80,11 +80,11 @@ public static class DisplayFormatExtensionMethods
             return attribute?.NullDisplayText ?? string.Empty;
         }
 
-        string formatString = attribute?.DataFormatString;
+        string? formatString = attribute?.DataFormatString;
 
         if (string.IsNullOrEmpty(formatString))
         {
-            return Convert.ToString(value, culture);
+            return Convert.ToString(value, culture) ?? string.Empty;
         }
 
         // DataFormatString conventionally wraps the specifier, as in "{0:yyyy-MM-dd}",
@@ -96,6 +96,6 @@ public static class DisplayFormatExtensionMethods
 
         return value is IFormattable formattable
             ? formattable.ToString(formatString, culture)
-            : Convert.ToString(value, culture);
+            : Convert.ToString(value, culture) ?? string.Empty;
     }
 }

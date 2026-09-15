@@ -24,12 +24,12 @@ public class ConditionalRequiredAttribute : ValidationAttribute
     /// <summary>
     /// The name of the property whose value decides whether this member is required.
     /// </summary>
-    public string DependentProperty { get; set; }
+    public string? DependentProperty { get; set; }
 
     /// <summary>
     /// The value of DependentProperty that makes this member required.
     /// </summary>
-    public object RequiredWhenValue { get; set; }
+    public object? RequiredWhenValue { get; set; }
 
     /// <summary>
     /// Count a string of whitespace as a value. False by default, matching [Required].
@@ -45,7 +45,7 @@ public class ConditionalRequiredAttribute : ValidationAttribute
     // collapsed into one by code that de-duplicates attributes
     public override object TypeId => this;
 
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         if (string.IsNullOrWhiteSpace(DependentProperty))
         {
@@ -70,7 +70,7 @@ public class ConditionalRequiredAttribute : ValidationAttribute
                 $"Property {DependentProperty} was not found on {instance.GetType().Name}.");
         }
 
-        object dependentValue = dependentProperty.GetValue(instance);
+        object? dependentValue = dependentProperty.GetValue(instance);
 
         // The condition is not met, so this member is not required
         if (!AnnotationValueComparer.AreEqual(dependentValue, RequiredWhenValue, IgnoreCase))
@@ -83,7 +83,7 @@ public class ConditionalRequiredAttribute : ValidationAttribute
             return ValidationResult.Success;
         }
 
-        string memberName = validationContext.MemberName;
+        string? memberName = validationContext.MemberName;
         string displayName = validationContext.DisplayName ?? memberName ?? "The value";
 
         string message = ErrorMessage ??
@@ -94,7 +94,7 @@ public class ConditionalRequiredAttribute : ValidationAttribute
             : new ValidationResult(message, new[] { memberName });
     }
 
-    private bool HasValue(object value)
+    private bool HasValue(object? value)
     {
         if (value == null)
         {

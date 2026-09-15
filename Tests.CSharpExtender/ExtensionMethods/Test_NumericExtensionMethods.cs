@@ -264,7 +264,7 @@ public class Test_NumericExtensionMethods
     [Fact]
     public void StandardDeviation_NullCollection_Throws()
     {
-        double[] nullValues = null;
+        double[] nullValues = null!;
 
         Assert.Throws<ArgumentNullException>(() => nullValues.StandardDeviation());
         Assert.Throws<ArgumentNullException>(() => nullValues.PopulationStandardDeviation());

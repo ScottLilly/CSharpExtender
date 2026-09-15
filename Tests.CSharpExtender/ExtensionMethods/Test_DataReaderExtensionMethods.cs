@@ -119,7 +119,7 @@ public class Test_DataReaderExtensionMethods
     [Fact]
     public void GetValue_NullReader_ThrowsArgumentNullException()
     {
-        IDataReader reader = null;
+        IDataReader reader = null!;
 
         Assert.Throws<ArgumentNullException>(() => reader.GetValue<string>("Name"));
     }
@@ -129,7 +129,7 @@ public class Test_DataReaderExtensionMethods
     {
         using var reader = ReaderOverOneRow();
 
-        Assert.Throws<ArgumentNullException>(() => reader.GetValue<string>(null));
+        Assert.Throws<ArgumentNullException>(() => reader.GetValue<string>(null!));
     }
 
     [Fact]

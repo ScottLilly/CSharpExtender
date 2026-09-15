@@ -22,7 +22,7 @@ public static class JsonExtensionMethods
     /// <returns>The value from the JSON element at the specified path.</returns>
     /// <exception cref="ArgumentNullException">Thrown if json or path is null.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the property is not found or JSON is invalid.</exception>
-    public static T GetValueFromJsonPath<T>(this string json, string path)
+    public static T? GetValueFromJsonPath<T>(this string json, string path)
     {
         if (string.IsNullOrEmpty(json))
         {
@@ -97,7 +97,7 @@ public static class JsonExtensionMethods
     /// <returns>The value from the JSON element at the specified path.</returns>
     /// <exception cref="ArgumentNullException">Thrown if json or path is null.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the property is not found or JSON is invalid.</exception>
-    public static string GetValueFromJsonPath(this string json, string path)
+    public static string? GetValueFromJsonPath(this string json, string path)
     {
         return GetValueFromJsonPath<string>(json, path);
     }
@@ -109,7 +109,7 @@ public static class JsonExtensionMethods
     /// <param name="value">The object to serialize.</param>
     /// <param name="jsonSerializerOptions">The JSON serializer options (optional).</param>
     /// <returns>A JSON string representation of the object.</returns>
-    public static string AsSerializedJson<T>(this T value, JsonSerializerOptions jsonSerializerOptions = null) where T : class
+    public static string AsSerializedJson<T>(this T value, JsonSerializerOptions? jsonSerializerOptions = null) where T : class
     {
         return JsonSerializer.Serialize(value, jsonSerializerOptions);
     }
@@ -119,8 +119,8 @@ public static class JsonExtensionMethods
     /// </summary>
     /// <typeparam name="T">The type of the object.</typeparam>
     /// <param name="json">The JSON string to deserialize.</param>
-    /// <returns>An object of the specified type.</returns>
-    public static T AsDeserializedJson<T>(this string json) where T : class
+    /// <returns>An object of the specified type, or null when the JSON is the literal null.</returns>
+    public static T? AsDeserializedJson<T>(this string json) where T : class
     {
         return JsonSerializer.Deserialize<T>(json);
     }
@@ -144,7 +144,7 @@ public static class JsonExtensionMethods
     /// <param name="jsonSerializerOptions">The JSON serializer options (optional). The caller's instance is not modified.</param>
     /// <returns>A formatted JSON string representation of the object.</returns>
     public static string PrettyPrintJson(this object obj,
-        JsonSerializerOptions jsonSerializerOptions = null)
+        JsonSerializerOptions? jsonSerializerOptions = null)
     {
         // A JsonSerializerOptions becomes read-only once it has been used to
         // serialize, so the caller's instance is copied and left untouched

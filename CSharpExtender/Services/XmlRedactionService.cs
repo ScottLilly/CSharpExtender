@@ -122,7 +122,7 @@ public class XmlRedactionService(List<string> redactedPaths, bool ignoreCase = f
 
         // Copy the child elements first, because redacting one can remove nodes from the collection.
         // Left null until there is one, because a leaf element is the common case.
-        List<XmlElement> childElements = null;
+        List<XmlElement>? childElements = null;
 
         foreach (XmlNode child in element.ChildNodes)
         {

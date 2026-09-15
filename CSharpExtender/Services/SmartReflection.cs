@@ -10,7 +10,7 @@ namespace CSharpExtender.Services;
 /// </summary>
 public static class SmartReflection
 {
-    private static readonly ConcurrentDictionary<MethodCacheKey, MethodInfo> _methodCache = new();
+    private static readonly ConcurrentDictionary<MethodCacheKey, MethodInfo?> _methodCache = new();
 
     private const BindingFlags MethodSearchFlags =
         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
@@ -19,7 +19,7 @@ public static class SmartReflection
     private static PropertyInfo[] GetCachedProperties(Type type) =>
         PropertyCache.GetProperties(type);
 
-    private static PropertyInfo FindProperty(Type type, string propertyName) =>
+    private static PropertyInfo? FindProperty(Type type, string propertyName) =>
         PropertyCache.GetProperty(type, propertyName);
 
     /// <summary>
@@ -72,7 +72,7 @@ public static class SmartReflection
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="obj"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when the property does not exist.</exception>
     /// <exception cref="InvalidCastException">Thrown when the property type is not assignable to <typeparamref name="TProperty"/>.</exception>
-    public static TProperty GetPropertyValue<TProperty>(object obj, string propertyName)
+    public static TProperty? GetPropertyValue<TProperty>(object obj, string propertyName)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
@@ -85,7 +85,7 @@ public static class SmartReflection
             throw new InvalidCastException($"Property {propertyName} is not of type {typeof(TProperty).Name}");
         }
 
-        return (TProperty)prop.GetValue(obj);
+        return (TProperty?)prop.GetValue(obj);
     }
 
     /// <summary>
@@ -170,7 +170,7 @@ public static class SmartReflection
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="obj"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when no method matches the name and supplied arguments.</exception>
     /// <exception cref="InvalidCastException">Thrown when the method's return type is not assignable to <typeparamref name="TResult"/>.</exception>
-    public static TResult InvokeMethod<TResult>(object obj, string methodName, params object[] parameters)
+    public static TResult? InvokeMethod<TResult>(object obj, string methodName, params object[] parameters)
     {
         ArgumentNullException.ThrowIfNull(obj);
 
@@ -183,17 +183,17 @@ public static class SmartReflection
             throw new InvalidCastException($"Method {methodName} does not return {typeof(TResult).Name}");
         }
 
-        return (TResult)method.Invoke(obj, parameters);
+        return (TResult?)method.Invoke(obj, parameters);
     }
 
     // Get cached MethodInfo for a type, name and argument shape, or resolve and cache if not present
-    private static MethodInfo GetCachedMethod(Type type, string methodName, object[] parameters)
+    private static MethodInfo? GetCachedMethod(Type type, string methodName, object[] parameters)
     {
         var arguments = parameters ?? Array.Empty<object>();
 
         // A null argument has no runtime type, so overloads cannot be told apart
         // by it. Those calls fall back to matching on name and argument count.
-        Type[] argumentTypes = GetArgumentTypes(arguments);
+        Type[]? argumentTypes = GetArgumentTypes(arguments);
 
         var cacheKey = new MethodCacheKey(type, methodName, arguments.Length, argumentTypes);
 
@@ -206,7 +206,7 @@ public static class SmartReflection
     }
 
     // Null if any argument is null, because that call cannot be resolved by type
-    private static Type[] GetArgumentTypes(object[] arguments)
+    private static Type[]? GetArgumentTypes(object[] arguments)
     {
         if (arguments.Length == 0)
         {
@@ -228,7 +228,7 @@ public static class SmartReflection
         return argumentTypes;
     }
 
-    private static MethodInfo FindMethod(Type type, string methodName, Type[] argumentTypes, int argumentCount)
+    private static MethodInfo? FindMethod(Type type, string methodName, Type[]? argumentTypes, int argumentCount)
     {
         if (argumentTypes != null)
         {

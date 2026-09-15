@@ -16,7 +16,7 @@ public static class XmlExtensionMethods
     /// <returns>The value of the attribute as an integer, or the default value for integers if the attribute does not exist or cannot be parsed as an integer.</returns>
     public static int AttributeAsInt(this XmlNode node, string attributeName)
     {
-        XmlAttribute attribute = node.Attributes?[attributeName];
+        XmlAttribute? attribute = node.Attributes?[attributeName];
 
         if (attribute == null)
         {
@@ -37,7 +37,7 @@ public static class XmlExtensionMethods
     /// <param name="node">The XmlNode to retrieve the attribute from.</param>
     /// <param name="attributeName">The name of the attribute.</param>
     /// <returns>The value of the attribute as a string, or null if the attribute does not exist.</returns>
-    public static string AttributeAsString(this XmlNode node, string attributeName)
+    public static string? AttributeAsString(this XmlNode node, string attributeName)
     {
         return node.Attributes?[attributeName]?.Value;
     }
@@ -50,7 +50,7 @@ public static class XmlExtensionMethods
     /// <returns>The value of the attribute as a boolean, or the default value for booleans if the attribute does not exist or cannot be parsed as a boolean.</returns>
     public static bool AttributeAsBool(this XmlNode node, string attributeName)
     {
-        XmlAttribute attribute = node.Attributes?[attributeName];
+        XmlAttribute? attribute = node.Attributes?[attributeName];
 
         if (attribute == null)
         {
@@ -73,7 +73,7 @@ public static class XmlExtensionMethods
     /// <returns>The value of the attribute as a DateTime, or the default value for DateTime if the attribute does not exist or cannot be parsed as a DateTime.</returns>
     public static DateTime AttributeAsDateTime(this XmlNode node, string attributeName)
     {
-        XmlAttribute attribute = node.Attributes?[attributeName];
+        XmlAttribute? attribute = node.Attributes?[attributeName];
 
         if (attribute == null)
         {
@@ -94,7 +94,7 @@ public static class XmlExtensionMethods
     /// <param name="node">The XmlNode to retrieve the child element from.</param>
     /// <param name="elementName">The name of the child element.</param>
     /// <returns>The inner text of the child element as a string, or null if the child element does not exist.</returns>
-    public static string ElementAsString(this XmlNode node, string elementName)
+    public static string? ElementAsString(this XmlNode node, string elementName)
     {
         return FindChildElement(node, elementName)?.InnerText;
     }
@@ -107,7 +107,7 @@ public static class XmlExtensionMethods
     /// <returns>The inner text of the child element as an integer, or the default value for integers if the child element does not exist or its inner text cannot be parsed as an integer.</returns>
     public static int ElementAsInt(this XmlNode node, string elementName)
     {
-        XmlNode childNode = FindChildElement(node, elementName);
+        XmlNode? childNode = FindChildElement(node, elementName);
 
         if (childNode != null && XmlValueParser.TryParseInt(childNode.InnerText, out int result))
         {
@@ -128,14 +128,14 @@ public static class XmlExtensionMethods
     /// name still goes to SelectSingleNode, so an expression a caller passes today
     /// keeps working, including one that is not valid XPath and throws.
     /// </remarks>
-    private static XmlNode FindChildElement(XmlNode node, string elementName)
+    private static XmlNode? FindChildElement(XmlNode node, string elementName)
     {
         if (!IsPlainElementName(elementName))
         {
             return node.SelectSingleNode(elementName);
         }
 
-        for (XmlNode child = node.FirstChild; child != null; child = child.NextSibling)
+        for (XmlNode? child = node.FirstChild; child != null; child = child.NextSibling)
         {
             // An XPath name with no prefix matches only elements that are in no
             // namespace, so the walk has to pass over namespaced ones to give the

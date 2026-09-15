@@ -16,7 +16,7 @@ namespace CSharpExtender.DataAnnotations;
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public class UniqueItemsAttribute : ValidationAttribute
 {
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         // If the value is null, let [Required] handle it if needed
         if (value == null)
@@ -74,13 +74,13 @@ public class UniqueItemsAttribute : ValidationAttribute
     /// a known size implements, so the list is built at its final size and never
     /// has to grow.
     /// </remarks>
-    private static List<object> Materialize(IEnumerable collection)
+    private static List<object?> Materialize(IEnumerable collection)
     {
         var items = collection is ICollection sized
-            ? new List<object>(sized.Count)
-            : new List<object>();
+            ? new List<object?>(sized.Count)
+            : new List<object?>();
 
-        foreach (object item in collection)
+        foreach (object? item in collection)
         {
             items.Add(item);
         }

@@ -42,7 +42,7 @@ public class Test_XmlRedactionService
         var service = new XmlRedactionService(["person.name"]);
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => service.Redact((XmlDocument)null));
+        Assert.Throws<ArgumentNullException>(() => service.Redact((XmlDocument)null!));
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class Test_XmlRedactionService
         var service = new XmlRedactionService(["person.name"]);
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => service.RedactToString((XmlDocument)null));
+        Assert.Throws<ArgumentNullException>(() => service.RedactToString((XmlDocument)null!));
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class Test_XmlRedactionService
         var service = new XmlRedactionService(["person.name"]);
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => service.Redact((string)null));
+        Assert.Throws<ArgumentNullException>(() => service.Redact((string)null!));
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class Test_XmlRedactionService
         var service = new XmlRedactionService(["person.name"]);
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => service.RedactToString((string)null));
+        Assert.Throws<ArgumentNullException>(() => service.RedactToString((string)null!));
     }
 
     [Fact]

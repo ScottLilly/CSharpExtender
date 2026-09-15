@@ -54,7 +54,7 @@ public class Test_MaskExtensionMethods
     [Fact]
     public void Mask_NullOrEmpty_ReturnsInputUnchanged()
     {
-        Assert.Null(((string)null).Mask('*', 2, 2));
+        Assert.Null(((string?)null).Mask('*', 2, 2));
         Assert.Equal("", "".Mask('*', 2, 2));
     }
 
@@ -153,7 +153,7 @@ public class Test_MaskExtensionMethods
     [Fact]
     public void ToMaskedString_NullObject_Throws()
     {
-        object nullObject = null;
+        object nullObject = null!;
 
         Assert.Throws<ArgumentNullException>(() => nullObject.ToMaskedString("Anything"));
     }

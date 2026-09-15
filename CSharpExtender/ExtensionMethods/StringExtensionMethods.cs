@@ -2,6 +2,7 @@
 using System.Linq;
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace CSharpExtender.ExtensionMethods;
@@ -52,7 +53,7 @@ public static partial class StringExtensionMethods
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool HasText(this string value) =>
+    public static bool HasText([NotNullWhen(true)] this string? value) =>
         !string.IsNullOrWhiteSpace(value);
 
     /// <summary>
@@ -60,7 +61,7 @@ public static partial class StringExtensionMethods
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool DoesNotHaveText(this string value) =>
+    public static bool DoesNotHaveText([NotNullWhen(false)] this string? value) =>
         string.IsNullOrWhiteSpace(value);
 
     /// <summary>
@@ -68,7 +69,7 @@ public static partial class StringExtensionMethods
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static string NullIfEmpty(this string value) =>
+    public static string? NullIfEmpty(this string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value;
 
     /// <summary>
@@ -76,7 +77,7 @@ public static partial class StringExtensionMethods
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static string ToDigitsOnly(this string value)
+    public static string? ToDigitsOnly(this string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -115,7 +116,7 @@ public static partial class StringExtensionMethods
     /// deliberate and is not going to change: the null case was the real defect and
     /// was fixed for 3.0.0. Test for emptiness separately if it matters to you.
     /// </remarks>
-    public static bool IsDigitsOnly(this string s)
+    public static bool IsDigitsOnly([NotNullWhen(true)] this string? s)
     {
         if (s == null)
         {
@@ -305,7 +306,7 @@ public static partial class StringExtensionMethods
     /// <returns>The converted value of type T.</returns>
     /// <exception cref="NotSupportedException">Thrown if conversion is not supported for the type.</exception>
     /// <exception cref="FormatException">Thrown if the string is not in a format compliant with the type.</exception>
-    public static T ConvertFromString<T>(this string input)
+    public static T? ConvertFromString<T>(this string input)
     {
         // Held per closed T, because the converter for a type never changes and
         // asking TypeDescriptor for it again is most of what this method costs
@@ -313,7 +314,7 @@ public static partial class StringExtensionMethods
 
         if (converter != null && converter.CanConvertFrom(typeof(string)))
         {
-            return (T)converter.ConvertFromString(input);
+            return (T?)converter.ConvertFromString(input);
         }
         else
         {
@@ -343,7 +344,8 @@ public static partial class StringExtensionMethods
     /// <param name="maxLength">Maximum length of string</param>
     /// <returns>String, trimmed (if necessary) to maximum length</returns>
     /// <exception cref="ArgumentOutOfRangeException">Exception, if a negative number is passed as maxLength</exception>
-    public static string ToMaxLengthOf(this string text, int maxLength)
+    [return: NotNullIfNotNull(nameof(text))]
+    public static string? ToMaxLengthOf(this string? text, int maxLength)
     {
         if (text == null)
         {
@@ -379,7 +381,8 @@ public static partial class StringExtensionMethods
     /// <example>
     /// "1234-5678-9012-5678".Mask('*', 4, 4) returns "1234-****-****-5678"
     /// </example>
-    public static string Mask(this string text, char maskChar = '*',
+    [return: NotNullIfNotNull(nameof(text))]
+    public static string? Mask(this string? text, char maskChar = '*',
         int visiblePrefixLength = 0, int visibleSuffixLength = 0,
         bool preserveSeparators = true)
     {
@@ -451,7 +454,8 @@ public static partial class StringExtensionMethods
     /// <example>
     /// "  the   quick\tbrown\r\nfox  ".CollapseWhitespace() returns "the quick brown fox"
     /// </example>
-    public static string CollapseWhitespace(this string text)
+    [return: NotNullIfNotNull(nameof(text))]
+    public static string? CollapseWhitespace(this string? text)
     {
         if (text == null)
         {
