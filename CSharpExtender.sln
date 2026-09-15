@@ -33,11 +33,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{3F2C8A41-6
 		docs\ARCHITECTURE.md = docs\ARCHITECTURE.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B9D74E0-2C83-4A16-8F45-C6E1B7093D8A}"
-	ProjectSection(SolutionItems) = preProject
-		tools\README.md = tools\README.md
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

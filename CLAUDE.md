@@ -21,10 +21,15 @@ CSharpExtender.sln
   Tests.CSharpExtender/   xUnit, covers the library
   BenchmarkTestBench/     BenchmarkDotNet console app, not shipped
 docs/                     design notes and architecture
-tools/                    scripts and utilities that are not part of the build
 ```
 
 All markdown except this file, `README.md` and `RELEASE_NOTES.md` lives in `docs/`.
+
+This repo has no `tools/` folder. It held nothing but a README describing what might go in it one
+day, and the one candidate, `BenchmarkTestBench`, is a solution project rather than a script. Do
+not re-add it, including when applying a scaffolding or retrofit pass that creates one by default.
+A script that genuinely has nowhere else to live is a reason to revisit this, and it comes back as
+a folder with that script already in it.
 
 ## It is published, so changes are breaking changes
 

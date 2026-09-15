@@ -11,7 +11,6 @@ CSharpExtender.sln
   Tests.CSharpExtender/   net8.0   xUnit, covers the library
   BenchmarkTestBench/     net8.0   BenchmarkDotNet console app, not shipped
 docs/                     design notes and architecture
-tools/                    scripts and utilities that are not part of the build
 .github/workflows/        ci.yml and release.yml
 ```
 
