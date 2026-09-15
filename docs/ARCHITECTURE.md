@@ -25,7 +25,7 @@ Inside `CSharpExtender/`:
 | `Collections/` | `GenericCache<TKey, TValue>` |
 | `DataAnnotations/` | `ValidationAttribute` subclasses |
 | `ExtensionMethods/` | One static class per extended type |
-| `Models/` | `ObservableModel`, `PropertyChangeTrackingModel` and their support types |
+| `Models/` | `ObservableModel`, `PropertyChangeTrackingModel` and their support types, and `SemanticVersion` |
 | `Options/` | Option objects passed into extension methods, and the types they are built from |
 | `Services/` | Classes that are not extension methods: RNG, regex matching, redaction, reflection |
 

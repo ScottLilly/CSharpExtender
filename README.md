@@ -227,6 +227,17 @@ Properties on the options object, all optional. A new `StringBuilderOptions` wit
 - **`SuffixText`**: Text placed after the value.
 - **`ToLower`** / **`ToUpper`**: Changes the case of the text. Setting both leaves the case alone.
 
+### VersionExtensionMethods
+
+This class reads version numbers out of strings, keeping the alpha text rather than stripping it. `1.2.3-beta.1`, `2.0.0-rc1` and `3.1.0+build7` all read. The result is a `SemanticVersion`, described under Models below, so the prerelease label survives alongside the numbers.
+
+- **`ToSemanticVersion`**: Reads a version string. Throws `FormatException` on text it cannot read.
+- **`TryParseSemanticVersion`**: The same, without throwing. Returns false and sets null for text it cannot read.
+- **`NumericPartOfVersion`**: Returns the numbers only, so `"1.2.3-beta.1"` gives `"1.2.3"`. Null when the text is not a version.
+- **`PrereleaseLabelOf`**: Returns the label without its leading `-`, so `"1.2.3-beta.1"` gives `"beta.1"`. Null when there is no label.
+
+`ToSemanticVersion` and `TryParseSemanticVersion` divide the work the way `Version.Parse` and `Version.TryParse` do, so the caller picks whether unreadable input is exceptional rather than having that decided for them. Nothing here returns a zero version for input it could not read.
+
 ### XElementExtensionMethods
 
 This class provides extension methods for `XElement`, the LINQ to XML API, mirroring the `XmlNode` set below member for member. A missing attribute or element returns null from the string methods and the type's default from the others, and a value that will not parse returns the type's default rather than throwing, which is what the `XmlNode` set does. An unprefixed name matches only attributes and elements that are in no namespace.
@@ -257,6 +268,19 @@ This class provides extension methods for XML handling in C#, using `XmlNode`, t
 ## Models
 
 These classes can be used as base classes for models and handle property changed notification and logging of changed property values.
+
+### SemanticVersion
+
+An immutable record holding a version's numeric parts alongside its prerelease label and build metadata, so `1.2.3-beta.1` stays one value. `System.Version` has no room for a label, which is why this exists: through a `Version`, `1.2.3-beta.1` and `1.2.3` compare as equal, and a caller deciding whether to upgrade gets the wrong answer with nothing to tell them so. Build it with `ToSemanticVersion` or `TryParseSemanticVersion`, above.
+
+- **`Major`**, **`Minor`**, **`Patch`**, **`Revision`**: The numeric parts. A part the text did not carry is zero. `Revision` is there because .NET version strings often have a fourth part; Semantic Versioning does not.
+- **`PrereleaseLabel`**: The label without its leading `-`, or null.
+- **`BuildMetadata`**: The metadata without its leading `+`, or null.
+- **`IsPrerelease`**: Whether there is a label.
+- **`NumericPart`**: The numbers on their own, as a string.
+- **`ToVersion`**: Converts to a `System.Version`. Lossy on purpose: the label and metadata are dropped.
+
+Ordering follows the Semantic Versioning precedence rules, through `IComparable<SemanticVersion>` and the `<`, `>`, `<=` and `>=` operators, so `1.0.0-alpha` < `1.0.0-beta.2` < `1.0.0-beta.11` < `1.0.0-rc.1` < `1.0.0`. Build metadata takes no part in precedence, while equality covers every part including it. Those disagree in one case: `1.2.3+a` and `1.2.3+b` are not equal, but neither is greater.
 
 ### ObservableModel
 
