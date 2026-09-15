@@ -227,9 +227,25 @@ Properties on the options object, all optional. A new `StringBuilderOptions` wit
 - **`SuffixText`**: Text placed after the value.
 - **`ToLower`** / **`ToUpper`**: Changes the case of the text. Setting both leaves the case alone.
 
+### XElementExtensionMethods
+
+This class provides extension methods for `XElement`, the LINQ to XML API, mirroring the `XmlNode` set below member for member. A missing attribute or element returns null from the string methods and the type's default from the others, and a value that will not parse returns the type's default rather than throwing, which is what the `XmlNode` set does. An unprefixed name matches only attributes and elements that are in no namespace.
+
+Both sets parse the same way, under the invariant culture, so a document reads the same on every machine. A boolean accepts `true`, `false`, `1` and `0` in any casing, covering both what `bool.ToString()` writes and what schema-generated XML writes. A date keeps what the text said about its time zone, so a value ending in `Z` comes back with `Kind` of `Utc`, and a slash-separated date is always `MM/dd/yyyy`.
+
+- **`AttributeAsBool`**: Returns the value of the specified attribute as a boolean.
+- **`AttributeAsDateTime`**: Returns the value of the specified attribute as a DateTime.
+- **`AttributeAsInt`**: Returns the value of the specified attribute as an integer.
+- **`AttributeAsString`**: Returns the value of the specified attribute as a string.
+- **`ElementAsInt`**: Returns the text of the specified child element as an integer.
+- **`ElementAsString`**: Returns the text of the specified child element as a string.
+- **`GetValue`**: Returns the value of an attribute or a child element of the given name, whichever carries it, for XML that writes the same value either way. The attribute wins when both carry it, and a miss returns null. This is the one member with no `XmlNode` counterpart.
+
+These throw `ArgumentNullException` for a null element, where the `XmlNode` set throws `NullReferenceException`.
+
 ### XmlExtensionMethods
 
-This class provides extension methods for XML handling in C#.
+This class provides extension methods for XML handling in C#, using `XmlNode`, the pre-LINQ API. See `XElementExtensionMethods` above for the same set over `XElement`.
 
 - **`AttributeAsBool`**: Returns the value of the specified attribute as a boolean.
 - **`AttributeAsDateTime`**: Returns the value of the specified attribute as a DateTime.

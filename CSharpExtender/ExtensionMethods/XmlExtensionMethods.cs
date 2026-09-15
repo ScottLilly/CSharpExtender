@@ -23,7 +23,7 @@ public static class XmlExtensionMethods
             return default;
         }
 
-        if (int.TryParse(attribute.Value, out int result))
+        if (XmlValueParser.TryParseInt(attribute.Value, out int result))
         {
             return result;
         }
@@ -57,7 +57,7 @@ public static class XmlExtensionMethods
             return default;
         }
 
-        if (bool.TryParse(attribute.Value, out bool result))
+        if (XmlValueParser.TryParseBoolean(attribute.Value, out bool result))
         {
             return result;
         }
@@ -80,7 +80,7 @@ public static class XmlExtensionMethods
             return default;
         }
 
-        if (DateTime.TryParse(attribute.Value, out DateTime result))
+        if (XmlValueParser.TryParseDateTime(attribute.Value, out DateTime result))
         {
             return result;
         }
@@ -109,7 +109,7 @@ public static class XmlExtensionMethods
     {
         XmlNode childNode = FindChildElement(node, elementName);
 
-        if (childNode != null && int.TryParse(childNode.InnerText, out int result))
+        if (childNode != null && XmlValueParser.TryParseInt(childNode.InnerText, out int result))
         {
             return result;
         }
