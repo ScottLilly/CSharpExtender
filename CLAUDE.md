@@ -34,6 +34,23 @@ All markdown except this file, `README.md` and `RELEASE_NOTES.md` lives in `docs
   listed there.
 - The version lives in `CSharpExtender/CSharpExtender.csproj`. Do not bump it unless asked.
 
+## Every change to the package goes in RELEASE_NOTES.md
+
+A change is not done until it is written up under the `## Version x.y.z` heading for the release
+being worked on. Additions, removals and modifications alike, whether or not a consumer has to do
+anything about it. If you changed what ships, write it down.
+
+That includes a fix to something added earlier in the same unreleased version. The reader is
+someone upgrading from the last released version, and what they get is the end state, not the
+steps it took to arrive there. So describe the behavior they will see, not the edit.
+
+Put the entry under the section it belongs to: `Breaking Changes`, `Features`, `Bug Fixes`,
+`Performance` or `Dependencies`. `Breaking Changes` is measured against the previous release on
+NuGet, so a fix to a member introduced in the version being written up is a bug fix, not a break.
+
+Work that never reaches the package stays out: the test project, the benchmark bench, the build
+and CI, and the repo's own documents.
+
 ## Where this repo differs from the C# rules
 
 | Rule | What this repo does |

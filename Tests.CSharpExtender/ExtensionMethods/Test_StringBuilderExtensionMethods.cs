@@ -284,4 +284,95 @@ public class Test_StringBuilderExtensionMethods
 
         Assert.Equal("", sb.ToString());
     }
+
+    [Fact]
+    public void Append_MaxLengthWithPrefixAndSuffix_LeavesThemWhole()
+    {
+        var sb = new StringBuilder();
+        var options = new StringBuilderOptions
+        {
+            MaxLength = 3,
+            PrefixText = "[",
+            SuffixText = "]"
+        };
+
+        sb.Append("abcdef", options);
+
+        // MaxLength caps the value, so the result is longer than MaxLength rather than
+        // losing the closing bracket
+        Assert.Equal("[abc]", sb.ToString());
+    }
+
+    [Fact]
+    public void Append_MaxLengthWithFormat_LeavesTheFormatWhole()
+    {
+        var sb = new StringBuilder();
+        var options = new StringBuilderOptions
+        {
+            MaxLength = 3,
+            Format = "<{0}>"
+        };
+
+        sb.Append("abcdef", options);
+
+        Assert.Equal("<abc>", sb.ToString());
+    }
+
+    [Fact]
+    public void Append_MaxLengthWithIndent_DoesNotCountTheIndent()
+    {
+        var sb = new StringBuilder();
+        var options = new StringBuilderOptions
+        {
+            MaxLength = 3,
+            IndentLevel = 1,
+            IndentDepth = 2
+        };
+
+        sb.Append("abcdef", options);
+
+        Assert.Equal("  abc", sb.ToString());
+    }
+
+    [Fact]
+    public void Append_MaxLengthWithEscapeHtml_CountsTheEscapedText()
+    {
+        var sb = new StringBuilder();
+        var options = new StringBuilderOptions
+        {
+            MaxLength = 3,
+            EscapeHtml = true
+        };
+
+        sb.Append("a & b", options);
+
+        // Escaping turns "&" into "&amp;", and the cap counts what escaping produced
+        Assert.Equal("a &", sb.ToString());
+    }
+
+    [Fact]
+    public void Append_MaxLengthWithToUpper_CountsTheTransformedText()
+    {
+        var sb = new StringBuilder();
+        var options = new StringBuilderOptions
+        {
+            MaxLength = 4,
+            ToUpper = true
+        };
+
+        sb.Append("abcdef", options);
+
+        Assert.Equal("ABCD", sb.ToString());
+    }
+
+    [Fact]
+    public void Append_MaxLengthLongerThanTheValue_LeavesTheValueAlone()
+    {
+        var sb = new StringBuilder();
+        var options = new StringBuilderOptions { MaxLength = 20 };
+
+        sb.Append("abcdef", options);
+
+        Assert.Equal("abcdef", sb.ToString());
+    }
 }

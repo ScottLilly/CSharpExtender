@@ -207,7 +207,7 @@ Properties on the options object, all optional. A new `StringBuilderOptions` wit
 - **`IndentDepth`**: How many tabs or spaces make up one indent level. Defaults to 4.
 - **`IndentLevel`**: How many levels to indent the text.
 - **`IndentType`**: `IndentType.Spaces` (the default) or `IndentType.Tabs`.
-- **`MaxLength`**: Trims the text to this length.
+- **`MaxLength`**: Caps the length of the value, not the length of the finished string. It is applied after `ToUpper`, `ToLower` and `EscapeHtml` have rewritten the value, and before `Format`, `PrefixText`, `SuffixText` and the indent wrap it, so none of those four is ever cut in half. A `MaxLength` of 3 with a `SuffixText` of `]` returns four characters.
 - **`PrefixText`**: Text placed before the value.
 - **`SuffixText`**: Text placed after the value.
 - **`ToLower`** / **`ToUpper`**: Changes the case of the text. Setting both leaves the case alone.
@@ -261,6 +261,8 @@ The shared shape behind `JsonRedactionService` and `XmlRedactionService`. `BaseR
 - **`Redact` (string)**: Parses the text, redacts it, and returns the document.
 - **`RedactToString` (T)**: Redacts the document in place and returns the result as text.
 - **`RedactToString` (string)**: Parses the text, redacts it, and returns the result as text.
+
+Every member throws `ArgumentNullException` for a null argument, so a caller holding the interface gets the same answer whichever implementation is behind it.
 
 ### CompositeRegexMatcher
 

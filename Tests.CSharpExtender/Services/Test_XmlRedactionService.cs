@@ -46,6 +46,36 @@ public class Test_XmlRedactionService
     }
 
     [Fact]
+    public void RedactToString_NullDocument_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var service = new XmlRedactionService(["person.name"]);
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => service.RedactToString((XmlDocument)null));
+    }
+
+    [Fact]
+    public void Redact_NullString_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var service = new XmlRedactionService(["person.name"]);
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => service.Redact((string)null));
+    }
+
+    [Fact]
+    public void RedactToString_NullString_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var service = new XmlRedactionService(["person.name"]);
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => service.RedactToString((string)null));
+    }
+
+    [Fact]
     public void RedactString_WithNestedPath_RedactsCorrectly()
     {
         // Arrange

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -12,8 +13,11 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
     /// </summary>
     /// <param name="obj">The JsonObject to redact.</param>
     /// <returns>The redacted JsonObject.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="obj"/> is null.</exception>
     public JsonObject Redact(JsonObject obj)
     {
+        ArgumentNullException.ThrowIfNull(obj);
+
         RedactJsonNode(obj);
 
         return obj;
@@ -38,11 +42,10 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
     /// </summary>
     /// <param name="obj">The JsonObject to redact.</param>
     /// <returns>The redacted JSON as a string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="obj"/> is null.</exception>
     public string RedactToString(JsonObject obj)
     {
-        RedactJsonNode(obj);
-
-        return obj.ToString();
+        return Redact(obj).ToString();
     }
 
     /// <summary>

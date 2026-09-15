@@ -1,6 +1,7 @@
 ﻿using CSharpExtender.Services;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Xml;
 
 namespace Tests.CSharpExtender.Services;
 
@@ -277,5 +278,60 @@ public class Test_JsonRedactionService
         }
 
         Assert.Equal("", walked["secret"]!.ToString());
+    }
+
+    [Fact]
+    public void Redact_NullJsonObject_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var service = new JsonRedactionService(["name"]);
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => service.Redact((JsonObject)null));
+    }
+
+    [Fact]
+    public void RedactToString_NullJsonObject_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var service = new JsonRedactionService(["name"]);
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => service.RedactToString((JsonObject)null));
+    }
+
+    [Fact]
+    public void Redact_NullString_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var service = new JsonRedactionService(["name"]);
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => service.Redact((string)null));
+    }
+
+    [Fact]
+    public void RedactToString_NullString_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var service = new JsonRedactionService(["name"]);
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => service.RedactToString((string)null));
+    }
+
+    [Fact]
+    public void Redact_NullArgument_ThrowsTheSameAsTheXmlService()
+    {
+        // The two services are reached through IRedactionService<T>, so a caller holding the
+        // interface has to get the same answer from either one
+        var json = new JsonRedactionService(["name"]);
+        var xml = new XmlRedactionService(["name"]);
+
+        Assert.Throws<ArgumentNullException>(() => json.Redact((JsonObject)null));
+        Assert.Throws<ArgumentNullException>(() => xml.Redact((XmlDocument)null));
+
+        Assert.Throws<ArgumentNullException>(() => json.RedactToString((JsonObject)null));
+        Assert.Throws<ArgumentNullException>(() => xml.RedactToString((XmlDocument)null));
     }
 }

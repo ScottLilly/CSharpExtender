@@ -204,12 +204,6 @@ public static class StringBuilderExtensionMethods
 
         string result = text;
 
-        // Apply max length
-        if (options.MaxLength.HasValue && result.Length > options.MaxLength.Value)
-        {
-            result = result.Substring(0, options.MaxLength.Value);
-        }
-
         // Case transformation
         if (options.ToUpper && !options.ToLower)
         {
@@ -224,6 +218,14 @@ public static class StringBuilderExtensionMethods
         if (options.EscapeHtml)
         {
             result = HttpUtility.HtmlEncode(result);
+        }
+
+        // MaxLength caps the value, so it runs after the options that rewrite the value
+        // and before the ones that wrap it. Capping any later would cut the closing half
+        // off Format, SuffixText or both.
+        if (options.MaxLength.HasValue && result.Length > options.MaxLength.Value)
+        {
+            result = result.Substring(0, options.MaxLength.Value);
         }
 
         // Apply format
