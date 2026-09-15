@@ -10,9 +10,9 @@ namespace CSharpExtender.Services;
 /// </summary>
 public static class SmartReflection
 {
-    private static readonly ConcurrentDictionary<MethodCacheKey, MethodInfo?> _methodCache = new();
+    private static readonly ConcurrentDictionary<MethodCacheKey, MethodInfo?> s_methodCache = new();
 
-    private const BindingFlags MethodSearchFlags =
+    private const BindingFlags METHOD_SEARCH_FLAGS =
         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
     // Get cached PropertyInfo for a type, or fetch and cache if not present
@@ -199,7 +199,7 @@ public static class SmartReflection
 
         // The overload taking a factory argument, so the lookup does not capture
         // anything into a closure
-        return _methodCache.GetOrAdd(cacheKey,
+        return s_methodCache.GetOrAdd(cacheKey,
             static (_, state) =>
                 FindMethod(state.type, state.methodName, state.argumentTypes, state.argumentCount),
             (type, methodName, argumentTypes, argumentCount: arguments.Length));
@@ -232,7 +232,7 @@ public static class SmartReflection
     {
         if (argumentTypes != null)
         {
-            var exactMatch = type.GetMethod(methodName, MethodSearchFlags, null, argumentTypes, null);
+            var exactMatch = type.GetMethod(methodName, METHOD_SEARCH_FLAGS, null, argumentTypes, null);
 
             if (exactMatch != null)
             {
@@ -242,7 +242,7 @@ public static class SmartReflection
 
         // Either there were no argument types to match on, or no overload takes
         // exactly those types (an int argument to a long parameter, for example).
-        var candidates = type.GetMethods(MethodSearchFlags)
+        var candidates = type.GetMethods(METHOD_SEARCH_FLAGS)
             .Where(m => m.Name == methodName)
             .ToArray();
 

@@ -26,7 +26,7 @@ public class DeepCloneBenchmarks
         public List<string> Nicknames { get; set; } = ["Scott", "S"];
     }
 
-    private static readonly JsonSerializerOptions _sharedOptions = new()
+    private static readonly JsonSerializerOptions s_sharedOptions = new()
     {
         ReferenceHandler = ReferenceHandler.Preserve
     };
@@ -39,16 +39,16 @@ public class DeepCloneBenchmarks
     [Benchmark]
     public Person? SharedOptionsViaString()
     {
-        string json = JsonSerializer.Serialize(_person, _sharedOptions);
+        string json = JsonSerializer.Serialize(_person, s_sharedOptions);
 
-        return JsonSerializer.Deserialize<Person>(json, _sharedOptions);
+        return JsonSerializer.Deserialize<Person>(json, s_sharedOptions);
     }
 
     [Benchmark]
     public Person? SharedOptionsViaUtf8Bytes()
     {
-        byte[] json = JsonSerializer.SerializeToUtf8Bytes(_person, _sharedOptions);
+        byte[] json = JsonSerializer.SerializeToUtf8Bytes(_person, s_sharedOptions);
 
-        return JsonSerializer.Deserialize<Person>(json, _sharedOptions);
+        return JsonSerializer.Deserialize<Person>(json, s_sharedOptions);
     }
 }

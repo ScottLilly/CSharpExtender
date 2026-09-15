@@ -14,7 +14,7 @@ namespace CSharpExtender.Services;
 /// </remarks>
 internal static class PropertyCache
 {
-    private const BindingFlags _searchFlags = BindingFlags.Public | BindingFlags.Instance;
+    private const BindingFlags SEARCH_FLAGS = BindingFlags.Public | BindingFlags.Instance;
 
     private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_properties =
         new ConcurrentDictionary<Type, PropertyInfo[]>();
@@ -23,7 +23,7 @@ internal static class PropertyCache
         new ConcurrentDictionary<(Type, string), PropertyInfo?>();
 
     internal static PropertyInfo[] GetProperties(Type type) =>
-        s_properties.GetOrAdd(type, static t => t.GetProperties(_searchFlags));
+        s_properties.GetOrAdd(type, static t => t.GetProperties(SEARCH_FLAGS));
 
     /// <summary>
     /// The named property, or null when the type does not have one. Callers decide

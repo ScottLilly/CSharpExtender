@@ -197,18 +197,18 @@ public class Test_NumericExtensionMethods
 
     // Worked example: 2, 4, 4, 4, 5, 5, 7, 9 has a mean of 5, a population
     // standard deviation of 2, and a sample standard deviation of sqrt(32/7)
-    private static readonly double[] _values = [2, 4, 4, 4, 5, 5, 7, 9];
+    private static readonly double[] s_values = [2, 4, 4, 4, 5, 5, 7, 9];
 
     [Fact]
     public void PopulationStandardDeviation_ReturnsExpectedValue()
     {
-        Assert.Equal(2.0, _values.PopulationStandardDeviation(), 10);
+        Assert.Equal(2.0, s_values.PopulationStandardDeviation(), 10);
     }
 
     [Fact]
     public void StandardDeviation_ReturnsSampleValue()
     {
-        Assert.Equal(Math.Sqrt(32.0 / 7.0), _values.StandardDeviation(), 10);
+        Assert.Equal(Math.Sqrt(32.0 / 7.0), s_values.StandardDeviation(), 10);
     }
 
     [Fact]
@@ -216,7 +216,7 @@ public class Test_NumericExtensionMethods
     {
         int[] integers = [2, 4, 4, 4, 5, 5, 7, 9];
 
-        Assert.Equal(_values.StandardDeviation(), integers.StandardDeviation(), 10);
+        Assert.Equal(s_values.StandardDeviation(), integers.StandardDeviation(), 10);
         Assert.Equal(2.0, integers.PopulationStandardDeviation(), 10);
     }
 
@@ -225,7 +225,7 @@ public class Test_NumericExtensionMethods
     {
         decimal[] decimals = [2, 4, 4, 4, 5, 5, 7, 9];
 
-        Assert.Equal(_values.StandardDeviation(), decimals.StandardDeviation(), 10);
+        Assert.Equal(s_values.StandardDeviation(), decimals.StandardDeviation(), 10);
         Assert.Equal(2.0, decimals.PopulationStandardDeviation(), 10);
     }
 
@@ -279,7 +279,7 @@ public class Test_NumericExtensionMethods
         {
             enumerationCount++;
 
-            foreach (var value in _values)
+            foreach (var value in s_values)
             {
                 yield return value;
             }

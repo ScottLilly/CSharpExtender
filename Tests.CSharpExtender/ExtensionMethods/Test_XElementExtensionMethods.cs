@@ -6,7 +6,7 @@ namespace Tests.CSharpExtender.ExtensionMethods;
 
 public class Test_XElementExtensionMethods
 {
-    private const string _xml =
+    private const string XML =
         "<person id=\"42\" active=\"true\" born=\"2026-09-15\" score=\"abc\" both=\"from the attribute\" " +
         "dotNetBool=\"True\" schemaBool=\"1\" schemaFalse=\"0\" utc=\"2026-09-15T10:30:00Z\" " +
         "dayFirst=\"15/09/2026\" grouped=\"1,234\">" +
@@ -20,14 +20,14 @@ public class Test_XElementExtensionMethods
 
     private static XElement Root()
     {
-        return XDocument.Parse(_xml).Root!;
+        return XDocument.Parse(XML).Root!;
     }
 
     private static XmlNode XmlRoot()
     {
         var document = new XmlDocument();
 
-        document.LoadXml(_xml);
+        document.LoadXml(XML);
 
         return document.DocumentElement!;
     }

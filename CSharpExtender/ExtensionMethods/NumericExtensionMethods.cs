@@ -9,7 +9,7 @@ namespace CSharpExtender.ExtensionMethods;
 /// </summary>
 public static class NumericExtensionMethods
 {
-    private const float _minimumAbsoluteTolerance = 1e-7f;
+    private const float MINIMUM_ABSOLUTE_TOLERANCE = 1e-7f;
 
     /// <summary>
     /// Checks if the given integer is even.
@@ -93,7 +93,7 @@ public static class NumericExtensionMethods
         }
 
         float max = Math.Max(Math.Abs(value), Math.Abs(other));
-        float tolerance = Math.Max(max * tolerancePercentage, _minimumAbsoluteTolerance);
+        float tolerance = Math.Max(max * tolerancePercentage, MINIMUM_ABSOLUTE_TOLERANCE);
 
         return Math.Abs(value - other) <= tolerance;
     }

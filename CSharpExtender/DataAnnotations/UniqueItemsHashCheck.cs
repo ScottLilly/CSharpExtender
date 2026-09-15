@@ -23,7 +23,7 @@ internal static class UniqueItemsHashCheck
     // saving starts to be worth the set's own allocation. Measured on strings: the
     // two are level at 12 items, the set is 1.35x ahead at 16, and 6.6x at 64.
     // See UniqueItemsHashThresholdBenchmarks.
-    private const int _minimumItemCount = 16;
+    private const int MINIMUM_ITEM_COUNT = 16;
 
     private static readonly ConcurrentDictionary<Type, bool> s_dependableHashCode =
         new ConcurrentDictionary<Type, bool>();
@@ -35,7 +35,7 @@ internal static class UniqueItemsHashCheck
     /// </summary>
     internal static bool IsProvablyUnique(List<object?> items)
     {
-        if (items.Count < _minimumItemCount)
+        if (items.Count < MINIMUM_ITEM_COUNT)
         {
             return false;
         }

@@ -13,9 +13,9 @@ namespace CSharpExtender.ExtensionMethods;
 public static partial class StringExtensionMethods
 {
     // Inputs at or below this length get a stack buffer instead of a heap array
-    private const int _stackAllocLimit = 256;
+    private const int STACK_ALLOC_LIMIT = 256;
 
-    private static readonly char[] _pathSeparators = new char[] { '/', '\\' };
+    private static readonly char[] s_pathSeparators = new char[] { '/', '\\' };
 
     // Source-generated, so the matcher is built at compile time
     [GeneratedRegex(@"(?<!^)(?<![\W_])(?=[A-Z])")]
@@ -88,7 +88,7 @@ public static partial class StringExtensionMethods
 
         // Sized to the input rather than to the limit, so only what is needed
         // gets zero-initialized
-        Span<char> digits = source.Length <= _stackAllocLimit
+        Span<char> digits = source.Length <= STACK_ALLOC_LIMIT
             ? stackalloc char[source.Length]
             : new char[source.Length];
 
@@ -195,7 +195,7 @@ public static partial class StringExtensionMethods
         // TrimEntries runs before RemoveEmptyEntries, so a segment of nothing but
         // whitespace is trimmed to empty and then dropped. Trimming afterwards
         // instead left it in the result as an empty string.
-        return path.Split(_pathSeparators,
+        return path.Split(s_pathSeparators,
             StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
@@ -405,7 +405,7 @@ public static partial class StringExtensionMethods
 
         // Sized to the input rather than to the limit, so only what is needed
         // gets zero-initialized
-        Span<int> maskableIndexes = characters.Length <= _stackAllocLimit
+        Span<int> maskableIndexes = characters.Length <= STACK_ALLOC_LIMIT
             ? stackalloc int[characters.Length]
             : new int[characters.Length];
 
@@ -474,7 +474,7 @@ public static partial class StringExtensionMethods
 
         // Sized to the input rather than to the limit, so only what is needed
         // gets zero-initialized
-        Span<char> collapsed = source.Length <= _stackAllocLimit
+        Span<char> collapsed = source.Length <= STACK_ALLOC_LIMIT
             ? stackalloc char[source.Length]
             : new char[source.Length];
 

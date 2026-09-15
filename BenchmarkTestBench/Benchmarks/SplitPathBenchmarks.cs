@@ -9,7 +9,7 @@ namespace BenchmarkTestBench.Benchmarks;
 [MemoryDiagnoser]
 public class SplitPathBenchmarks
 {
-    private static readonly char[] _separators = ['/', '\\'];
+    private static readonly char[] s_separators = ['/', '\\'];
 
     [Params(
         @"docs\notes.md",
@@ -23,7 +23,7 @@ public class SplitPathBenchmarks
     [Benchmark]
     public int StaticSeparatorsOnly()
     {
-        return CountOf(Path.Split(_separators, StringSplitOptions.RemoveEmptyEntries)
+        return CountOf(Path.Split(s_separators, StringSplitOptions.RemoveEmptyEntries)
                            .Select(s => s.Trim()));
     }
 
@@ -32,7 +32,7 @@ public class SplitPathBenchmarks
     [Benchmark]
     public int SplitWithTrimEntries()
     {
-        return CountOf(Path.Split(_separators,
+        return CountOf(Path.Split(s_separators,
             StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
     }
 

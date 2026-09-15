@@ -5,8 +5,8 @@ namespace Tests.CSharpExtender.ExtensionMethods;
 
 public class Test_JsonExtensionMethods
 {
-    private Person _personObject = new() { Name = "John", Age = 30 };
-    private string _personJsonString = "{\"Name\":\"John\",\"Age\":30}";
+    private readonly Person _personObject = new() { Name = "John", Age = 30 };
+    private readonly string _personJsonString = "{\"Name\":\"John\",\"Age\":30}";
 
     [Fact]
     public void GetValueFromJsonPath_ValidPath_ReturnsValue()

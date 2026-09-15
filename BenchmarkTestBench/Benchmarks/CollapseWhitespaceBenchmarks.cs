@@ -13,13 +13,13 @@ namespace BenchmarkTestBench.Benchmarks;
 [MemoryDiagnoser]
 public partial class CollapseWhitespaceBenchmarks
 {
-    private const string _clean =
+    private const string CLEAN =
         "the quick brown fox jumped over the lazy dog";
 
-    private const string _dirty =
+    private const string DIRTY =
         "  the   quick\tbrown\r\n fox    jumped  over \t the   lazy dog  ";
 
-    private const string _longClean =
+    private const string LONG_CLEAN =
         "the quick brown fox jumped over the lazy dog " +
         "the quick brown fox jumped over the lazy dog " +
         "the quick brown fox jumped over the lazy dog " +
@@ -27,7 +27,7 @@ public partial class CollapseWhitespaceBenchmarks
         "the quick brown fox jumped over the lazy dog " +
         "the quick brown fox jumped over the lazy do";
 
-    private const string _longDirty =
+    private const string LONG_DIRTY =
         "  the   quick\tbrown\r\n fox    jumped  over \t the   lazy dog  " +
         "  the   quick\tbrown\r\n fox    jumped  over \t the   lazy dog  " +
         "  the   quick\tbrown\r\n fox    jumped  over \t the   lazy dog  " +
@@ -35,10 +35,10 @@ public partial class CollapseWhitespaceBenchmarks
 
     // Trailing whitespace only, so the fast path's cheap first and last character
     // check catches it before the loop runs
-    private const string _trailingOnly =
+    private const string TRAILING_ONLY =
         "the quick brown fox jumped over the lazy dog  ";
 
-    [Params(_clean, _dirty, _longClean, _longDirty, _trailingOnly)]
+    [Params(CLEAN, DIRTY, LONG_CLEAN, LONG_DIRTY, TRAILING_ONLY)]
     public string Text = "";
 
     [GeneratedRegex(@"\s+")]
@@ -57,7 +57,7 @@ public partial class CollapseWhitespaceBenchmarks
     [Benchmark]
     public string SinglePassWithFastPath() => CollapseWithFastPath(Text);
 
-    private const int _stackAllocLimit = 256;
+    private const int STACK_ALLOC_LIMIT = 256;
 
     private static string CollapseAlwaysBuilding(string text)
     {
@@ -68,7 +68,7 @@ public partial class CollapseWhitespaceBenchmarks
 
         var source = text.AsSpan();
 
-        Span<char> collapsed = source.Length <= _stackAllocLimit
+        Span<char> collapsed = source.Length <= STACK_ALLOC_LIMIT
             ? stackalloc char[source.Length]
             : new char[source.Length];
 

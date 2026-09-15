@@ -11,15 +11,15 @@ namespace BenchmarkTestBench.Benchmarks;
 [MemoryDiagnoser]
 public class RemoveTextBenchmarks
 {
-    private const string _repeatedMatches =
+    private const string REPEATED_MATCHES =
         "the abc quick abc brown abc fox abc jumped abc over abc the abc lazy abc dog abc " +
         "the abc quick abc brown abc fox abc jumped abc over abc the abc lazy abc dog abc";
 
-    private const string _noMatches =
+    private const string NO_MATCHES =
         "the quick brown fox jumped over the lazy dog " +
         "the quick brown fox jumped over the lazy dog";
 
-    [Params(_repeatedMatches, _noMatches, "aaabbbaaabbb")]
+    [Params(REPEATED_MATCHES, NO_MATCHES, "aaabbbaaabbb")]
     public string Text = "";
 
     [Params("abc", "ab")]

@@ -22,7 +22,7 @@ public class GenericCacheBenchmarks
         public DateTime ExpirationTime { get; } = expirationTime;
     }
 
-    private static readonly TimeSpan _expiration = TimeSpan.FromMinutes(15);
+    private static readonly TimeSpan s_expiration = TimeSpan.FromMinutes(15);
 
     private readonly GenericCache<int, string> _shippedCache = new();
     private readonly ConcurrentDictionary<int, ItemAsClass<string>> _classCache = new();
@@ -40,14 +40,14 @@ public class GenericCacheBenchmarks
         _classCache[Key] = new ItemAsClass<string>
         {
             Value = "value",
-            ExpirationTime = DateTime.UtcNow.Add(_expiration)
+            ExpirationTime = DateTime.UtcNow.Add(s_expiration)
         };
     }
 
     [Benchmark]
     public void IndexerWithStructItem()
     {
-        _structCache[Key] = new ItemAsStruct<string>("value", DateTime.UtcNow.Add(_expiration));
+        _structCache[Key] = new ItemAsStruct<string>("value", DateTime.UtcNow.Add(s_expiration));
     }
 
     [Benchmark]
@@ -56,7 +56,7 @@ public class GenericCacheBenchmarks
         var item = new ItemAsClass<string>
         {
             Value = "value",
-            ExpirationTime = DateTime.UtcNow.Add(_expiration)
+            ExpirationTime = DateTime.UtcNow.Add(s_expiration)
         };
 
         _classCache.AddOrUpdate(Key, item, (_, _) => item);

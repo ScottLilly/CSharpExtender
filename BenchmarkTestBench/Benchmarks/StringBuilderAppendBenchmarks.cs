@@ -8,64 +8,64 @@ namespace BenchmarkTestBench.Benchmarks;
 // Issue #80. The shipped AppendLineIfNotEmpty allocates a closure, and every path
 // through ProcessText allocates a StringBuilderOptions when none is passed.
 //
-// Each benchmark appends _appendCount lines to a StringBuilder that is cleared
+// Each benchmark appends APPEND_COUNT lines to a StringBuilder that is cleared
 // but keeps its capacity, so the numbers are the cost of appending rather than
-// the cost of growing a buffer. Divide by _appendCount for a per-call figure.
+// the cost of growing a buffer. Divide by APPEND_COUNT for a per-call figure.
 [ShortRunJob]
 [MemoryDiagnoser]
 public class StringBuilderAppendBenchmarks
 {
-    private const string _text = "the quick brown fox jumped over the lazy dog";
-    private const int _appendCount = 100;
+    private const string TEXT = "the quick brown fox jumped over the lazy dog";
+    private const int APPEND_COUNT = 100;
 
-    private static readonly StringBuilderOptions _sharedDefaultOptions = new();
+    private static readonly StringBuilderOptions s_sharedDefaultOptions = new();
 
     private readonly StringBuilder _stringBuilder = new(8192);
 
-    [Benchmark(Baseline = true, OperationsPerInvoke = _appendCount)]
+    [Benchmark(Baseline = true, OperationsPerInvoke = APPEND_COUNT)]
     public void CurrentAppendLineIfNotEmpty()
     {
         _stringBuilder.Clear();
 
-        for (int i = 0; i < _appendCount; i++)
+        for (int i = 0; i < APPEND_COUNT; i++)
         {
-            _stringBuilder.AppendLineIfNotEmpty(_text);
+            _stringBuilder.AppendLineIfNotEmpty(TEXT);
         }
     }
 
-    [Benchmark(OperationsPerInvoke = _appendCount)]
+    [Benchmark(OperationsPerInvoke = APPEND_COUNT)]
     public void DirectTestWithSharedOptions()
     {
         _stringBuilder.Clear();
 
-        for (int i = 0; i < _appendCount; i++)
+        for (int i = 0; i < APPEND_COUNT; i++)
         {
-            if (!string.IsNullOrWhiteSpace(_text))
+            if (!string.IsNullOrWhiteSpace(TEXT))
             {
-                _stringBuilder.AppendLine(ProcessTextWithSharedOptions(_text, null));
+                _stringBuilder.AppendLine(ProcessTextWithSharedOptions(TEXT, null));
             }
         }
     }
 
-    [Benchmark(OperationsPerInvoke = _appendCount)]
+    [Benchmark(OperationsPerInvoke = APPEND_COUNT)]
     public void CurrentAppendLine()
     {
         _stringBuilder.Clear();
 
-        for (int i = 0; i < _appendCount; i++)
+        for (int i = 0; i < APPEND_COUNT; i++)
         {
-            _stringBuilder.AppendLine(_text, null);
+            _stringBuilder.AppendLine(TEXT, null);
         }
     }
 
-    [Benchmark(OperationsPerInvoke = _appendCount)]
+    [Benchmark(OperationsPerInvoke = APPEND_COUNT)]
     public void AppendLineWithSharedOptions()
     {
         _stringBuilder.Clear();
 
-        for (int i = 0; i < _appendCount; i++)
+        for (int i = 0; i < APPEND_COUNT; i++)
         {
-            _stringBuilder.AppendLine(ProcessTextWithSharedOptions(_text, null));
+            _stringBuilder.AppendLine(ProcessTextWithSharedOptions(TEXT, null));
         }
     }
 
@@ -77,7 +77,7 @@ public class StringBuilderAppendBenchmarks
             return text;
         }
 
-        options ??= _sharedDefaultOptions;
+        options ??= s_sharedDefaultOptions;
 
         string result = text;
 

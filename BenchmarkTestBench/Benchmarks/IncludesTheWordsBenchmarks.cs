@@ -10,22 +10,22 @@ namespace BenchmarkTestBench.Benchmarks;
 [MemoryDiagnoser]
 public class IncludesTheWordsBenchmarks
 {
-    private const string _longText =
+    private const string LONG_TEXT =
         "the quick brown fox jumped over the lazy dog while the cat watched " +
         "from the window sill and the mouse hid behind the kitchen cupboard " +
         "the quick brown fox jumped over the lazy dog while the cat watched " +
         "from the window sill and the mouse hid behind the kitchen cupboard";
 
-    private static readonly string[] _wordsThatMatch = ["fox", "cupboard", "window"];
-    private static readonly string[] _wordsThatMiss = ["fox", "elephant", "window"];
+    private static readonly string[] s_wordsThatMatch = ["fox", "cupboard", "window"];
+    private static readonly string[] s_wordsThatMiss = ["fox", "elephant", "window"];
 
     [Params(true, false)]
     public bool AllWordsPresent;
 
-    private string[] Words => AllWordsPresent ? _wordsThatMatch : _wordsThatMiss;
+    private string[] Words => AllWordsPresent ? s_wordsThatMatch : s_wordsThatMiss;
 
     [Benchmark(Baseline = true)]
-    public bool Current() => _longText.IncludesTheWords(Words);
+    public bool Current() => LONG_TEXT.IncludesTheWords(Words);
 
     [Benchmark]
     public bool LoopWithCurrentCultureIgnoreCase()
@@ -34,7 +34,7 @@ public class IncludesTheWordsBenchmarks
 
         for (int i = 0; i < words.Length; i++)
         {
-            if (!_longText.Contains(words[i], StringComparison.CurrentCultureIgnoreCase))
+            if (!LONG_TEXT.Contains(words[i], StringComparison.CurrentCultureIgnoreCase))
             {
                 return false;
             }
@@ -47,7 +47,7 @@ public class IncludesTheWordsBenchmarks
     public bool SpanWithCurrentCultureIgnoreCase()
     {
         var words = Words;
-        var source = _longText.AsSpan();
+        var source = LONG_TEXT.AsSpan();
 
         for (int i = 0; i < words.Length; i++)
         {
@@ -68,7 +68,7 @@ public class IncludesTheWordsBenchmarks
 
         for (int i = 0; i < words.Length; i++)
         {
-            if (!_longText.Contains(words[i], StringComparison.OrdinalIgnoreCase))
+            if (!LONG_TEXT.Contains(words[i], StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }

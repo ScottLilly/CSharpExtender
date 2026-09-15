@@ -8,16 +8,16 @@ namespace BenchmarkTestBench.Benchmarks;
 [MemoryDiagnoser]
 public class ToDigitsOnlyBenchmarks
 {
-    private const int _stackAllocLimit = 256;
+    private const int STACK_ALLOC_LIMIT = 256;
 
-    private const string _longMixedString =
+    private const string LONG_MIXED_STRING =
         "555-123-4567 ext 890, account 1234-5678-9012-3456, ref ABC/987/XYZ, " +
         "555-123-4567 ext 890, account 1234-5678-9012-3456, ref ABC/987/XYZ, " +
         "555-123-4567 ext 890, account 1234-5678-9012-3456, ref ABC/987/XYZ, " +
         "555-123-4567 ext 890, account 1234-5678-9012-3456, ref ABC/987/XYZ, " +
         "555-123-4567 ext 890, account 1234-5678-9012-3456, ref ABC/987/XYZ";
 
-    [Params("1234567890", "(555) 123-4567", _longMixedString)]
+    [Params("1234567890", "(555) 123-4567", LONG_MIXED_STRING)]
     public string Text = "";
 
     [Benchmark(Baseline = true)]
@@ -56,8 +56,8 @@ public class ToDigitsOnlyBenchmarks
 
         var source = Text.AsSpan();
 
-        Span<char> buffer = source.Length <= _stackAllocLimit
-            ? stackalloc char[_stackAllocLimit]
+        Span<char> buffer = source.Length <= STACK_ALLOC_LIMIT
+            ? stackalloc char[STACK_ALLOC_LIMIT]
             : new char[source.Length];
 
         int count = 0;
@@ -85,7 +85,7 @@ public class ToDigitsOnlyBenchmarks
 
         // Sized to the input rather than to the limit, so only what is needed
         // gets zero-initialized
-        Span<char> buffer = source.Length <= _stackAllocLimit
+        Span<char> buffer = source.Length <= STACK_ALLOC_LIMIT
             ? stackalloc char[source.Length]
             : new char[source.Length];
 
