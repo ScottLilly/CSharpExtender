@@ -44,8 +44,10 @@ jobs:
     - name: Pack
       run: dotnet pack CSharpExtender/CSharpExtender.csproj --configuration Release --no-build --output ./artifacts
 
-    # The version is read back off the file NuGet produced, so it is already normalized
-    # (a <Version> of 3.0.0.0 packs as 3.0.0).
+    # The version is read back off the file NuGet produced rather than out of the csproj, so
+    # it is whatever NuGet actually published, normalization and all. That keeps the tag and
+    # the release title matching the package even if <Version> is written in a form NuGet
+    # rewrites, such as a trailing zero fourth part.
     - name: Read package version
       id: package
       run: |
