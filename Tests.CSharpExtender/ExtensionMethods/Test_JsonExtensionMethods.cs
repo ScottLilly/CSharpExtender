@@ -1,7 +1,7 @@
 ﻿using CSharpExtender.ExtensionMethods;
 using System.Text.Json;
 
-namespace Test.CSharpExtender.ExtensionMethods;
+namespace Tests.CSharpExtender.ExtensionMethods;
 
 public class Test_JsonExtensionMethods
 {

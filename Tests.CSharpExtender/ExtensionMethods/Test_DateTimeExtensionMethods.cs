@@ -1,7 +1,7 @@
 ﻿using CSharpExtender.ExtensionMethods;
 using System.Globalization;
 
-namespace Test.CSharpExtender.ExtensionMethods;
+namespace Tests.CSharpExtender.ExtensionMethods;
 
 public class Test_DateTimeExtensionMethods
 {

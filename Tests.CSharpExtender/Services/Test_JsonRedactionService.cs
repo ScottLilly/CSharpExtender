@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace Test.CSharpExtender.Services;
+namespace Tests.CSharpExtender.Services;
 
 public class Test_JsonRedactionService
 {

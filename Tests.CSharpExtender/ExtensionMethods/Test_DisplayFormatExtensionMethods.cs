@@ -2,7 +2,7 @@ using CSharpExtender.ExtensionMethods;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
-namespace Test.CSharpExtender.ExtensionMethods;
+namespace Tests.CSharpExtender.ExtensionMethods;
 
 public class Test_DisplayFormatExtensionMethods
 {

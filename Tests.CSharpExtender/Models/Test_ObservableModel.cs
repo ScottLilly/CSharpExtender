@@ -1,7 +1,7 @@
 ﻿using CSharpExtender.Models;
 using System.ComponentModel;
 
-namespace Test.CSharpExtender.Models;
+namespace Tests.CSharpExtender.Models;
 
 public class Test_ObservableModel
 {

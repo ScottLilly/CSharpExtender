@@ -1,7 +1,7 @@
 ﻿using System.Xml;
 using CSharpExtender.ExtensionMethods;
 
-namespace Test.CSharpExtender.ExtensionMethods;
+namespace Tests.CSharpExtender.ExtensionMethods;
 
 public class Test_XmlExtensionMethods
 {

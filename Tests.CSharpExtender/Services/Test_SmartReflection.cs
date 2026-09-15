@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Test.CSharpExtender.Services;
+namespace Tests.CSharpExtender.Services;
 
 #region Classes for Testing
 

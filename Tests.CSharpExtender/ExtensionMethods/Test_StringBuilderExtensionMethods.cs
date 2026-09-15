@@ -3,7 +3,7 @@ using CSharpExtender.ExtensionMethods;
 using CSharpExtender.Common;
 using CSharpExtender.Options;
 
-namespace Test.CSharpExtender.ExtensionMethods;
+namespace Tests.CSharpExtender.ExtensionMethods;
 
 public class Test_StringBuilderExtensionMethods
 {

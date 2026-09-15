@@ -38,7 +38,7 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal
 
-    # The library is the only thing that ships. Test.CSharpExtender and BenchmarkTestBench both
+    # The library is the only thing that ships. Tests.CSharpExtender and BenchmarkTestBench both
     # set IsPackable=false, so naming the project here is belt and braces rather than the only
     # thing stopping a stray .nupkg.
     - name: Pack

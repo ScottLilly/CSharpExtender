@@ -1,6 +1,6 @@
 ﻿using CSharpExtender.Services;
 
-namespace Test.CSharpExtender.Services;
+namespace Tests.CSharpExtender.Services;
 
 public class Test_RngCreator
 {

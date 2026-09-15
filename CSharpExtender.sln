@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpExtender", "CSharpExtender\CSharpExtender.csproj", "{219F4895-3B91-4291-8D06-02A5A5749BB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.CSharpExtender", "Test.CSharpExtender\Test.CSharpExtender.csproj", "{E58959C9-A22B-4B5D-9507-B6A2CD8B2607}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.CSharpExtender", "Tests.CSharpExtender\Tests.CSharpExtender.csproj", "{E58959C9-A22B-4B5D-9507-B6A2CD8B2607}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkTestBench", "BenchmarkTestBench\BenchmarkTestBench.csproj", "{1CF1DAEF-0755-4F06-89CD-6ABCF50A838C}"
 EndProject

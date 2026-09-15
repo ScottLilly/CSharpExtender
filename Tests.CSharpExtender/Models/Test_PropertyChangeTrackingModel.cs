@@ -1,6 +1,6 @@
 ﻿using CSharpExtender.Models;
 
-namespace Test.CSharpExtender.Models;
+namespace Tests.CSharpExtender.Models;
 
 public class Test_PropertyChangeTrackingModel
 {

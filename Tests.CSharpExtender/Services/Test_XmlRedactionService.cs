@@ -1,7 +1,7 @@
 ﻿using CSharpExtender.Services;
 using System.Xml;
 
-namespace Test.CSharpExtender.Services;
+namespace Tests.CSharpExtender.Services;
 
 public class Test_XmlRedactionService
 {

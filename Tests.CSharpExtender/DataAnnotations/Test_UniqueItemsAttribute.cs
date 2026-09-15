@@ -1,7 +1,7 @@
 ﻿using CSharpExtender.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
 
-namespace Test.CSharpExtender.DataAnnotations;
+namespace Tests.CSharpExtender.DataAnnotations;
 
 public class Test_UniqueItemsAttribute
 {

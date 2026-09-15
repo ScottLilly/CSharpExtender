@@ -1,7 +1,7 @@
 using CSharpExtender.DataAnnotations;
 using CSharpExtender.ExtensionMethods;
 
-namespace Test.CSharpExtender.ExtensionMethods;
+namespace Tests.CSharpExtender.ExtensionMethods;
 
 public class Test_MaskExtensionMethods
 {

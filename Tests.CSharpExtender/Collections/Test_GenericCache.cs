@@ -1,6 +1,6 @@
 ﻿using CSharpExtender.Collections;
 
-namespace Test.CSharpExtender.Collections;
+namespace Tests.CSharpExtender.Collections;
 
 public class Test_GenericCache
 {

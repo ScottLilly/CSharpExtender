@@ -8,14 +8,14 @@ What exists and why it is built this way. Work that is not built yet lives in th
 ```
 CSharpExtender.sln
   CSharpExtender/         net8.0   the library, packed to NuGet on build
-  Test.CSharpExtender/    net8.0   xUnit, covers the library
+  Tests.CSharpExtender/   net8.0   xUnit, covers the library
   BenchmarkTestBench/     net8.0   BenchmarkDotNet console app, not shipped
 docs/                     design notes and architecture
 tools/                    scripts and utilities that are not part of the build
 .github/workflows/        ci.yml and release.yml
 ```
 
-Only the library ships. `Test.CSharpExtender` and `BenchmarkTestBench` both set
+Only the library ships. `Tests.CSharpExtender` and `BenchmarkTestBench` both set
 `<IsPackable>false</IsPackable>`, so `dotnet pack` at the solution root produces exactly one
 package.
 

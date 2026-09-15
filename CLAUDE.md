@@ -18,7 +18,7 @@ classes reused across my projects. Everything public here is someone else's API.
 ```
 CSharpExtender.sln
   CSharpExtender/         the library itself, net8.0, packed on build
-  Test.CSharpExtender/    xUnit, covers the library
+  Tests.CSharpExtender/   xUnit, covers the library
   BenchmarkTestBench/     BenchmarkDotNet console app, not shipped
 docs/                     design notes and architecture
 tools/                    scripts and utilities that are not part of the build
@@ -38,7 +38,6 @@ All markdown except this file, `README.md` and `RELEASE_NOTES.md` lives in `docs
 
 | Rule | What this repo does |
 |---|---|
-| Test projects are named `Tests.<Name>` | `Test.CSharpExtender`, singular. Predates the convention. Match it until it is deliberately renamed |
 | MSTest | xUnit. The whole test project is xUnit |
 
 ## Writing documents in docs/

@@ -1,7 +1,7 @@
 ﻿using CSharpExtender.ExtensionMethods;
 using System.ComponentModel;
 
-namespace Test.CSharpExtender.ExtensionMethods;
+namespace Tests.CSharpExtender.ExtensionMethods;
 
 public enum TestEnum
 {
