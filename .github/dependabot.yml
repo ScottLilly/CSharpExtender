@@ -1,0 +1,36 @@
+# Keeps the NuGet packages and the workflow actions current, so a version moves because a newer
+# one exists rather than because something broke.
+#
+# Both entries are labeled devops from the standard fifteen. Left to itself Dependabot labels its
+# PRs "dependencies" and creates that label if the repo has none, which would quietly put a
+# sixteenth label on the repo.
+version: 2
+
+updates:
+
+  # Every NuGet reference here is test and benchmark tooling. The library itself ships with no
+  # dependencies, so nothing Dependabot bumps can reach a consumer of the package, and one grouped
+  # PR a week is enough review. If the library ever takes a real dependency, give it its own entry
+  # so that one is reviewed on its own rather than buried in the group.
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "devops"
+    groups:
+      nuget:
+        patterns:
+          - "*"
+
+  # For this ecosystem "/" means .github/workflows, not the repository root.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "devops"
+    groups:
+      actions:
+        patterns:
+          - "*"
