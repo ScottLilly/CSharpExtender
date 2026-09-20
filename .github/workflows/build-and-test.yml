@@ -1,0 +1,45 @@
+# Builds and tests the solution on a clean machine, which is the thing a local build cannot
+# prove: that nothing depends on something only this working copy has.
+#
+# Runs on every push to master and on pull requests against it, so the Build Status badge in the
+# README means what a reader assumes it means. Also available from the Actions tab for a run on a
+# clean machine without pushing anything.
+
+name: Build and Test
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+# Stated explicitly so this workflow stays read-only regardless of the repo's default token
+# permissions. It only needs to check out, build, and test.
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      # Runs every test project in the solution. Adding another one needs nothing here, as long
+      # as it is in the solution.
+      - name: Test
+        run: dotnet test --no-build --verbosity normal

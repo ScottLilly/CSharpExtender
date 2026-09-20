@@ -9,7 +9,7 @@ The extension methods are written to make the source code read more like a natur
 The package is annotated for nullable reference types, so the compiler can tell you which arguments accept a null and which returns can be one.
 
 ## Project Overview
-![Build Status](https://github.com/ScottLilly/CSharpExtender/actions/workflows/ci.yml/badge.svg)
+![Build Status](https://github.com/ScottLilly/CSharpExtender/actions/workflows/build-and-test.yml/badge.svg)
 [![NuGet](https://img.shields.io/nuget/v/ScottLilly.CSharpExtender)](https://www.nuget.org/packages/ScottLilly.CSharpExtender/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/ScottLilly.CSharpExtender)](https://www.nuget.org/packages/ScottLilly.CSharpExtender/)
 [![License](https://img.shields.io/github/license/ScottLilly/CSharpExtender)](https://github.com/ScottLilly/CSharpExtender/blob/master/LICENSE.txt)
