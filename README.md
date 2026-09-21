@@ -36,6 +36,17 @@ This class creates a cache object with a generic key and generic value.
 - **`Set`**: Adds or updates a value in the cache.
 - **`Remove`**: Remove an entry fom the cache.
 - **`RemoveExpiredItems`**: Removes all expired items from the cache.
+- **`Dispose`**: Stops the background cleanup, for a cache that was given a cleanup interval. A cache without one has nothing to stop.
+
+Expired entries are dropped as they are read, so a cache that is read regularly needs nothing else. For entries nobody reads again, either call `RemoveExpiredItems` or hand the constructor a cleanup interval:
+
+```csharp
+using var cache = new GenericCache<int, string>(
+    defaultExpiration: TimeSpan.FromMinutes(15),
+    cleanupInterval: TimeSpan.FromMinutes(5));
+```
+
+That drops expired entries on a thread pool timer every five minutes. A tick arriving while the previous pass is still running is dropped rather than queued. **A cache given a cleanup interval has to be disposed**: the timer holds a reference to the cache, so until then the cache cannot be collected and the pass keeps running. The constructor that takes no interval starts no timer, which is what it has always done.
 
 ## Extension Methods
 

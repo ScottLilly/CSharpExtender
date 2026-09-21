@@ -103,4 +103,91 @@ public class Test_GenericCache
         Assert.True(cache.TryGet(1, out var value));
         Assert.Equal("second", value);
     }
+
+    // Remove is what these tests read the cache with, rather than Get or TryGet.
+    // Reading an expired entry drops it, so Get cannot tell "the background pass took
+    // it" from "it was still there and the read took it". Remove answers the question
+    // directly: true means the entry was still in the cache, false means it was gone.
+
+    [Fact]
+    public void BackgroundCleanup_RemovesAnExpiredEntryNobodyReads()
+    {
+        using var cache = new GenericCache<int, string>(
+            defaultExpiration: null, cleanupInterval: TimeSpan.FromMilliseconds(50));
+
+        cache.Set(1, "one", TimeSpan.FromMilliseconds(1));
+
+        Thread.Sleep(1000);
+
+        Assert.False(cache.Remove(1));
+    }
+
+    [Fact]
+    public void BackgroundCleanup_LeavesAnEntryThatHasNotExpired()
+    {
+        using var cache = new GenericCache<int, string>(
+            defaultExpiration: null, cleanupInterval: TimeSpan.FromMilliseconds(50));
+
+        cache.Set(1, "one", TimeSpan.FromMinutes(5));
+
+        Thread.Sleep(300);
+
+        Assert.Equal("one", cache.Get(1));
+    }
+
+    [Fact]
+    public void WithoutACleanupInterval_AnExpiredEntryStaysUntilItIsTouched()
+    {
+        var cache = new GenericCache<int, string>();
+
+        cache.Set(1, "one", TimeSpan.FromMilliseconds(1));
+
+        Thread.Sleep(300);
+
+        Assert.True(cache.Remove(1));
+    }
+
+    [Fact]
+    public void Dispose_StopsTheBackgroundCleanup()
+    {
+        var cache = new GenericCache<int, string>(
+            defaultExpiration: null, cleanupInterval: TimeSpan.FromMilliseconds(50));
+
+        cache.Dispose();
+
+        cache.Set(1, "one", TimeSpan.FromMilliseconds(1));
+
+        Thread.Sleep(300);
+
+        Assert.True(cache.Remove(1));
+    }
+
+    [Fact]
+    public void Dispose_CalledTwice_DoesNothingTheSecondTime()
+    {
+        var cache = new GenericCache<int, string>(
+            defaultExpiration: null, cleanupInterval: TimeSpan.FromMilliseconds(50));
+
+        cache.Dispose();
+        cache.Dispose();
+    }
+
+    [Fact]
+    public void Dispose_WithNoCleanupInterval_DoesNothing()
+    {
+        var cache = new GenericCache<int, string>();
+
+        cache.Dispose();
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void CleanupInterval_ThatIsNotPositive_Throws(int milliseconds)
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new GenericCache<int, string>(
+                defaultExpiration: null,
+                cleanupInterval: TimeSpan.FromMilliseconds(milliseconds)));
+    }
 }
