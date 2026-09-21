@@ -74,8 +74,6 @@ public class XmlRedactionService(List<string> redactedPaths, bool ignoreCase = f
         return Redact(text).OuterXml;
     }
 
-    #region Private Methods
-
     private void RedactDocument(XmlDocument document)
     {
         if (!_matcher.HasPatterns || document.DocumentElement == null)
@@ -148,6 +146,4 @@ public class XmlRedactionService(List<string> redactedPaths, bool ignoreCase = f
             path.TruncateTo(elementLength);
         }
     }
-
-    #endregion
 }

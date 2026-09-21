@@ -163,8 +163,6 @@ public static class StringBuilderExtensionMethods
         return sb;
     }
 
-    #region Private Methods
-
     // Stands in for the options a caller did not pass. Private, never handed to a
     // caller, and never written to, so one shared instance is safe.
     private static readonly StringBuilderOptions s_defaultOptions = new StringBuilderOptions();
@@ -273,6 +271,4 @@ public static class StringBuilderExtensionMethods
                 state.suffix.AsSpan().CopyTo(destination.Slice(position));
             });
     }
-
-    #endregion
 }

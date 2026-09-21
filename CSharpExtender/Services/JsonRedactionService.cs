@@ -75,8 +75,6 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
         return jsonObject.ToString();
     }
 
-    #region Private Methods
-
     // Deserialize hands back a null for the literal "null", which is valid JSON but
     // not a document there is anything to redact in
     private static JsonObject ParseObject(string text) =>
@@ -173,6 +171,4 @@ public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = 
             _ => null
         };
     }
-
-    #endregion
 }

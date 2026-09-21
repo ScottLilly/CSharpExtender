@@ -176,8 +176,6 @@ public static class DataReaderExtensionMethods
     public static byte[]? GetByteArray(this IDataReader reader, string columnName) =>
         reader.GetValue<byte[]>(columnName);
 
-    #region Private Methods
-
     // GetOrdinal is documented to throw IndexOutOfRangeException for a name that is not
     // in the result set, but implementations disagree: DataTableReader throws
     // ArgumentException instead. Normalizing it keeps the contract the same whichever
@@ -201,6 +199,4 @@ public static class DataReaderExtensionMethods
 
     private static string ColumnNames(IDataReader reader) =>
         string.Join(", ", Enumerable.Range(0, reader.FieldCount).Select(reader.GetName));
-
-    #endregion
 }

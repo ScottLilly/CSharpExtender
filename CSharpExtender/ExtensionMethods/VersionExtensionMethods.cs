@@ -122,8 +122,6 @@ public static partial class VersionExtensionMethods
             ? version.PrereleaseLabel
             : null;
 
-    #region Private Methods
-
     private static bool TryReadPart(string[] parts, int index, out int value)
     {
         if (index >= parts.Length)
@@ -143,6 +141,4 @@ public static partial class VersionExtensionMethods
 
         return group.Success ? group.Value : null;
     }
-
-    #endregion
 }

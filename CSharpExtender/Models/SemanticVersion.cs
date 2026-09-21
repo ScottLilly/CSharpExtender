@@ -195,8 +195,6 @@ public sealed record SemanticVersion : IComparable<SemanticVersion>, IComparable
     public static bool operator >=(SemanticVersion? left, SemanticVersion? right) =>
         Compare(left, right) >= 0;
 
-    #region Private Methods
-
     private static int Compare(SemanticVersion? left, SemanticVersion? right) =>
         left is null ? (right is null ? 0 : -1) : left.CompareTo(right);
 
@@ -288,6 +286,4 @@ public sealed record SemanticVersion : IComparable<SemanticVersion>, IComparable
         // Every character was a zero, so the value is zero
         return trimmed.Length == 0 ? "0".AsSpan() : trimmed;
     }
-
-    #endregion
 }
