@@ -22,6 +22,7 @@ Attribute classes to validate properties in models, and to declare how a propert
 - **`ConditionalRequiredAttribute`**: Check that a property has a value when another property on the same object holds a particular value. Set `DependentProperty` and `RequiredWhenValue`.
 - **`IsInListAttribute`**: Check that a property holds one of a fixed list of allowed values. Set `IgnoreCase` to compare strings without regard to case.
 - **`MaskAttribute`**: Declare how a property's value should be masked when displayed or logged. Set `MaskChar`, `VisiblePrefixLength` and `VisibleSuffixLength`. Not a validation attribute: apply it with `ToMaskedString` in `MaskExtensionMethods`.
+- **`NumericOnlyAttribute`**: Check that a string holds a number and nothing else. With no option set, every character has to be an ASCII digit, which brings in no culture and puts no limit on how many there are. Set `AllowDecimal`, `AllowThousandsSeparator`, `AllowCurrencySymbol` or `AllowNegative` and the text is read as a number under the current culture instead, so which separators it may use is that culture's answer, and `UseInvariantCulture` reads it the same way everywhere. Reading it as a number brings `decimal`'s ceiling with it, so a run of more than 29 digits passes with no option set and fails with one set. Strings only: it throws `InvalidCastException` on a member of any other type.
 - **`UniqueItemsAttribute`**: Check that a collection property does not contain duplicate items.
 
 ## Collections
