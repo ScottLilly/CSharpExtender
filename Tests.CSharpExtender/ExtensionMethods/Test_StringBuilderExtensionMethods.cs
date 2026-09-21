@@ -80,6 +80,47 @@ public class Test_StringBuilderExtensionMethods
     }
 
     [Fact]
+    public void AppendFormatted_WithoutOptions_TakesArgsWithoutANullInFront()
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendFormatted("{0} of {1}", 3, 7);
+
+        Assert.Equal("3 of 7", sb.ToString());
+    }
+
+    [Fact]
+    public void AppendLineFormatted_WithoutOptions_TakesArgsWithoutANullInFront()
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLineFormatted("{0} of {1}", 3, 7);
+
+        Assert.Equal("3 of 7" + Environment.NewLine, sb.ToString());
+    }
+
+    [Fact]
+    public void AppendFormatted_WithAnOptionsFirstArgument_UsesItAsOptionsNotAnArg()
+    {
+        var sb = new StringBuilder();
+        var options = new StringBuilderOptions { ToUpper = true };
+
+        sb.AppendFormatted("{0}", options, "hello");
+
+        Assert.Equal("HELLO", sb.ToString());
+    }
+
+    [Fact]
+    public void AppendFormatted_WithANullOptions_StillCompilesAndAppendsUnchanged()
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendFormatted("{0} of {1}", null, 3, 7);
+
+        Assert.Equal("3 of 7", sb.ToString());
+    }
+
+    [Fact]
     public void AppendLineFormatted_WithHtmlEscape_EscapesCorrectly()
     {
         var sb = new StringBuilder();

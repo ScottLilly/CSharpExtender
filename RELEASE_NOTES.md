@@ -54,7 +54,7 @@ The library is annotated for nullable reference types, so every public signature
 
 New members:
 
-* `StringBuilderExtensionMethods` gains `Append`, `AppendIf`, `AppendLine`, `AppendLineIf`, `AppendFormatted`, `AppendLineFormatted`, `AppendJoined` and `AppendLineJoined`. Every method, including the existing `AppendLineIfNotEmpty`, accepts an optional `StringBuilderOptions`.
+* `StringBuilderExtensionMethods` gains `Append`, `AppendIf`, `AppendLine`, `AppendLineIf`, `AppendFormatted`, `AppendLineFormatted`, `AppendJoined` and `AppendLineJoined`. Every method, including the existing `AppendLineIfNotEmpty`, accepts an optional `StringBuilderOptions`. `AppendFormatted` and `AppendLineFormatted` take theirs as an overload rather than an optional parameter, because an optional parameter in front of a `params` array has to be filled in: `sb.AppendFormatted("{0} of {1}", current, total)` reads as it should, and the options go in the same position when there are any.
 * `GenericCache.TryGet` - retrieves a value without returning `default` for a key that is genuinely absent.
 * `NumericExtensionMethods.ApproximatelyEquals` - compares two floats within a percentage tolerance, handling `NaN`, infinity, and values near zero.
 * `StringExtensionMethods.ToMaxLengthOf` - trims a string to a maximum length, leaving a shorter string and a null alone.

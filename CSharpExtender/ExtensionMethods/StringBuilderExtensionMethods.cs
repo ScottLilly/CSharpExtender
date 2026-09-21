@@ -71,11 +71,23 @@ public static class StringBuilderExtensionMethods
     /// Append a formatted string to the StringBuilder
     /// </summary>
     /// <param name="sb">StringBuilder object</param>
-    /// <param name="format"></param>
-    /// <param name="options"></param>
-    /// <param name="args"></param>
-    /// <returns></returns>
-    public static StringBuilder AppendFormatted(this StringBuilder sb, string format, StringBuilderOptions? options = null, params object[] args)
+    /// <param name="format">Composite format string, as <see cref="string.Format(string, object[])"/> takes.</param>
+    /// <param name="args">Values for the format string's placeholders.</param>
+    /// <returns>The same StringBuilder, so calls can be chained.</returns>
+    public static StringBuilder AppendFormatted(this StringBuilder sb, string format,
+        params object[] args) =>
+        sb.AppendFormatted(format, options: null, args);
+
+    /// <summary>
+    /// Append a formatted string to the StringBuilder, with options applied to it
+    /// </summary>
+    /// <param name="sb">StringBuilder object</param>
+    /// <param name="format">Composite format string, as <see cref="string.Format(string, object[])"/> takes.</param>
+    /// <param name="options">Options applied to the formatted text. A null appends it unchanged.</param>
+    /// <param name="args">Values for the format string's placeholders.</param>
+    /// <returns>The same StringBuilder, so calls can be chained.</returns>
+    public static StringBuilder AppendFormatted(this StringBuilder sb, string format,
+        StringBuilderOptions? options, params object[] args)
     {
         sb.Append(ProcessText(string.Format(format, args), options));
 
@@ -86,11 +98,24 @@ public static class StringBuilderExtensionMethods
     /// Append a formatted string to the StringBuilder, followed by a new line
     /// </summary>
     /// <param name="sb">StringBuilder object</param>
-    /// <param name="format"></param>
-    /// <param name="options"></param>
-    /// <param name="args"></param>
-    /// <returns></returns>
-    public static StringBuilder AppendLineFormatted(this StringBuilder sb, string format, StringBuilderOptions? options = null, params object[] args)
+    /// <param name="format">Composite format string, as <see cref="string.Format(string, object[])"/> takes.</param>
+    /// <param name="args">Values for the format string's placeholders.</param>
+    /// <returns>The same StringBuilder, so calls can be chained.</returns>
+    public static StringBuilder AppendLineFormatted(this StringBuilder sb, string format,
+        params object[] args) =>
+        sb.AppendLineFormatted(format, options: null, args);
+
+    /// <summary>
+    /// Append a formatted string to the StringBuilder, with options applied to it,
+    /// followed by a new line
+    /// </summary>
+    /// <param name="sb">StringBuilder object</param>
+    /// <param name="format">Composite format string, as <see cref="string.Format(string, object[])"/> takes.</param>
+    /// <param name="options">Options applied to the formatted text. A null appends it unchanged.</param>
+    /// <param name="args">Values for the format string's placeholders.</param>
+    /// <returns>The same StringBuilder, so calls can be chained.</returns>
+    public static StringBuilder AppendLineFormatted(this StringBuilder sb, string format,
+        StringBuilderOptions? options, params object[] args)
     {
         sb.AppendLine(ProcessText(string.Format(format, args), options));
 

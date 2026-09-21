@@ -207,11 +207,11 @@ All functions accept an optional `StringBuilderOptions` object, which can be use
 When it is omitted, the text is appended unchanged.
 
 - **`Append`**: Appends a string to the StringBuilder object.
-- **`AppendFormatted`**: Appends a formatted string to the StringBuilder object.
+- **`AppendFormatted`**: Appends a formatted string to the StringBuilder object. The options are an overload rather than an optional parameter, so `sb.AppendFormatted("{0} of {1}", current, total)` needs nothing standing in front of the arguments.
 - **`AppendIf`**: Appends text to the StringBuilder object, if a function evaluates to 'true'.
 - **`AppendJoined`**: Appends a joined string to the StringBuilder object, using the specified separator.
 - **`AppendLine`**: Appends a string and line feed to the StringBuilder object.
-- **`AppendLineFormatted`**: Appends a formatted string and line feed to the StringBuilder object.
+- **`AppendLineFormatted`**: Appends a formatted string and line feed to the StringBuilder object. Same two overloads as `AppendFormatted`.
 - **`AppendLineIf`**: Appends text and line feed to the StringBuilder object, if a function evaluates to 'true'.
 - **`AppendLineIfNotEmpty`**: If the passed in line is not empty, it will be appended to the StringBuilder object.
 - **`AppendLineJoined`**: Appends a joined string and line feed to the StringBuilder object, using the specified separator.
