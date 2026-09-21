@@ -1,6 +1,6 @@
-using CSharpExtender.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using CSharpExtender.DataAnnotations;
 
 namespace Tests.CSharpExtender.DataAnnotations;
 

@@ -1,6 +1,6 @@
+using System.Text.RegularExpressions;
 using BenchmarkDotNet.Attributes;
 using CSharpExtender.ExtensionMethods;
-using System.Text.RegularExpressions;
 
 namespace BenchmarkTestBench.Benchmarks;
 

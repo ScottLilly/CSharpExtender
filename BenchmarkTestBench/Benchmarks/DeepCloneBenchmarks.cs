@@ -1,7 +1,7 @@
-using BenchmarkDotNet.Attributes;
-using CSharpExtender.ExtensionMethods;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using BenchmarkDotNet.Attributes;
+using CSharpExtender.ExtensionMethods;
 
 namespace BenchmarkTestBench.Benchmarks;
 

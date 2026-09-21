@@ -1,8 +1,8 @@
+using System.Data;
+using System.Text.Json;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using CSharpExtender.ExtensionMethods;
-using System.Data;
-using System.Text.Json;
 
 namespace BenchmarkTestBench.Benchmarks;
 

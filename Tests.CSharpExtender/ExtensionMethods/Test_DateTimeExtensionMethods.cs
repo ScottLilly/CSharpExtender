@@ -1,5 +1,5 @@
-﻿using CSharpExtender.ExtensionMethods;
-using System.Globalization;
+﻿using System.Globalization;
+using CSharpExtender.ExtensionMethods;
 
 namespace Tests.CSharpExtender.ExtensionMethods;
 

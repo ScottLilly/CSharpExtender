@@ -1,9 +1,9 @@
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Engines;
-using CSharpExtender.Models;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Engines;
+using CSharpExtender.Models;
 
 namespace BenchmarkTestBench.Benchmarks;
 

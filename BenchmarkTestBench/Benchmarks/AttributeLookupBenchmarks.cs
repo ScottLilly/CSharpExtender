@@ -1,10 +1,10 @@
+using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using CSharpExtender.DataAnnotations;
 using CSharpExtender.ExtensionMethods;
-using System.Collections.Concurrent;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 
 namespace BenchmarkTestBench.Benchmarks;
 

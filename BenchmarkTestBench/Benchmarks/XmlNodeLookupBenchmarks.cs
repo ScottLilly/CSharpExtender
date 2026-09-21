@@ -1,7 +1,7 @@
+using System.Xml;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using CSharpExtender.ExtensionMethods;
-using System.Xml;
 
 namespace BenchmarkTestBench.Benchmarks;
 

@@ -1,6 +1,6 @@
-﻿using CSharpExtender.Services;
-using System;
+﻿using System;
 using System.Reflection;
+using CSharpExtender.Services;
 
 namespace CSharpExtender.ExtensionMethods;
 

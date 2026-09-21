@@ -1,5 +1,5 @@
-using CSharpExtender.ExtensionMethods;
 using System.Data;
+using CSharpExtender.ExtensionMethods;
 
 namespace Tests.CSharpExtender.ExtensionMethods;
 

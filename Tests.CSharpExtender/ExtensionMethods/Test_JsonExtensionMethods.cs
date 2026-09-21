@@ -1,5 +1,5 @@
-﻿using CSharpExtender.ExtensionMethods;
-using System.Text.Json;
+﻿using System.Text.Json;
+using CSharpExtender.ExtensionMethods;
 
 namespace Tests.CSharpExtender.ExtensionMethods;
 

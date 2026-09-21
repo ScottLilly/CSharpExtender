@@ -1,5 +1,5 @@
-using BenchmarkDotNet.Attributes;
 using System.Text.RegularExpressions;
+using BenchmarkDotNet.Attributes;
 
 namespace BenchmarkTestBench.Benchmarks;
 

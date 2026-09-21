@@ -1,8 +1,8 @@
+using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using CSharpExtender.DataAnnotations;
-using System.Collections;
-using System.ComponentModel.DataAnnotations;
 
 namespace BenchmarkTestBench.Benchmarks;
 

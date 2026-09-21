@@ -1,6 +1,6 @@
+using System.Collections.Concurrent;
 using BenchmarkDotNet.Attributes;
 using CSharpExtender.Collections;
-using System.Collections.Concurrent;
 
 namespace BenchmarkTestBench.Benchmarks;
 

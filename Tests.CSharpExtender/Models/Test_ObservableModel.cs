@@ -1,5 +1,5 @@
-﻿using CSharpExtender.Models;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using CSharpExtender.Models;
 
 namespace Tests.CSharpExtender.Models;
 

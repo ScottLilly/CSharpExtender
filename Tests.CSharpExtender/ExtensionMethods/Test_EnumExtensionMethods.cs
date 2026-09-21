@@ -1,6 +1,6 @@
-﻿using CSharpExtender.ExtensionMethods;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CSharpExtender.ExtensionMethods;
 
 namespace Tests.CSharpExtender.ExtensionMethods;
 

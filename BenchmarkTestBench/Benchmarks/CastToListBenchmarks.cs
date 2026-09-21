@@ -1,6 +1,6 @@
+using System.Collections;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
-using System.Collections;
 
 namespace BenchmarkTestBench.Benchmarks;
 

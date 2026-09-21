@@ -1,9 +1,9 @@
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Engines;
-using CSharpExtender.Services;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Xml;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Engines;
+using CSharpExtender.Services;
 
 namespace BenchmarkTestBench.Benchmarks;
 

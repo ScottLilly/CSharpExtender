@@ -1,6 +1,6 @@
+using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using CSharpExtender.Services;
-using System.Reflection;
 
 namespace BenchmarkTestBench.Benchmarks;
 

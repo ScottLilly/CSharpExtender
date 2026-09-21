@@ -1,7 +1,7 @@
-using BenchmarkDotNet.Attributes;
-using CSharpExtender.Services;
 using System.Collections.Concurrent;
 using System.Reflection;
+using BenchmarkDotNet.Attributes;
+using CSharpExtender.Services;
 
 namespace BenchmarkTestBench.Benchmarks;
 

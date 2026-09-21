@@ -1,6 +1,6 @@
-﻿using CSharpExtender.Services;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
+using CSharpExtender.Services;
 
 namespace Tests.CSharpExtender.Services;
 
