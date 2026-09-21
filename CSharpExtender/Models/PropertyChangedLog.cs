@@ -15,6 +15,9 @@ public class PropertyChangedLog
     /// </summary>
     public string PropertyName { get; }
 
+    /// <summary>
+    /// The value the property was given. Null when the property was set to null.
+    /// </summary>
     public object? NewValue { get; }
 
     /// <summary>

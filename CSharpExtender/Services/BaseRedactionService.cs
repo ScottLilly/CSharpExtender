@@ -16,6 +16,11 @@ public abstract class BaseRedactionService
     /// </summary>
     protected readonly CompositeRegexMatcher _matcher;
 
+    /// <summary>
+    /// Instance constructor.
+    /// </summary>
+    /// <param name="redactedPaths">Regex patterns for the paths whose values are redacted.</param>
+    /// <param name="ignoreCase">Match the patterns without regard to case.</param>
     protected BaseRedactionService(IEnumerable<string> redactedPaths, bool ignoreCase = false)
     {
         _matcher = new CompositeRegexMatcher(redactedPaths, ignoreCase);

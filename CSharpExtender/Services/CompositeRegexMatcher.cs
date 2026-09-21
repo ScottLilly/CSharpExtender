@@ -17,6 +17,12 @@ public class CompositeRegexMatcher
     // Null when there was nothing to match, which is how HasPatterns answers
     private readonly Regex? _combinedRegex;
 
+    /// <summary>
+    /// Instance constructor. Empty and duplicate patterns are dropped, and a list with
+    /// nothing left in it leaves the matcher with no patterns at all.
+    /// </summary>
+    /// <param name="patterns">The regex patterns to match against.</param>
+    /// <param name="ignoreCase">Match without regard to case.</param>
     public CompositeRegexMatcher(IEnumerable<string> patterns, bool ignoreCase = false)
     {
         // Materialized once. Left lazy, Where and Distinct would run again for

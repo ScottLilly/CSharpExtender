@@ -86,6 +86,7 @@ public class NumericOnlyAttribute : ValidationAttribute
     /// </summary>
     public bool UseInvariantCulture { get; set; }
 
+    /// <inheritdoc />
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         // Whether a value has to be present is [Required]'s business, not this attribute's

@@ -16,6 +16,7 @@ namespace CSharpExtender.DataAnnotations;
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public class UniqueItemsAttribute : ValidationAttribute
 {
+    /// <inheritdoc />
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         // If the value is null, let [Required] handle it if needed

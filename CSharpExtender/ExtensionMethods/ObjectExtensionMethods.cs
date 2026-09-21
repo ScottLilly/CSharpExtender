@@ -10,12 +10,6 @@ namespace CSharpExtender.ExtensionMethods;
 /// </summary>
 public static class ObjectExtensionMethods
 {
-    /// <summary>
-    /// Creates a deep clone of the source object.
-    /// </summary>
-    /// <typeparam name="T">The type of the source object.</typeparam>
-    /// <param name="source">The source object to clone.</param>
-    /// <returns>A deep clone of the source object.</returns>
     // Shared, so System.Text.Json keeps the converter and type metadata it builds
     // on the instance. Nothing hands this out or mutates it, and it is read-only
     // after first use.
@@ -26,6 +20,12 @@ public static class ObjectExtensionMethods
             ReferenceHandler = ReferenceHandler.Preserve
         };
 
+    /// <summary>
+    /// Creates a deep clone of the source object.
+    /// </summary>
+    /// <typeparam name="T">The type of the source object.</typeparam>
+    /// <param name="source">The source object to clone.</param>
+    /// <returns>A deep clone of the source object.</returns>
     public static T? DeepClone<T>(this T? source) where T : class
     {
         if (source == null)

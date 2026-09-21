@@ -5,6 +5,19 @@ using System.Text.Json.Nodes;
 
 namespace CSharpExtender.Services;
 
+/// <summary>
+/// Redacts values in JSON, for paths matching any of the supplied regex patterns.
+/// </summary>
+/// <remarks>
+/// Paths are property names from the root, separated by ".", with array entries indexed, so the
+/// "ssn" property in {"user": {"ssn": "..."}} has the path "user.ssn" and the first entry of an
+/// "items" array has the path "items[0]". Patterns are matched anywhere in a path rather than
+/// against the whole of it, so a pattern that matches an object also matches everything below it.
+/// A redacted string becomes empty, a number becomes zero, a boolean becomes false, and an object
+/// or array becomes null.
+/// </remarks>
+/// <param name="redactedPaths">Regex patterns for the paths whose values are redacted.</param>
+/// <param name="ignoreCase">Match the patterns without regard to case.</param>
 public class JsonRedactionService(List<string> redactedPaths, bool ignoreCase = false)
     : BaseRedactionService(redactedPaths, ignoreCase), IRedactionService<JsonObject>
 {

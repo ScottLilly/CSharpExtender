@@ -43,6 +43,8 @@ New classes:
 * `UniqueItemsAttribute` - validates that a collection property contains no duplicates.
 * `StringBuilderOptions` - controls case, indentation, maximum length, prefix and suffix text, HTML escaping, and formatting for the StringBuilder extension methods.
 
+The package ships XML documentation. `CSharpExtender.xml` is packed beside the assembly, so IntelliSense shows the summary, parameter text and remarks for a member instead of its bare signature. Every public and protected member carries a comment, and the build warns about any that does not, so a new member cannot ship undocumented without somebody ignoring a warning to do it.
+
 The library is annotated for nullable reference types, so every public signature now says which arguments accept null and which returns can be one. Nothing about what the code does changes, and nothing stops compiling: a consumer with nullable reference types enabled sees new warnings where it was passing a null the library does not accept, or dereferencing a return that can be one. A consumer with them switched off sees nothing. The annotations worth knowing about:
 
 * `GenericCache.Get` returns `TValue?`, and `TryGet` marks its `out` parameter as null when it returns false, so both say what a missing key gives back. `ObjectExtensionMethods.DeepClone`, `JsonExtensionMethods.AsDeserializedJson` and `GetValueFromJsonPath`, `StringExtensionMethods.ConvertFromString`, `LinqExtensionMethods.RandomElement`, `DataReaderExtensionMethods.GetValue`, `DataSetExtensionMethods.Get`, and the `SmartReflection` members that read a property or invoke a method likewise return a nullable type, because each of them can hand back a null or a `default`.

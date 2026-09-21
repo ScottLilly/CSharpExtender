@@ -155,15 +155,43 @@ public sealed record SemanticVersion : IComparable<SemanticVersion>, IComparable
             $"Object must be of type {nameof(SemanticVersion)}.", nameof(obj));
     }
 
+    /// <summary>
+    /// True when the left version comes before the right one by the Semantic Versioning
+    /// precedence rules. A null sorts before any version.
+    /// </summary>
+    /// <param name="left">Left version.</param>
+    /// <param name="right">Right version.</param>
+    /// <returns>True when left precedes right.</returns>
     public static bool operator <(SemanticVersion? left, SemanticVersion? right) =>
         Compare(left, right) < 0;
 
+    /// <summary>
+    /// True when the left version comes after the right one by the Semantic Versioning
+    /// precedence rules. A null sorts before any version.
+    /// </summary>
+    /// <param name="left">Left version.</param>
+    /// <param name="right">Right version.</param>
+    /// <returns>True when left follows right.</returns>
     public static bool operator >(SemanticVersion? left, SemanticVersion? right) =>
         Compare(left, right) > 0;
 
+    /// <summary>
+    /// True when the left version does not come after the right one by the Semantic
+    /// Versioning precedence rules. A null sorts before any version.
+    /// </summary>
+    /// <param name="left">Left version.</param>
+    /// <param name="right">Right version.</param>
+    /// <returns>True when left precedes right or has the same precedence.</returns>
     public static bool operator <=(SemanticVersion? left, SemanticVersion? right) =>
         Compare(left, right) <= 0;
 
+    /// <summary>
+    /// True when the left version does not come before the right one by the Semantic
+    /// Versioning precedence rules. A null sorts before any version.
+    /// </summary>
+    /// <param name="left">Left version.</param>
+    /// <param name="right">Right version.</param>
+    /// <returns>True when left follows right or has the same precedence.</returns>
     public static bool operator >=(SemanticVersion? left, SemanticVersion? right) =>
         Compare(left, right) >= 0;
 

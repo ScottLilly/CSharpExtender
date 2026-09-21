@@ -43,8 +43,10 @@ public class ConditionalRequiredAttribute : ValidationAttribute
 
     // Each instance is its own TypeId, so two of these on one member are not
     // collapsed into one by code that de-duplicates attributes
+    /// <inheritdoc />
     public override object TypeId => this;
 
+    /// <inheritdoc />
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         if (string.IsNullOrWhiteSpace(DependentProperty))

@@ -5,6 +5,13 @@
 /// </summary>
 public enum IndentType
 {
+    /// <summary>
+    /// Indent with tab characters.
+    /// </summary>
     Tabs,
+
+    /// <summary>
+    /// Indent with spaces.
+    /// </summary>
     Spaces
 }

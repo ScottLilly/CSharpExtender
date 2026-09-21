@@ -3,6 +3,9 @@ using System.Data;
 
 namespace CSharpExtender.ExtensionMethods;
 
+/// <summary>
+/// Extension methods for DataSet objects
+/// </summary>
 public static class DataSetExtensionMethods
 {
     /// <summary>
