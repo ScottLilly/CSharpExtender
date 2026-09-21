@@ -3,18 +3,26 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <!-- Source Link is built into the SDK. These make the symbols usable from the .snupkg:
+         PublishRepositoryUrl writes the commit into the package, and EmbedUntrackedSources
+         covers any generated file the debugger would otherwise fail to find. release.yml
+         adds ContinuousIntegrationBuild=true so the CI build is deterministic. -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PackageId>ScottLilly.$(AssemblyName)</PackageId>
     <Title>ScottLilly.CSharpExtender</Title>
     <Version>3.0.0</Version>
     <Authors>Scott Lilly</Authors>
     <Description>Extension methods and functions that I often reuse across projects.</Description>
-    <Copyright>2025</Copyright>
+    <Copyright>Copyright (c) 2022-2026 Scott Lilly</Copyright>
     <PackageProjectUrl>https://github.com/scottlilly/csharpextender</PackageProjectUrl>
     <PackageIcon>Icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/scottlilly/csharpextender</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>csharp;extensions</PackageTags>
+    <PackageTags>csharp;extensions;extension-methods;reflection;validation;json;xml</PackageTags>
     <!-- The release workflow tags each release v$(Version), so this pins the notes to the
          state they were in for this package rather than to whatever master says later. -->
     <PackageReleaseNotes>Release notes for this version: https://github.com/ScottLilly/CSharpExtender/blob/v$(Version)/RELEASE_NOTES.md</PackageReleaseNotes>

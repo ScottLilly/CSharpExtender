@@ -32,15 +32,17 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
+    # ContinuousIntegrationBuild makes the build deterministic and the Source Link paths
+    # portable, so the .snupkg matches what a debugger fetches from GitHub.
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore -p:ContinuousIntegrationBuild=true
 
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal
 
     # The library is the only thing that ships. Tests.CSharpExtender and BenchmarkTestBench both
     # set IsPackable=false, so naming the project here is belt and braces rather than the only
-    # thing stopping a stray .nupkg.
+    # thing stopping a stray .nupkg. IncludeSymbols is on, so this also produces a .snupkg.
     - name: Pack
       run: dotnet pack CSharpExtender/CSharpExtender.csproj --configuration Release --no-build --output ./artifacts
 
@@ -121,10 +123,12 @@ jobs:
         if [ "${{ inputs.draft }}" = "true" ]; then
           ARGS+=(--draft)
         fi
-        gh release create "v$VERSION" "${ARGS[@]}" "${{ steps.package.outputs.path }}"
+        gh release create "v$VERSION" "${ARGS[@]}" ./artifacts/*.nupkg ./artifacts/*.snupkg
 
     - name: Upload the package as a build artifact
       uses: actions/upload-artifact@v7
       with:
         name: nuget-package
-        path: ./artifacts/*.nupkg
+        path: |
+          ./artifacts/*.nupkg
+          ./artifacts/*.snupkg
