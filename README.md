@@ -18,7 +18,7 @@ The package is annotated for nullable reference types, so the compiler can tell 
 
 Attribute classes to validate properties in models, and to declare how a property should be displayed.
 
-- **`AlphaOnlyAttribute`**: Check that a string only contains letters.
+- **`AlphaOnlyAttribute`**: Check that a string only contains letters. A letter is anything `char.IsLetter` accepts, so letters outside the ASCII range pass and a space does not. Strings only: it throws `InvalidCastException` on a member of any other type.
 - **`ConditionalRequiredAttribute`**: Check that a property has a value when another property on the same object holds a particular value. Set `DependentProperty` and `RequiredWhenValue`.
 - **`IsInListAttribute`**: Check that a property holds one of a fixed list of allowed values. Set `IgnoreCase` to compare strings without regard to case.
 - **`MaskAttribute`**: Declare how a property's value should be masked when displayed or logged. Set `MaskChar`, `VisiblePrefixLength` and `VisibleSuffixLength`. Not a validation attribute: apply it with `ToMaskedString` in `MaskExtensionMethods`.

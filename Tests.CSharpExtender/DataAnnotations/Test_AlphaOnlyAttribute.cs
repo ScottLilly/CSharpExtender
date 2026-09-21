@@ -124,6 +124,19 @@ public class Test_AlphaOnlyAttribute
         Assert.Equal("Must contain only letters.", result.ErrorMessage);
     }
 
+    [Theory]
+    [InlineData(42)]
+    [InlineData('a')]
+    public void NonStringValue_ThrowsInvalidCastException(object value)
+    {
+        // Arrange
+        var attribute = new AlphaOnlyAttribute();
+        var context = new ValidationContext(new object());
+
+        // Act & Assert
+        Assert.Throws<InvalidCastException>(() => attribute.GetValidationResult(value, context));
+    }
+
     [Fact]
     public void UnicodeLetters_ReturnsSuccess()
     {
