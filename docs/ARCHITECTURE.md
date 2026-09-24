@@ -44,7 +44,7 @@ Version 3.0.0 moved the package to .NET 8.0. Earlier versions targeted older fra
 
 ### xUnit, not MSTest
 
-The test project is xUnit and predates the MSTest default in `~/.claude/rules/csharp.md`.
+The test project is xUnit and predates the MSTest default in `~/.claude/project-rules/csharp.md`.
 
 ### Reflection results are cached
 

@@ -1,8 +1,8 @@
 # CSharpExtender
 
-@~/.claude/rules/programming.md
-@~/.claude/rules/csharp.md
-@~/.claude/rules/github.md
+@~/.claude/project-rules/programming.md
+@~/.claude/project-rules/csharp.md
+@~/.claude/project-rules/github.md
 
 Project-specific guidance for this repo. Rules that apply to more than one project live in the
 user-level `CLAUDE.md` and in the imported files above; this file is only for things particular
