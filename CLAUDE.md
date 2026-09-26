@@ -2,6 +2,7 @@
 
 @~/.claude/project-rules/programming.md
 @~/.claude/project-rules/csharp.md
+@~/.claude/project-rules/nuget.md
 @~/.claude/project-rules/github.md
 
 Project-specific guidance for this repo. Rules that apply to more than one project live in the
